@@ -1,0 +1,28 @@
+<RCC>
+  <qresource prefix="/icons">
+    <file alias="crew.svg">icons/crew.svg</file>
+    <file alias="radio.svg">icons/radio.svg</file>
+    <file alias="bank.svg">icons/bank.svg</file>
+    <file alias="audio_processing.svg">icons/audio_processing.svg</file>
+    <file alias="back.svg">icons/back.svg</file>
+    <file alias="wt_name_relay.png">icons/wt_name_relay.png</file>
+  </qresource>
+  <qresource prefix="/data">
+    <file alias="crew_name_groups.json">data/crew_name_groups.json</file>
+    <file alias="radio_name_groups.json">data/radio_name_groups.json</file>
+    <file alias="bank_name_groups.json">data/bank_name_groups.json</file>
+  </qresource>
+  <qresource prefix="/licenses">
+    <file alias="WT-NameRelay-Source-Available.txt">../../LICENSE</file>
+    <file alias="Python-PSF-2.0.txt">../../licenses/Python-PSF-2.0.txt</file>
+    <file alias="LGPL-3.0.txt">../../licenses/LGPL-3.0.txt</file>
+    <file alias="GPL-3.0.txt">../../licenses/GPL-3.0.txt</file>
+    <file alias="PyInstaller-GPL-2.0-with-exception.txt">../../licenses/PyInstaller-GPL-2.0-with-exception.txt</file>
+    <file alias="Pillow-HPND.txt">../../licenses/Pillow-HPND.txt</file>
+    <file alias="openpyxl-MIT.txt">../../licenses/openpyxl-MIT.txt</file>
+    <file alias="FFmpeg-LGPL-3.0-or-later.txt">../../licenses/FFmpeg-LGPL-3.0-or-later.txt</file>
+    <file alias="PyQtGraph-MIT.txt">../../licenses/PyQtGraph-MIT.txt</file>
+    <file alias="NumPy-BSD-3-Clause.txt">../../licenses/NumPy-BSD-3-Clause.txt</file>
+    <file alias="OpenSSL-Apache-2.0.txt">../../licenses/OpenSSL-Apache-2.0.txt</file>
+  </qresource>
+</RCC>

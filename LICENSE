@@ -1,0 +1,58 @@
+WT-NameRelay Source-Available License 1.0
+
+Copyright (c) 2026 Beiku. All rights reserved except as expressly granted below.
+
+1. Scope
+
+This license applies only to the original WT-NameRelay source code, documentation,
+artwork, and official release packages owned by Beiku (the "Project Materials").
+Third-party components remain governed exclusively by their respective licenses.
+
+2. Permission
+
+You may view, download, run, copy, and modify the Project Materials for personal,
+non-commercial learning, non-commercial voice-pack production, and related
+technical research. You may publish a non-commercial source-code fork if you:
+
+- keep this license, the copyright notice, and all third-party notices intact;
+- clearly identify your changes and do not present the fork as an official release;
+- do not include or distribute War Thunder or other third-party proprietary assets;
+- apply this same license to the Project Materials in the fork.
+
+3. Prohibited uses
+
+Without prior written permission from Beiku, you may not:
+
+- sell, resell, rent, sublicense for a fee, or commercially distribute the Project;
+- charge for access to, bundle fees with, or monetize an official release package;
+- use the Project Materials as part of a paid product or commercial service;
+- remove or obscure copyright, attribution, license, or disclaimer notices;
+- claim endorsement, sponsorship, authorization, or official status from Beiku,
+  Gaijin Entertainment, War Thunder, or their related entities.
+
+4. Third-party rights
+
+This license does not replace, restrict, or override rights granted under any
+third-party license. Components such as Qt/PySide6, PyQtGraph, NumPy, FFmpeg,
+OpenSSL, CPython, and PyInstaller are governed by their own notices and license
+texts in THIRD_PARTY_LICENSES.md and licenses/. If this license conflicts with a
+third-party license, the third-party license controls for that component.
+
+5. Game assets and trademarks
+
+The Project does not include or grant rights to official game resources or audio.
+War Thunder and related names, trademarks, and resources belong to their
+respective rights holders. This is an unofficial third-party project.
+
+6. No warranty
+
+THE PROJECT MATERIALS ARE PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+EXPRESS OR IMPLIED. TO THE MAXIMUM EXTENT PERMITTED BY LAW, BEIKU IS NOT LIABLE
+FOR ANY CLAIM, DAMAGE, DATA LOSS, OR OTHER LIABILITY ARISING FROM USE OF THE
+PROJECT MATERIALS.
+
+7. Nature of this license
+
+This is a source-available license, not an Open Source Initiative-approved
+open-source license. Commercial permission may be requested separately from
+Beiku. This license has not been reviewed by a professional lawyer.

@@ -1,0 +1,329 @@
+{
+  "schema_version": 1,
+  "module": "bank",
+  "source_directory": "<external-war-thunder-sound-directory>",
+  "categories": {
+    "common": {
+      "prefix": "_crew_dialogs_common_",
+      "countries": {
+        "cz": {
+          "assets": "_crew_dialogs_common_cz.assets.bank",
+          "main": "_crew_dialogs_common_cz.bank",
+          "complete": true,
+          "missing_roles": []
+        },
+        "de": {
+          "assets": "_crew_dialogs_common_de.assets.bank",
+          "main": "_crew_dialogs_common_de.bank",
+          "complete": true,
+          "missing_roles": []
+        },
+        "en": {
+          "assets": "_crew_dialogs_common_en.assets.bank",
+          "main": "_crew_dialogs_common_en.bank",
+          "complete": true,
+          "missing_roles": []
+        },
+        "fr": {
+          "assets": "_crew_dialogs_common_fr.assets.bank",
+          "main": "_crew_dialogs_common_fr.bank",
+          "complete": true,
+          "missing_roles": []
+        },
+        "hu": {
+          "assets": "_crew_dialogs_common_hu.assets.bank",
+          "main": "_crew_dialogs_common_hu.bank",
+          "complete": true,
+          "missing_roles": []
+        },
+        "it": {
+          "assets": "_crew_dialogs_common_it.assets.bank",
+          "main": "_crew_dialogs_common_it.bank",
+          "complete": true,
+          "missing_roles": []
+        },
+        "jp": {
+          "assets": "_crew_dialogs_common_jp.assets.bank",
+          "main": "_crew_dialogs_common_jp.bank",
+          "complete": true,
+          "missing_roles": []
+        },
+        "ko": {
+          "assets": "_crew_dialogs_common_ko.assets.bank",
+          "main": "_crew_dialogs_common_ko.bank",
+          "complete": true,
+          "missing_roles": []
+        },
+        "pl": {
+          "assets": "_crew_dialogs_common_pl.assets.bank",
+          "main": "_crew_dialogs_common_pl.bank",
+          "complete": true,
+          "missing_roles": []
+        },
+        "pt": {
+          "assets": "_crew_dialogs_common_pt.assets.bank",
+          "main": "_crew_dialogs_common_pt.bank",
+          "complete": true,
+          "missing_roles": []
+        },
+        "ru": {
+          "assets": "_crew_dialogs_common_ru.assets.bank",
+          "main": "_crew_dialogs_common_ru.bank",
+          "complete": true,
+          "missing_roles": []
+        },
+        "sp": {
+          "assets": "_crew_dialogs_common_sp.assets.bank",
+          "main": "_crew_dialogs_common_sp.bank",
+          "complete": true,
+          "missing_roles": []
+        },
+        "sr": {
+          "assets": "_crew_dialogs_common_sr.assets.bank",
+          "main": "_crew_dialogs_common_sr.bank",
+          "complete": true,
+          "missing_roles": []
+        },
+        "th": {
+          "assets": "_crew_dialogs_common_th.assets.bank",
+          "main": "_crew_dialogs_common_th.bank",
+          "complete": true,
+          "missing_roles": []
+        },
+        "tr": {
+          "assets": "_crew_dialogs_common_tr.assets.bank",
+          "main": "_crew_dialogs_common_tr.bank",
+          "complete": true,
+          "missing_roles": []
+        },
+        "vi": {
+          "assets": "_crew_dialogs_common_vi.assets.bank",
+          "main": "_crew_dialogs_common_vi.bank",
+          "complete": true,
+          "missing_roles": []
+        },
+        "zh": {
+          "assets": "_crew_dialogs_common_zh.assets.bank",
+          "main": "_crew_dialogs_common_zh.bank",
+          "complete": true,
+          "missing_roles": []
+        }
+      }
+    },
+    "ground": {
+      "prefix": "_crew_dialogs_ground_",
+      "countries": {
+        "ar": {
+          "assets": "_crew_dialogs_ground_ar.assets.bank",
+          "main": "_crew_dialogs_ground_ar.bank",
+          "complete": true,
+          "missing_roles": []
+        },
+        "cz": {
+          "assets": "_crew_dialogs_ground_cz.assets.bank",
+          "main": "_crew_dialogs_ground_cz.bank",
+          "complete": true,
+          "missing_roles": []
+        },
+        "de": {
+          "assets": "_crew_dialogs_ground_de.assets.bank",
+          "main": "_crew_dialogs_ground_de.bank",
+          "complete": true,
+          "missing_roles": []
+        },
+        "en": {
+          "assets": "_crew_dialogs_ground_en.assets.bank",
+          "main": "_crew_dialogs_ground_en.bank",
+          "complete": true,
+          "missing_roles": []
+        },
+        "en_au": {
+          "assets": "_crew_dialogs_ground_en_au.assets.bank",
+          "main": "_crew_dialogs_ground_en_au.bank",
+          "complete": true,
+          "missing_roles": []
+        },
+        "en_us": {
+          "assets": "_crew_dialogs_ground_en_us.assets.bank",
+          "main": "_crew_dialogs_ground_en_us.bank",
+          "complete": true,
+          "missing_roles": []
+        },
+        "en_za": {
+          "assets": "_crew_dialogs_ground_en_za.assets.bank",
+          "main": "_crew_dialogs_ground_en_za.bank",
+          "complete": true,
+          "missing_roles": []
+        },
+        "fi": {
+          "assets": "_crew_dialogs_ground_fi.assets.bank",
+          "main": "_crew_dialogs_ground_fi.bank",
+          "complete": true,
+          "missing_roles": []
+        },
+        "fr": {
+          "assets": "_crew_dialogs_ground_fr.assets.bank",
+          "main": "_crew_dialogs_ground_fr.bank",
+          "complete": true,
+          "missing_roles": []
+        },
+        "gl": {
+          "assets": "_crew_dialogs_ground_gl.assets.bank",
+          "main": "_crew_dialogs_ground_gl.bank",
+          "complete": true,
+          "missing_roles": []
+        },
+        "he": {
+          "assets": "_crew_dialogs_ground_he.assets.bank",
+          "main": "_crew_dialogs_ground_he.bank",
+          "complete": true,
+          "missing_roles": []
+        },
+        "hi": {
+          "assets": "_crew_dialogs_ground_hi.assets.bank",
+          "main": "_crew_dialogs_ground_hi.bank",
+          "complete": true,
+          "missing_roles": []
+        },
+        "hu": {
+          "assets": "_crew_dialogs_ground_hu.assets.bank",
+          "main": "_crew_dialogs_ground_hu.bank",
+          "complete": true,
+          "missing_roles": []
+        },
+        "it": {
+          "assets": "_crew_dialogs_ground_it.assets.bank",
+          "main": "_crew_dialogs_ground_it.bank",
+          "complete": true,
+          "missing_roles": []
+        },
+        "jp": {
+          "assets": "_crew_dialogs_ground_jp.assets.bank",
+          "main": "_crew_dialogs_ground_jp.bank",
+          "complete": true,
+          "missing_roles": []
+        },
+        "ko": {
+          "assets": "_crew_dialogs_ground_ko.assets.bank",
+          "main": "_crew_dialogs_ground_ko.bank",
+          "complete": true,
+          "missing_roles": []
+        },
+        "lt": {
+          "assets": "_crew_dialogs_ground_lt.assets.bank",
+          "main": "_crew_dialogs_ground_lt.bank",
+          "complete": true,
+          "missing_roles": []
+        },
+        "nl": {
+          "assets": "_crew_dialogs_ground_nl.assets.bank",
+          "main": "_crew_dialogs_ground_nl.bank",
+          "complete": true,
+          "missing_roles": []
+        },
+        "nw": {
+          "assets": "_crew_dialogs_ground_nw.assets.bank",
+          "main": "_crew_dialogs_ground_nw.bank",
+          "complete": true,
+          "missing_roles": []
+        },
+        "pl": {
+          "assets": "_crew_dialogs_ground_pl.assets.bank",
+          "main": "_crew_dialogs_ground_pl.bank",
+          "complete": true,
+          "missing_roles": []
+        },
+        "pt": {
+          "assets": "_crew_dialogs_ground_pt.assets.bank",
+          "main": "_crew_dialogs_ground_pt.bank",
+          "complete": true,
+          "missing_roles": []
+        },
+        "ru": {
+          "assets": "_crew_dialogs_ground_ru.assets.bank",
+          "main": "_crew_dialogs_ground_ru.bank",
+          "complete": true,
+          "missing_roles": []
+        },
+        "sm_de": {
+          "assets": "_crew_dialogs_ground_sm_de.assets.bank",
+          "main": "_crew_dialogs_ground_sm_de.bank",
+          "complete": true,
+          "missing_roles": []
+        },
+        "sm_jp": {
+          "assets": "_crew_dialogs_ground_sm_jp.assets.bank",
+          "main": "_crew_dialogs_ground_sm_jp.bank",
+          "complete": true,
+          "missing_roles": []
+        },
+        "sm_ru": {
+          "assets": "_crew_dialogs_ground_sm_ru.assets.bank",
+          "main": "_crew_dialogs_ground_sm_ru.bank",
+          "complete": true,
+          "missing_roles": []
+        },
+        "sm_uk": {
+          "assets": "_crew_dialogs_ground_sm_uk.assets.bank",
+          "main": "_crew_dialogs_ground_sm_uk.bank",
+          "complete": true,
+          "missing_roles": []
+        },
+        "sm_us": {
+          "assets": "_crew_dialogs_ground_sm_us.assets.bank",
+          "main": "_crew_dialogs_ground_sm_us.bank",
+          "complete": true,
+          "missing_roles": []
+        },
+        "sm_zh": {
+          "assets": "_crew_dialogs_ground_sm_zh.assets.bank",
+          "main": "_crew_dialogs_ground_sm_zh.bank",
+          "complete": true,
+          "missing_roles": []
+        },
+        "sp": {
+          "assets": "_crew_dialogs_ground_sp.assets.bank",
+          "main": "_crew_dialogs_ground_sp.bank",
+          "complete": true,
+          "missing_roles": []
+        },
+        "sr": {
+          "assets": "_crew_dialogs_ground_sr.assets.bank",
+          "main": "_crew_dialogs_ground_sr.bank",
+          "complete": true,
+          "missing_roles": []
+        },
+        "sv": {
+          "assets": "_crew_dialogs_ground_sv.assets.bank",
+          "main": "_crew_dialogs_ground_sv.bank",
+          "complete": true,
+          "missing_roles": []
+        },
+        "th": {
+          "assets": "_crew_dialogs_ground_th.assets.bank",
+          "main": "_crew_dialogs_ground_th.bank",
+          "complete": true,
+          "missing_roles": []
+        },
+        "tr": {
+          "assets": "_crew_dialogs_ground_tr.assets.bank",
+          "main": "_crew_dialogs_ground_tr.bank",
+          "complete": true,
+          "missing_roles": []
+        },
+        "vi": {
+          "assets": "_crew_dialogs_ground_vi.assets.bank",
+          "main": "_crew_dialogs_ground_vi.bank",
+          "complete": true,
+          "missing_roles": []
+        },
+        "zh": {
+          "assets": "_crew_dialogs_ground_zh.assets.bank",
+          "main": "_crew_dialogs_ground_zh.bank",
+          "complete": true,
+          "missing_roles": []
+        }
+      }
+    }
+  }
+}

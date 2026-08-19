@@ -1,0 +1,28 @@
+{
+  "crew": {
+    "artillery": 32,
+    "aviation": 3,
+    "chief_m": 31,
+    "commander": 239,
+    "driver": 146,
+    "gunner": 102,
+    "loader": 75
+  },
+  "radio": {
+    "additional_01": 97,
+    "态势播报": 66,
+    "信息": 312
+  },
+  "duplicates": [],
+  "crew_json": {
+    "classified_groups": 148,
+    "unclassified_groups": 3,
+    "conflicting_groups": 0
+  },
+  "radio_json": {
+    "classified_groups": 45,
+    "unclassified_groups": 11,
+    "conflicting_groups": 0
+  },
+  "indexed_names": 1103
+}

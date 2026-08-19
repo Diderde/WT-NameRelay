@@ -1,0 +1,470 @@
+{
+  "schema_version": 1,
+  "module": "radio",
+  "source_directories": {
+    "voice1": "<external-radio-source:voice1>",
+    "additional_01": "<external-radio-source:additional_01>",
+    "english": "<external-radio-source:english>"
+  },
+  "directory_audio_counts": {
+    "voice1": 312,
+    "additional_01": 97,
+    "english": 148
+  },
+  "total_audio_files": 557,
+  "formal_group_count": 56,
+  "formal_name_count": 480,
+  "excluded_name_count": 77,
+  "errors": [],
+  "logical_name_count": 557,
+  "same_logical_name": {},
+  "case_only_conflicts": {},
+  "formal_group_types": {
+    "v_matrix_suffix": 13,
+    "matrix_suffix": 26,
+    "v_suffix": 17
+  },
+  "exceptions": [
+    {
+      "reason": "仅有一个成员",
+      "type": "v_suffix",
+      "base_name": "base_AD_mission_start",
+      "names": [
+        "base_AD_mission_start_v1"
+      ],
+      "sources": {
+        "base_AD_mission_start_v1": [
+          "english"
+        ]
+      }
+    },
+    {
+      "reason": "仅有一个成员",
+      "type": "v_suffix",
+      "base_name": "base_AfD_mission_start",
+      "names": [
+        "base_AfD_mission_start_v1"
+      ],
+      "sources": {
+        "base_AfD_mission_start_v1": [
+          "english"
+        ]
+      }
+    },
+    {
+      "reason": "仅有一个成员",
+      "type": "v_suffix",
+      "base_name": "base_BC_mission_start",
+      "names": [
+        "base_BC_mission_start_v1"
+      ],
+      "sources": {
+        "base_BC_mission_start_v1": [
+          "english"
+        ]
+      }
+    },
+    {
+      "reason": "仅有一个成员",
+      "type": "v_suffix",
+      "base_name": "base_BfD_mission_start",
+      "names": [
+        "base_BfD_mission_start_v1"
+      ],
+      "sources": {
+        "base_BfD_mission_start_v1": [
+          "english"
+        ]
+      }
+    },
+    {
+      "reason": "仅有一个成员",
+      "type": "v_suffix",
+      "base_name": "base_player_inZone_air",
+      "names": [
+        "base_player_inZone_air_v1"
+      ],
+      "sources": {
+        "base_player_inZone_air_v1": [
+          "english"
+        ]
+      }
+    },
+    {
+      "reason": "仅有一个成员",
+      "type": "v_suffix",
+      "base_name": "base_player_inZone_ground",
+      "names": [
+        "base_player_inZone_ground_v1"
+      ],
+      "sources": {
+        "base_player_inZone_ground_v1": [
+          "english"
+        ]
+      }
+    },
+    {
+      "reason": "仅有一个成员",
+      "type": "v_suffix",
+      "base_name": "base_player_inZone_leave",
+      "names": [
+        "base_player_inZone_leave_v1"
+      ],
+      "sources": {
+        "base_player_inZone_leave_v1": [
+          "english"
+        ]
+      }
+    },
+    {
+      "reason": "无可确认的末尾变体编号；名称中的数字或单位具有语义",
+      "name": "voice_message_100_m",
+      "source": "additional_01"
+    },
+    {
+      "reason": "无可确认的末尾变体编号；名称中的数字或单位具有语义",
+      "name": "voice_message_200_m",
+      "source": "additional_01"
+    },
+    {
+      "reason": "无可确认的末尾变体编号；名称中的数字或单位具有语义",
+      "name": "voice_message_300_ft",
+      "source": "additional_01"
+    },
+    {
+      "reason": "无可确认的末尾变体编号；名称中的数字或单位具有语义",
+      "name": "voice_message_300_m",
+      "source": "additional_01"
+    },
+    {
+      "reason": "无可确认的末尾变体编号；名称中的数字或单位具有语义",
+      "name": "voice_message_400_m",
+      "source": "additional_01"
+    },
+    {
+      "reason": "无可确认的末尾变体编号；名称中的数字或单位具有语义",
+      "name": "voice_message_500_m",
+      "source": "additional_01"
+    },
+    {
+      "reason": "无可确认的末尾变体编号；名称中的数字或单位具有语义",
+      "name": "voice_message_600_ft",
+      "source": "additional_01"
+    },
+    {
+      "reason": "无可确认的末尾变体编号；名称中的数字或单位具有语义",
+      "name": "voice_message_900_ft",
+      "source": "additional_01"
+    },
+    {
+      "reason": "无可确认的末尾变体编号；名称中的数字或单位具有语义",
+      "name": "voice_message_1000_m",
+      "source": "additional_01"
+    },
+    {
+      "reason": "无可确认的末尾变体编号；名称中的数字或单位具有语义",
+      "name": "voice_message_1200_ft",
+      "source": "additional_01"
+    },
+    {
+      "reason": "无可确认的末尾变体编号；名称中的数字或单位具有语义",
+      "name": "voice_message_1500_ft",
+      "source": "additional_01"
+    },
+    {
+      "reason": "无可确认的末尾变体编号；名称中的数字或单位具有语义",
+      "name": "voice_message_1500_m",
+      "source": "additional_01"
+    },
+    {
+      "reason": "无可确认的末尾变体编号；名称中的数字或单位具有语义",
+      "name": "voice_message_2000_m",
+      "source": "additional_01"
+    },
+    {
+      "reason": "无可确认的末尾变体编号；名称中的数字或单位具有语义",
+      "name": "voice_message_2500_m",
+      "source": "additional_01"
+    },
+    {
+      "reason": "无可确认的末尾变体编号；名称中的数字或单位具有语义",
+      "name": "voice_message_3000_ft",
+      "source": "additional_01"
+    },
+    {
+      "reason": "无可确认的末尾变体编号；名称中的数字或单位具有语义",
+      "name": "voice_message_3000_m",
+      "source": "additional_01"
+    },
+    {
+      "reason": "无可确认的末尾变体编号；名称中的数字或单位具有语义",
+      "name": "voice_message_4000_m",
+      "source": "additional_01"
+    },
+    {
+      "reason": "无可确认的末尾变体编号；名称中的数字或单位具有语义",
+      "name": "voice_message_4500_ft",
+      "source": "additional_01"
+    },
+    {
+      "reason": "无可确认的末尾变体编号；名称中的数字或单位具有语义",
+      "name": "voice_message_5000_m",
+      "source": "additional_01"
+    },
+    {
+      "reason": "无可确认的末尾变体编号；名称中的数字或单位具有语义",
+      "name": "voice_message_6000_ft",
+      "source": "additional_01"
+    },
+    {
+      "reason": "无可确认的末尾变体编号；名称中的数字或单位具有语义",
+      "name": "voice_message_6000_m",
+      "source": "additional_01"
+    },
+    {
+      "reason": "无可确认的末尾变体编号；名称中的数字或单位具有语义",
+      "name": "voice_message_7000_m",
+      "source": "additional_01"
+    },
+    {
+      "reason": "无可确认的末尾变体编号；名称中的数字或单位具有语义",
+      "name": "voice_message_7500_ft",
+      "source": "additional_01"
+    },
+    {
+      "reason": "无可确认的末尾变体编号；名称中的数字或单位具有语义",
+      "name": "voice_message_8000_m",
+      "source": "additional_01"
+    },
+    {
+      "reason": "无可确认的末尾变体编号；名称中的数字或单位具有语义",
+      "name": "voice_message_9000_ft",
+      "source": "additional_01"
+    },
+    {
+      "reason": "无可确认的末尾变体编号；名称中的数字或单位具有语义",
+      "name": "voice_message_9000_m",
+      "source": "additional_01"
+    },
+    {
+      "reason": "无可确认的末尾变体编号；名称中的数字或单位具有语义",
+      "name": "voice_message_10000_m",
+      "source": "additional_01"
+    },
+    {
+      "reason": "无可确认的末尾变体编号；名称中的数字或单位具有语义",
+      "name": "voice_message_12000_ft",
+      "source": "additional_01"
+    },
+    {
+      "reason": "无可确认的末尾变体编号；名称中的数字或单位具有语义",
+      "name": "voice_message_15000_ft",
+      "source": "additional_01"
+    },
+    {
+      "reason": "无可确认的末尾变体编号；名称中的数字或单位具有语义",
+      "name": "voice_message_18000_ft",
+      "source": "additional_01"
+    },
+    {
+      "reason": "无可确认的末尾变体编号；名称中的数字或单位具有语义",
+      "name": "voice_message_21000_ft",
+      "source": "additional_01"
+    },
+    {
+      "reason": "无可确认的末尾变体编号；名称中的数字或单位具有语义",
+      "name": "voice_message_24000_ft",
+      "source": "additional_01"
+    },
+    {
+      "reason": "无可确认的末尾变体编号；名称中的数字或单位具有语义",
+      "name": "voice_message_27000_ft",
+      "source": "additional_01"
+    },
+    {
+      "reason": "无可确认的末尾变体编号；名称中的数字或单位具有语义",
+      "name": "voice_message_30000_ft",
+      "source": "additional_01"
+    },
+    {
+      "reason": "无可确认的末尾变体编号；名称中的数字或单位具有语义",
+      "name": "voice_message_bearing_10",
+      "source": "additional_01"
+    },
+    {
+      "reason": "无可确认的末尾变体编号；名称中的数字或单位具有语义",
+      "name": "voice_message_bearing_20",
+      "source": "additional_01"
+    },
+    {
+      "reason": "无可确认的末尾变体编号；名称中的数字或单位具有语义",
+      "name": "voice_message_bearing_30",
+      "source": "additional_01"
+    },
+    {
+      "reason": "无可确认的末尾变体编号；名称中的数字或单位具有语义",
+      "name": "voice_message_bearing_40",
+      "source": "additional_01"
+    },
+    {
+      "reason": "无可确认的末尾变体编号；名称中的数字或单位具有语义",
+      "name": "voice_message_bearing_50",
+      "source": "additional_01"
+    },
+    {
+      "reason": "无可确认的末尾变体编号；名称中的数字或单位具有语义",
+      "name": "voice_message_bearing_60",
+      "source": "additional_01"
+    },
+    {
+      "reason": "无可确认的末尾变体编号；名称中的数字或单位具有语义",
+      "name": "voice_message_bearing_70",
+      "source": "additional_01"
+    },
+    {
+      "reason": "无可确认的末尾变体编号；名称中的数字或单位具有语义",
+      "name": "voice_message_bearing_80",
+      "source": "additional_01"
+    },
+    {
+      "reason": "无可确认的末尾变体编号；名称中的数字或单位具有语义",
+      "name": "voice_message_bearing_90",
+      "source": "additional_01"
+    },
+    {
+      "reason": "无可确认的末尾变体编号；名称中的数字或单位具有语义",
+      "name": "voice_message_bearing_100",
+      "source": "additional_01"
+    },
+    {
+      "reason": "无可确认的末尾变体编号；名称中的数字或单位具有语义",
+      "name": "voice_message_bearing_110",
+      "source": "additional_01"
+    },
+    {
+      "reason": "无可确认的末尾变体编号；名称中的数字或单位具有语义",
+      "name": "voice_message_bearing_120",
+      "source": "additional_01"
+    },
+    {
+      "reason": "无可确认的末尾变体编号；名称中的数字或单位具有语义",
+      "name": "voice_message_bearing_130",
+      "source": "additional_01"
+    },
+    {
+      "reason": "无可确认的末尾变体编号；名称中的数字或单位具有语义",
+      "name": "voice_message_bearing_140",
+      "source": "additional_01"
+    },
+    {
+      "reason": "无可确认的末尾变体编号；名称中的数字或单位具有语义",
+      "name": "voice_message_bearing_150",
+      "source": "additional_01"
+    },
+    {
+      "reason": "无可确认的末尾变体编号；名称中的数字或单位具有语义",
+      "name": "voice_message_bearing_160",
+      "source": "additional_01"
+    },
+    {
+      "reason": "无可确认的末尾变体编号；名称中的数字或单位具有语义",
+      "name": "voice_message_bearing_170",
+      "source": "additional_01"
+    },
+    {
+      "reason": "无可确认的末尾变体编号；名称中的数字或单位具有语义",
+      "name": "voice_message_bearing_180",
+      "source": "additional_01"
+    },
+    {
+      "reason": "无可确认的末尾变体编号；名称中的数字或单位具有语义",
+      "name": "voice_message_bearing_190",
+      "source": "additional_01"
+    },
+    {
+      "reason": "无可确认的末尾变体编号；名称中的数字或单位具有语义",
+      "name": "voice_message_bearing_200",
+      "source": "additional_01"
+    },
+    {
+      "reason": "无可确认的末尾变体编号；名称中的数字或单位具有语义",
+      "name": "voice_message_bearing_210",
+      "source": "additional_01"
+    },
+    {
+      "reason": "无可确认的末尾变体编号；名称中的数字或单位具有语义",
+      "name": "voice_message_bearing_220",
+      "source": "additional_01"
+    },
+    {
+      "reason": "无可确认的末尾变体编号；名称中的数字或单位具有语义",
+      "name": "voice_message_bearing_230",
+      "source": "additional_01"
+    },
+    {
+      "reason": "无可确认的末尾变体编号；名称中的数字或单位具有语义",
+      "name": "voice_message_bearing_240",
+      "source": "additional_01"
+    },
+    {
+      "reason": "无可确认的末尾变体编号；名称中的数字或单位具有语义",
+      "name": "voice_message_bearing_250",
+      "source": "additional_01"
+    },
+    {
+      "reason": "无可确认的末尾变体编号；名称中的数字或单位具有语义",
+      "name": "voice_message_bearing_260",
+      "source": "additional_01"
+    },
+    {
+      "reason": "无可确认的末尾变体编号；名称中的数字或单位具有语义",
+      "name": "voice_message_bearing_270",
+      "source": "additional_01"
+    },
+    {
+      "reason": "无可确认的末尾变体编号；名称中的数字或单位具有语义",
+      "name": "voice_message_bearing_280",
+      "source": "additional_01"
+    },
+    {
+      "reason": "无可确认的末尾变体编号；名称中的数字或单位具有语义",
+      "name": "voice_message_bearing_290",
+      "source": "additional_01"
+    },
+    {
+      "reason": "无可确认的末尾变体编号；名称中的数字或单位具有语义",
+      "name": "voice_message_bearing_300",
+      "source": "additional_01"
+    },
+    {
+      "reason": "无可确认的末尾变体编号；名称中的数字或单位具有语义",
+      "name": "voice_message_bearing_310",
+      "source": "additional_01"
+    },
+    {
+      "reason": "无可确认的末尾变体编号；名称中的数字或单位具有语义",
+      "name": "voice_message_bearing_320",
+      "source": "additional_01"
+    },
+    {
+      "reason": "无可确认的末尾变体编号；名称中的数字或单位具有语义",
+      "name": "voice_message_bearing_330",
+      "source": "additional_01"
+    },
+    {
+      "reason": "无可确认的末尾变体编号；名称中的数字或单位具有语义",
+      "name": "voice_message_bearing_340",
+      "source": "additional_01"
+    },
+    {
+      "reason": "无可确认的末尾变体编号；名称中的数字或单位具有语义",
+      "name": "voice_message_bearing_350",
+      "source": "additional_01"
+    },
+    {
+      "reason": "无可确认的末尾变体编号；名称中的数字或单位具有语义",
+      "name": "voice_message_bearing_360",
+      "source": "additional_01"
+    }
+  ]
+}

@@ -1,0 +1,2424 @@
+{
+  "schema_version": 1,
+  "module": "radio",
+  "source_directories": [
+    "<external-radio-source:voice1>",
+    "<external-radio-source:additional_01>",
+    "<external-radio-source:english>"
+  ],
+  "groups": {
+    "pilot_base_destroyed_ally": {
+      "type": "v_suffix",
+      "names": [
+        "pilot_base_destroyed_ally_v1",
+        "pilot_base_destroyed_ally_v2",
+        "pilot_base_destroyed_ally_v3"
+      ],
+      "sources": {
+        "pilot_base_destroyed_ally_v1": [
+          "english"
+        ],
+        "pilot_base_destroyed_ally_v2": [
+          "english"
+        ],
+        "pilot_base_destroyed_ally_v3": [
+          "english"
+        ]
+      },
+      "module": "radio"
+    },
+    "pilot_base_destroyed_enemy": {
+      "type": "v_suffix",
+      "names": [
+        "pilot_base_destroyed_enemy_v1",
+        "pilot_base_destroyed_enemy_v2",
+        "pilot_base_destroyed_enemy_v3"
+      ],
+      "sources": {
+        "pilot_base_destroyed_enemy_v1": [
+          "english"
+        ],
+        "pilot_base_destroyed_enemy_v2": [
+          "english"
+        ],
+        "pilot_base_destroyed_enemy_v3": [
+          "english"
+        ]
+      },
+      "module": "radio"
+    },
+    "pilot_base_underattack": {
+      "type": "v_matrix_suffix",
+      "names": [
+        "pilot_base_underattack_1_v1",
+        "pilot_base_underattack_1_v2",
+        "pilot_base_underattack_1_v3",
+        "pilot_base_underattack_2_v1",
+        "pilot_base_underattack_2_v2",
+        "pilot_base_underattack_2_v3",
+        "pilot_base_underattack_3_v1",
+        "pilot_base_underattack_3_v2",
+        "pilot_base_underattack_3_v3"
+      ],
+      "sources": {
+        "pilot_base_underattack_1_v1": [
+          "english"
+        ],
+        "pilot_base_underattack_1_v2": [
+          "english"
+        ],
+        "pilot_base_underattack_1_v3": [
+          "english"
+        ],
+        "pilot_base_underattack_2_v1": [
+          "english"
+        ],
+        "pilot_base_underattack_2_v2": [
+          "english"
+        ],
+        "pilot_base_underattack_2_v3": [
+          "english"
+        ],
+        "pilot_base_underattack_3_v1": [
+          "english"
+        ],
+        "pilot_base_underattack_3_v2": [
+          "english"
+        ],
+        "pilot_base_underattack_3_v3": [
+          "english"
+        ]
+      },
+      "module": "radio"
+    },
+    "pilot_capture_gm_ally": {
+      "type": "v_suffix",
+      "names": [
+        "pilot_capture_gm_ally_v1",
+        "pilot_capture_gm_ally_v2",
+        "pilot_capture_gm_ally_v3"
+      ],
+      "sources": {
+        "pilot_capture_gm_ally_v1": [
+          "english"
+        ],
+        "pilot_capture_gm_ally_v2": [
+          "english"
+        ],
+        "pilot_capture_gm_ally_v3": [
+          "english"
+        ]
+      },
+      "module": "radio",
+      "category": "态势播报"
+    },
+    "pilot_capture_gm_enemy": {
+      "type": "v_suffix",
+      "names": [
+        "pilot_capture_gm_enemy_v1",
+        "pilot_capture_gm_enemy_v2",
+        "pilot_capture_gm_enemy_v3"
+      ],
+      "sources": {
+        "pilot_capture_gm_enemy_v1": [
+          "english"
+        ],
+        "pilot_capture_gm_enemy_v2": [
+          "english"
+        ],
+        "pilot_capture_gm_enemy_v3": [
+          "english"
+        ]
+      },
+      "module": "radio",
+      "category": "态势播报"
+    },
+    "pilot_capture_ground_ally": {
+      "type": "v_matrix_suffix",
+      "names": [
+        "pilot_capture_ground_ally1_v1",
+        "pilot_capture_ground_ally1_v2",
+        "pilot_capture_ground_ally1_v3",
+        "pilot_capture_ground_ally2_v1",
+        "pilot_capture_ground_ally2_v2",
+        "pilot_capture_ground_ally2_v3",
+        "pilot_capture_ground_ally3_v1",
+        "pilot_capture_ground_ally3_v2",
+        "pilot_capture_ground_ally3_v3"
+      ],
+      "sources": {
+        "pilot_capture_ground_ally1_v1": [
+          "english"
+        ],
+        "pilot_capture_ground_ally1_v2": [
+          "english"
+        ],
+        "pilot_capture_ground_ally1_v3": [
+          "english"
+        ],
+        "pilot_capture_ground_ally2_v1": [
+          "english"
+        ],
+        "pilot_capture_ground_ally2_v2": [
+          "english"
+        ],
+        "pilot_capture_ground_ally2_v3": [
+          "english"
+        ],
+        "pilot_capture_ground_ally3_v1": [
+          "english"
+        ],
+        "pilot_capture_ground_ally3_v2": [
+          "english"
+        ],
+        "pilot_capture_ground_ally3_v3": [
+          "english"
+        ]
+      },
+      "module": "radio"
+    },
+    "pilot_capture_ground_enemy": {
+      "type": "v_matrix_suffix",
+      "names": [
+        "pilot_capture_ground_enemy1_v1",
+        "pilot_capture_ground_enemy1_v2",
+        "pilot_capture_ground_enemy1_v3",
+        "pilot_capture_ground_enemy2_v1",
+        "pilot_capture_ground_enemy2_v2",
+        "pilot_capture_ground_enemy2_v3",
+        "pilot_capture_ground_enemy3_v1",
+        "pilot_capture_ground_enemy3_v2",
+        "pilot_capture_ground_enemy3_v3"
+      ],
+      "sources": {
+        "pilot_capture_ground_enemy1_v1": [
+          "english"
+        ],
+        "pilot_capture_ground_enemy1_v2": [
+          "english"
+        ],
+        "pilot_capture_ground_enemy1_v3": [
+          "english"
+        ],
+        "pilot_capture_ground_enemy2_v1": [
+          "english"
+        ],
+        "pilot_capture_ground_enemy2_v2": [
+          "english"
+        ],
+        "pilot_capture_ground_enemy2_v3": [
+          "english"
+        ],
+        "pilot_capture_ground_enemy3_v1": [
+          "english"
+        ],
+        "pilot_capture_ground_enemy3_v2": [
+          "english"
+        ],
+        "pilot_capture_ground_enemy3_v3": [
+          "english"
+        ]
+      },
+      "module": "radio"
+    },
+    "pilot_capture_zone_ally": {
+      "type": "v_suffix",
+      "names": [
+        "pilot_capture_zone_ally_v1",
+        "pilot_capture_zone_ally_v2",
+        "pilot_capture_zone_ally_v3"
+      ],
+      "sources": {
+        "pilot_capture_zone_ally_v1": [
+          "english"
+        ],
+        "pilot_capture_zone_ally_v2": [
+          "english"
+        ],
+        "pilot_capture_zone_ally_v3": [
+          "english"
+        ]
+      },
+      "module": "radio",
+      "category": "态势播报"
+    },
+    "pilot_capture_zone_enemy": {
+      "type": "v_suffix",
+      "names": [
+        "pilot_capture_zone_enemy_v1",
+        "pilot_capture_zone_enemy_v2",
+        "pilot_capture_zone_enemy_v3"
+      ],
+      "sources": {
+        "pilot_capture_zone_enemy_v1": [
+          "english"
+        ],
+        "pilot_capture_zone_enemy_v2": [
+          "english"
+        ],
+        "pilot_capture_zone_enemy_v3": [
+          "english"
+        ]
+      },
+      "module": "radio",
+      "category": "态势播报"
+    },
+    "pilot_mission_complete": {
+      "type": "v_matrix_suffix",
+      "names": [
+        "pilot_mission_complete_1_v1",
+        "pilot_mission_complete_1_v2",
+        "pilot_mission_complete_1_v3",
+        "pilot_mission_complete_2_v1",
+        "pilot_mission_complete_2_v2",
+        "pilot_mission_complete_2_v3",
+        "pilot_mission_complete_3_v1",
+        "pilot_mission_complete_3_v2",
+        "pilot_mission_complete_3_v3"
+      ],
+      "sources": {
+        "pilot_mission_complete_1_v1": [
+          "english"
+        ],
+        "pilot_mission_complete_1_v2": [
+          "english"
+        ],
+        "pilot_mission_complete_1_v3": [
+          "english"
+        ],
+        "pilot_mission_complete_2_v1": [
+          "english"
+        ],
+        "pilot_mission_complete_2_v2": [
+          "english"
+        ],
+        "pilot_mission_complete_2_v3": [
+          "english"
+        ],
+        "pilot_mission_complete_3_v1": [
+          "english"
+        ],
+        "pilot_mission_complete_3_v2": [
+          "english"
+        ],
+        "pilot_mission_complete_3_v3": [
+          "english"
+        ]
+      },
+      "module": "radio"
+    },
+    "pilot_mission_fail": {
+      "type": "v_matrix_suffix",
+      "names": [
+        "pilot_mission_fail_1_v1",
+        "pilot_mission_fail_1_v2",
+        "pilot_mission_fail_1_v3",
+        "pilot_mission_fail_2_v1",
+        "pilot_mission_fail_2_v2",
+        "pilot_mission_fail_2_v3",
+        "pilot_mission_fail_3_v1",
+        "pilot_mission_fail_3_v2",
+        "pilot_mission_fail_3_v3"
+      ],
+      "sources": {
+        "pilot_mission_fail_1_v1": [
+          "english"
+        ],
+        "pilot_mission_fail_1_v2": [
+          "english"
+        ],
+        "pilot_mission_fail_1_v3": [
+          "english"
+        ],
+        "pilot_mission_fail_2_v1": [
+          "english"
+        ],
+        "pilot_mission_fail_2_v2": [
+          "english"
+        ],
+        "pilot_mission_fail_2_v3": [
+          "english"
+        ],
+        "pilot_mission_fail_3_v1": [
+          "english"
+        ],
+        "pilot_mission_fail_3_v2": [
+          "english"
+        ],
+        "pilot_mission_fail_3_v3": [
+          "english"
+        ]
+      },
+      "module": "radio"
+    },
+    "pilot_mission_start_add": {
+      "type": "v_matrix_suffix",
+      "names": [
+        "pilot_mission_start_add1_v1",
+        "pilot_mission_start_add1_v2",
+        "pilot_mission_start_add1_v3",
+        "pilot_mission_start_add2_v1",
+        "pilot_mission_start_add2_v2",
+        "pilot_mission_start_add2_v3",
+        "pilot_mission_start_add3_v1",
+        "pilot_mission_start_add3_v2",
+        "pilot_mission_start_add3_v3"
+      ],
+      "sources": {
+        "pilot_mission_start_add1_v1": [
+          "english"
+        ],
+        "pilot_mission_start_add1_v2": [
+          "english"
+        ],
+        "pilot_mission_start_add1_v3": [
+          "english"
+        ],
+        "pilot_mission_start_add2_v1": [
+          "english"
+        ],
+        "pilot_mission_start_add2_v2": [
+          "english"
+        ],
+        "pilot_mission_start_add2_v3": [
+          "english"
+        ],
+        "pilot_mission_start_add3_v1": [
+          "english"
+        ],
+        "pilot_mission_start_add3_v2": [
+          "english"
+        ],
+        "pilot_mission_start_add3_v3": [
+          "english"
+        ]
+      },
+      "module": "radio"
+    },
+    "pilot_point_underattack": {
+      "type": "v_matrix_suffix",
+      "names": [
+        "pilot_point_underattack_1_v1",
+        "pilot_point_underattack_1_v2",
+        "pilot_point_underattack_1_v3",
+        "pilot_point_underattack_2_v1",
+        "pilot_point_underattack_2_v2",
+        "pilot_point_underattack_2_v3",
+        "pilot_point_underattack_3_v1",
+        "pilot_point_underattack_3_v2",
+        "pilot_point_underattack_3_v3"
+      ],
+      "sources": {
+        "pilot_point_underattack_1_v1": [
+          "english"
+        ],
+        "pilot_point_underattack_1_v2": [
+          "english"
+        ],
+        "pilot_point_underattack_1_v3": [
+          "english"
+        ],
+        "pilot_point_underattack_2_v1": [
+          "english"
+        ],
+        "pilot_point_underattack_2_v2": [
+          "english"
+        ],
+        "pilot_point_underattack_2_v3": [
+          "english"
+        ],
+        "pilot_point_underattack_3_v1": [
+          "english"
+        ],
+        "pilot_point_underattack_3_v2": [
+          "english"
+        ],
+        "pilot_point_underattack_3_v3": [
+          "english"
+        ]
+      },
+      "module": "radio"
+    },
+    "pilot_reinforcements_air_ally": {
+      "type": "v_suffix",
+      "names": [
+        "pilot_reinforcements_air_ally_v1",
+        "pilot_reinforcements_air_ally_v2",
+        "pilot_reinforcements_air_ally_v3"
+      ],
+      "sources": {
+        "pilot_reinforcements_air_ally_v1": [
+          "english"
+        ],
+        "pilot_reinforcements_air_ally_v2": [
+          "english"
+        ],
+        "pilot_reinforcements_air_ally_v3": [
+          "english"
+        ]
+      },
+      "module": "radio"
+    },
+    "pilot_reinforcements_air_enemy": {
+      "type": "v_suffix",
+      "names": [
+        "pilot_reinforcements_air_enemy_v1",
+        "pilot_reinforcements_air_enemy_v2",
+        "pilot_reinforcements_air_enemy_v3"
+      ],
+      "sources": {
+        "pilot_reinforcements_air_enemy_v1": [
+          "english"
+        ],
+        "pilot_reinforcements_air_enemy_v2": [
+          "english"
+        ],
+        "pilot_reinforcements_air_enemy_v3": [
+          "english"
+        ]
+      },
+      "module": "radio"
+    },
+    "pilot_tickets_lead_continue_ally": {
+      "type": "v_matrix_suffix",
+      "names": [
+        "pilot_tickets_lead_continue_ally_1_v1",
+        "pilot_tickets_lead_continue_ally_1_v2",
+        "pilot_tickets_lead_continue_ally_1_v3",
+        "pilot_tickets_lead_continue_ally_2_v1",
+        "pilot_tickets_lead_continue_ally_2_v2",
+        "pilot_tickets_lead_continue_ally_2_v3",
+        "pilot_tickets_lead_continue_ally_3_v1",
+        "pilot_tickets_lead_continue_ally_3_v2",
+        "pilot_tickets_lead_continue_ally_3_v3"
+      ],
+      "sources": {
+        "pilot_tickets_lead_continue_ally_1_v1": [
+          "english"
+        ],
+        "pilot_tickets_lead_continue_ally_1_v2": [
+          "english"
+        ],
+        "pilot_tickets_lead_continue_ally_1_v3": [
+          "english"
+        ],
+        "pilot_tickets_lead_continue_ally_2_v1": [
+          "english"
+        ],
+        "pilot_tickets_lead_continue_ally_2_v2": [
+          "english"
+        ],
+        "pilot_tickets_lead_continue_ally_2_v3": [
+          "english"
+        ],
+        "pilot_tickets_lead_continue_ally_3_v1": [
+          "english"
+        ],
+        "pilot_tickets_lead_continue_ally_3_v2": [
+          "english"
+        ],
+        "pilot_tickets_lead_continue_ally_3_v3": [
+          "english"
+        ]
+      },
+      "module": "radio",
+      "category": "态势播报"
+    },
+    "pilot_tickets_lead_continue_enemy": {
+      "type": "v_matrix_suffix",
+      "names": [
+        "pilot_tickets_lead_continue_enemy_1_v1",
+        "pilot_tickets_lead_continue_enemy_1_v2",
+        "pilot_tickets_lead_continue_enemy_1_v3",
+        "pilot_tickets_lead_continue_enemy_2_v1",
+        "pilot_tickets_lead_continue_enemy_2_v2",
+        "pilot_tickets_lead_continue_enemy_2_v3",
+        "pilot_tickets_lead_continue_enemy_3_v1",
+        "pilot_tickets_lead_continue_enemy_3_v2",
+        "pilot_tickets_lead_continue_enemy_3_v3"
+      ],
+      "sources": {
+        "pilot_tickets_lead_continue_enemy_1_v1": [
+          "english"
+        ],
+        "pilot_tickets_lead_continue_enemy_1_v2": [
+          "english"
+        ],
+        "pilot_tickets_lead_continue_enemy_1_v3": [
+          "english"
+        ],
+        "pilot_tickets_lead_continue_enemy_2_v1": [
+          "english"
+        ],
+        "pilot_tickets_lead_continue_enemy_2_v2": [
+          "english"
+        ],
+        "pilot_tickets_lead_continue_enemy_2_v3": [
+          "english"
+        ],
+        "pilot_tickets_lead_continue_enemy_3_v1": [
+          "english"
+        ],
+        "pilot_tickets_lead_continue_enemy_3_v2": [
+          "english"
+        ],
+        "pilot_tickets_lead_continue_enemy_3_v3": [
+          "english"
+        ]
+      },
+      "module": "radio",
+      "category": "态势播报"
+    },
+    "pilot_tickets_lead_start_ally": {
+      "type": "v_matrix_suffix",
+      "names": [
+        "pilot_tickets_lead_start_ally_1_v1",
+        "pilot_tickets_lead_start_ally_1_v2",
+        "pilot_tickets_lead_start_ally_1_v3",
+        "pilot_tickets_lead_start_ally_2_v1",
+        "pilot_tickets_lead_start_ally_2_v2",
+        "pilot_tickets_lead_start_ally_2_v3",
+        "pilot_tickets_lead_start_ally_3_v1",
+        "pilot_tickets_lead_start_ally_3_v2",
+        "pilot_tickets_lead_start_ally_3_v3"
+      ],
+      "sources": {
+        "pilot_tickets_lead_start_ally_1_v1": [
+          "english"
+        ],
+        "pilot_tickets_lead_start_ally_1_v2": [
+          "english"
+        ],
+        "pilot_tickets_lead_start_ally_1_v3": [
+          "english"
+        ],
+        "pilot_tickets_lead_start_ally_2_v1": [
+          "english"
+        ],
+        "pilot_tickets_lead_start_ally_2_v2": [
+          "english"
+        ],
+        "pilot_tickets_lead_start_ally_2_v3": [
+          "english"
+        ],
+        "pilot_tickets_lead_start_ally_3_v1": [
+          "english"
+        ],
+        "pilot_tickets_lead_start_ally_3_v2": [
+          "english"
+        ],
+        "pilot_tickets_lead_start_ally_3_v3": [
+          "english"
+        ]
+      },
+      "module": "radio",
+      "category": "态势播报"
+    },
+    "pilot_tickets_lead_start_enemy": {
+      "type": "v_matrix_suffix",
+      "names": [
+        "pilot_tickets_lead_start_enemy_1_v1",
+        "pilot_tickets_lead_start_enemy_1_v2",
+        "pilot_tickets_lead_start_enemy_1_v3",
+        "pilot_tickets_lead_start_enemy_2_v1",
+        "pilot_tickets_lead_start_enemy_2_v2",
+        "pilot_tickets_lead_start_enemy_2_v3",
+        "pilot_tickets_lead_start_enemy_3_v1",
+        "pilot_tickets_lead_start_enemy_3_v2",
+        "pilot_tickets_lead_start_enemy_3_v3"
+      ],
+      "sources": {
+        "pilot_tickets_lead_start_enemy_1_v1": [
+          "english"
+        ],
+        "pilot_tickets_lead_start_enemy_1_v2": [
+          "english"
+        ],
+        "pilot_tickets_lead_start_enemy_1_v3": [
+          "english"
+        ],
+        "pilot_tickets_lead_start_enemy_2_v1": [
+          "english"
+        ],
+        "pilot_tickets_lead_start_enemy_2_v2": [
+          "english"
+        ],
+        "pilot_tickets_lead_start_enemy_2_v3": [
+          "english"
+        ],
+        "pilot_tickets_lead_start_enemy_3_v1": [
+          "english"
+        ],
+        "pilot_tickets_lead_start_enemy_3_v2": [
+          "english"
+        ],
+        "pilot_tickets_lead_start_enemy_3_v3": [
+          "english"
+        ]
+      },
+      "module": "radio",
+      "category": "态势播报"
+    },
+    "pilot_tickets_lead_zone_ally": {
+      "type": "v_matrix_suffix",
+      "names": [
+        "pilot_tickets_lead_zone_ally_1_v1",
+        "pilot_tickets_lead_zone_ally_1_v2",
+        "pilot_tickets_lead_zone_ally_1_v3",
+        "pilot_tickets_lead_zone_ally_2_v1",
+        "pilot_tickets_lead_zone_ally_2_v2",
+        "pilot_tickets_lead_zone_ally_2_v3",
+        "pilot_tickets_lead_zone_ally_3_v1",
+        "pilot_tickets_lead_zone_ally_3_v2",
+        "pilot_tickets_lead_zone_ally_3_v3"
+      ],
+      "sources": {
+        "pilot_tickets_lead_zone_ally_1_v1": [
+          "english"
+        ],
+        "pilot_tickets_lead_zone_ally_1_v2": [
+          "english"
+        ],
+        "pilot_tickets_lead_zone_ally_1_v3": [
+          "english"
+        ],
+        "pilot_tickets_lead_zone_ally_2_v1": [
+          "english"
+        ],
+        "pilot_tickets_lead_zone_ally_2_v2": [
+          "english"
+        ],
+        "pilot_tickets_lead_zone_ally_2_v3": [
+          "english"
+        ],
+        "pilot_tickets_lead_zone_ally_3_v1": [
+          "english"
+        ],
+        "pilot_tickets_lead_zone_ally_3_v2": [
+          "english"
+        ],
+        "pilot_tickets_lead_zone_ally_3_v3": [
+          "english"
+        ]
+      },
+      "module": "radio",
+      "category": "态势播报"
+    },
+    "pilot_tickets_lead_zone_enemy": {
+      "type": "v_matrix_suffix",
+      "names": [
+        "pilot_tickets_lead_zone_enemy_1_v1",
+        "pilot_tickets_lead_zone_enemy_1_v2",
+        "pilot_tickets_lead_zone_enemy_1_v3",
+        "pilot_tickets_lead_zone_enemy_2_v1",
+        "pilot_tickets_lead_zone_enemy_2_v2",
+        "pilot_tickets_lead_zone_enemy_2_v3",
+        "pilot_tickets_lead_zone_enemy_3_v1",
+        "pilot_tickets_lead_zone_enemy_3_v2",
+        "pilot_tickets_lead_zone_enemy_3_v3"
+      ],
+      "sources": {
+        "pilot_tickets_lead_zone_enemy_1_v1": [
+          "english"
+        ],
+        "pilot_tickets_lead_zone_enemy_1_v2": [
+          "english"
+        ],
+        "pilot_tickets_lead_zone_enemy_1_v3": [
+          "english"
+        ],
+        "pilot_tickets_lead_zone_enemy_2_v1": [
+          "english"
+        ],
+        "pilot_tickets_lead_zone_enemy_2_v2": [
+          "english"
+        ],
+        "pilot_tickets_lead_zone_enemy_2_v3": [
+          "english"
+        ],
+        "pilot_tickets_lead_zone_enemy_3_v1": [
+          "english"
+        ],
+        "pilot_tickets_lead_zone_enemy_3_v2": [
+          "english"
+        ],
+        "pilot_tickets_lead_zone_enemy_3_v3": [
+          "english"
+        ]
+      },
+      "module": "radio",
+      "category": "态势播报"
+    },
+    "voice_message_air": {
+      "type": "v_suffix",
+      "names": [
+        "voice_message_air_v1",
+        "voice_message_air_v2",
+        "voice_message_air_v3"
+      ],
+      "sources": {
+        "voice_message_air_v1": [
+          "additional_01"
+        ],
+        "voice_message_air_v2": [
+          "additional_01"
+        ],
+        "voice_message_air_v3": [
+          "additional_01"
+        ]
+      },
+      "module": "radio",
+      "category": "additional_01"
+    },
+    "voice_message_air_recon": {
+      "type": "v_suffix",
+      "names": [
+        "voice_message_air_recon_v1",
+        "voice_message_air_recon_v2",
+        "voice_message_air_recon_v3"
+      ],
+      "sources": {
+        "voice_message_air_recon_v1": [
+          "additional_01"
+        ],
+        "voice_message_air_recon_v2": [
+          "additional_01"
+        ],
+        "voice_message_air_recon_v3": [
+          "additional_01"
+        ]
+      },
+      "module": "radio",
+      "category": "additional_01"
+    },
+    "voice_message_air_support": {
+      "type": "v_suffix",
+      "names": [
+        "voice_message_air_support_v1",
+        "voice_message_air_support_v2",
+        "voice_message_air_support_v3"
+      ],
+      "sources": {
+        "voice_message_air_support_v1": [
+          "additional_01"
+        ],
+        "voice_message_air_support_v2": [
+          "additional_01"
+        ],
+        "voice_message_air_support_v3": [
+          "additional_01"
+        ]
+      },
+      "module": "radio",
+      "category": "additional_01"
+    },
+    "voice_message_attack_A": {
+      "type": "matrix_suffix",
+      "names": [
+        "voice_message_attack_A_0_1",
+        "voice_message_attack_A_0_2",
+        "voice_message_attack_A_0_3",
+        "voice_message_attack_A_1_1",
+        "voice_message_attack_A_1_2",
+        "voice_message_attack_A_1_3",
+        "voice_message_attack_A_2_1",
+        "voice_message_attack_A_2_2",
+        "voice_message_attack_A_2_3",
+        "voice_message_attack_A_3_1",
+        "voice_message_attack_A_3_2",
+        "voice_message_attack_A_3_3"
+      ],
+      "sources": {
+        "voice_message_attack_A_0_1": [
+          "voice1"
+        ],
+        "voice_message_attack_A_0_2": [
+          "voice1"
+        ],
+        "voice_message_attack_A_0_3": [
+          "voice1"
+        ],
+        "voice_message_attack_A_1_1": [
+          "voice1"
+        ],
+        "voice_message_attack_A_1_2": [
+          "voice1"
+        ],
+        "voice_message_attack_A_1_3": [
+          "voice1"
+        ],
+        "voice_message_attack_A_2_1": [
+          "voice1"
+        ],
+        "voice_message_attack_A_2_2": [
+          "voice1"
+        ],
+        "voice_message_attack_A_2_3": [
+          "voice1"
+        ],
+        "voice_message_attack_A_3_1": [
+          "voice1"
+        ],
+        "voice_message_attack_A_3_2": [
+          "voice1"
+        ],
+        "voice_message_attack_A_3_3": [
+          "voice1"
+        ]
+      },
+      "module": "radio",
+      "category": "信息"
+    },
+    "voice_message_attack_B": {
+      "type": "matrix_suffix",
+      "names": [
+        "voice_message_attack_B_0_1",
+        "voice_message_attack_B_0_2",
+        "voice_message_attack_B_0_3",
+        "voice_message_attack_B_1_1",
+        "voice_message_attack_B_1_2",
+        "voice_message_attack_B_1_3",
+        "voice_message_attack_B_2_1",
+        "voice_message_attack_B_2_2",
+        "voice_message_attack_B_2_3",
+        "voice_message_attack_B_3_1",
+        "voice_message_attack_B_3_2",
+        "voice_message_attack_B_3_3"
+      ],
+      "sources": {
+        "voice_message_attack_B_0_1": [
+          "voice1"
+        ],
+        "voice_message_attack_B_0_2": [
+          "voice1"
+        ],
+        "voice_message_attack_B_0_3": [
+          "voice1"
+        ],
+        "voice_message_attack_B_1_1": [
+          "voice1"
+        ],
+        "voice_message_attack_B_1_2": [
+          "voice1"
+        ],
+        "voice_message_attack_B_1_3": [
+          "voice1"
+        ],
+        "voice_message_attack_B_2_1": [
+          "voice1"
+        ],
+        "voice_message_attack_B_2_2": [
+          "voice1"
+        ],
+        "voice_message_attack_B_2_3": [
+          "voice1"
+        ],
+        "voice_message_attack_B_3_1": [
+          "voice1"
+        ],
+        "voice_message_attack_B_3_2": [
+          "voice1"
+        ],
+        "voice_message_attack_B_3_3": [
+          "voice1"
+        ]
+      },
+      "module": "radio",
+      "category": "信息"
+    },
+    "voice_message_attack_C": {
+      "type": "matrix_suffix",
+      "names": [
+        "voice_message_attack_C_0_1",
+        "voice_message_attack_C_0_2",
+        "voice_message_attack_C_0_3",
+        "voice_message_attack_C_1_1",
+        "voice_message_attack_C_1_2",
+        "voice_message_attack_C_1_3",
+        "voice_message_attack_C_2_1",
+        "voice_message_attack_C_2_2",
+        "voice_message_attack_C_2_3",
+        "voice_message_attack_C_3_1",
+        "voice_message_attack_C_3_2",
+        "voice_message_attack_C_3_3"
+      ],
+      "sources": {
+        "voice_message_attack_C_0_1": [
+          "voice1"
+        ],
+        "voice_message_attack_C_0_2": [
+          "voice1"
+        ],
+        "voice_message_attack_C_0_3": [
+          "voice1"
+        ],
+        "voice_message_attack_C_1_1": [
+          "voice1"
+        ],
+        "voice_message_attack_C_1_2": [
+          "voice1"
+        ],
+        "voice_message_attack_C_1_3": [
+          "voice1"
+        ],
+        "voice_message_attack_C_2_1": [
+          "voice1"
+        ],
+        "voice_message_attack_C_2_2": [
+          "voice1"
+        ],
+        "voice_message_attack_C_2_3": [
+          "voice1"
+        ],
+        "voice_message_attack_C_3_1": [
+          "voice1"
+        ],
+        "voice_message_attack_C_3_2": [
+          "voice1"
+        ],
+        "voice_message_attack_C_3_3": [
+          "voice1"
+        ]
+      },
+      "module": "radio",
+      "category": "信息"
+    },
+    "voice_message_attack_D": {
+      "type": "matrix_suffix",
+      "names": [
+        "voice_message_attack_D_0_1",
+        "voice_message_attack_D_0_2",
+        "voice_message_attack_D_0_3",
+        "voice_message_attack_D_1_1",
+        "voice_message_attack_D_1_2",
+        "voice_message_attack_D_1_3",
+        "voice_message_attack_D_2_1",
+        "voice_message_attack_D_2_2",
+        "voice_message_attack_D_2_3",
+        "voice_message_attack_D_3_1",
+        "voice_message_attack_D_3_2",
+        "voice_message_attack_D_3_3"
+      ],
+      "sources": {
+        "voice_message_attack_D_0_1": [
+          "voice1"
+        ],
+        "voice_message_attack_D_0_2": [
+          "voice1"
+        ],
+        "voice_message_attack_D_0_3": [
+          "voice1"
+        ],
+        "voice_message_attack_D_1_1": [
+          "voice1"
+        ],
+        "voice_message_attack_D_1_2": [
+          "voice1"
+        ],
+        "voice_message_attack_D_1_3": [
+          "voice1"
+        ],
+        "voice_message_attack_D_2_1": [
+          "voice1"
+        ],
+        "voice_message_attack_D_2_2": [
+          "voice1"
+        ],
+        "voice_message_attack_D_2_3": [
+          "voice1"
+        ],
+        "voice_message_attack_D_3_1": [
+          "voice1"
+        ],
+        "voice_message_attack_D_3_2": [
+          "voice1"
+        ],
+        "voice_message_attack_D_3_3": [
+          "voice1"
+        ]
+      },
+      "module": "radio",
+      "category": "信息"
+    },
+    "voice_message_attack_enemy_base": {
+      "type": "matrix_suffix",
+      "names": [
+        "voice_message_attack_enemy_base_0_1",
+        "voice_message_attack_enemy_base_0_2",
+        "voice_message_attack_enemy_base_0_3",
+        "voice_message_attack_enemy_base_1_1",
+        "voice_message_attack_enemy_base_1_2",
+        "voice_message_attack_enemy_base_1_3",
+        "voice_message_attack_enemy_base_2_1",
+        "voice_message_attack_enemy_base_2_2",
+        "voice_message_attack_enemy_base_2_3",
+        "voice_message_attack_enemy_base_3_1",
+        "voice_message_attack_enemy_base_3_2",
+        "voice_message_attack_enemy_base_3_3"
+      ],
+      "sources": {
+        "voice_message_attack_enemy_base_0_1": [
+          "voice1"
+        ],
+        "voice_message_attack_enemy_base_0_2": [
+          "voice1"
+        ],
+        "voice_message_attack_enemy_base_0_3": [
+          "voice1"
+        ],
+        "voice_message_attack_enemy_base_1_1": [
+          "voice1"
+        ],
+        "voice_message_attack_enemy_base_1_2": [
+          "voice1"
+        ],
+        "voice_message_attack_enemy_base_1_3": [
+          "voice1"
+        ],
+        "voice_message_attack_enemy_base_2_1": [
+          "voice1"
+        ],
+        "voice_message_attack_enemy_base_2_2": [
+          "voice1"
+        ],
+        "voice_message_attack_enemy_base_2_3": [
+          "voice1"
+        ],
+        "voice_message_attack_enemy_base_3_1": [
+          "voice1"
+        ],
+        "voice_message_attack_enemy_base_3_2": [
+          "voice1"
+        ],
+        "voice_message_attack_enemy_base_3_3": [
+          "voice1"
+        ]
+      },
+      "module": "radio",
+      "category": "信息"
+    },
+    "voice_message_attack_enemy_troops": {
+      "type": "matrix_suffix",
+      "names": [
+        "voice_message_attack_enemy_troops_0_1",
+        "voice_message_attack_enemy_troops_0_2",
+        "voice_message_attack_enemy_troops_0_3",
+        "voice_message_attack_enemy_troops_1_1",
+        "voice_message_attack_enemy_troops_1_2",
+        "voice_message_attack_enemy_troops_1_3",
+        "voice_message_attack_enemy_troops_2_1",
+        "voice_message_attack_enemy_troops_2_2",
+        "voice_message_attack_enemy_troops_2_3",
+        "voice_message_attack_enemy_troops_3_1",
+        "voice_message_attack_enemy_troops_3_2",
+        "voice_message_attack_enemy_troops_3_3"
+      ],
+      "sources": {
+        "voice_message_attack_enemy_troops_0_1": [
+          "voice1"
+        ],
+        "voice_message_attack_enemy_troops_0_2": [
+          "voice1"
+        ],
+        "voice_message_attack_enemy_troops_0_3": [
+          "voice1"
+        ],
+        "voice_message_attack_enemy_troops_1_1": [
+          "voice1"
+        ],
+        "voice_message_attack_enemy_troops_1_2": [
+          "voice1"
+        ],
+        "voice_message_attack_enemy_troops_1_3": [
+          "voice1"
+        ],
+        "voice_message_attack_enemy_troops_2_1": [
+          "voice1"
+        ],
+        "voice_message_attack_enemy_troops_2_2": [
+          "voice1"
+        ],
+        "voice_message_attack_enemy_troops_2_3": [
+          "voice1"
+        ],
+        "voice_message_attack_enemy_troops_3_1": [
+          "voice1"
+        ],
+        "voice_message_attack_enemy_troops_3_2": [
+          "voice1"
+        ],
+        "voice_message_attack_enemy_troops_3_3": [
+          "voice1"
+        ]
+      },
+      "module": "radio",
+      "category": "信息"
+    },
+    "voice_message_attack_target": {
+      "type": "matrix_suffix",
+      "names": [
+        "voice_message_attack_target_0_1",
+        "voice_message_attack_target_0_2",
+        "voice_message_attack_target_0_3",
+        "voice_message_attack_target_1_1",
+        "voice_message_attack_target_1_2",
+        "voice_message_attack_target_1_3",
+        "voice_message_attack_target_2_1",
+        "voice_message_attack_target_2_2",
+        "voice_message_attack_target_2_3",
+        "voice_message_attack_target_3_1",
+        "voice_message_attack_target_3_2",
+        "voice_message_attack_target_3_3"
+      ],
+      "sources": {
+        "voice_message_attack_target_0_1": [
+          "voice1"
+        ],
+        "voice_message_attack_target_0_2": [
+          "voice1"
+        ],
+        "voice_message_attack_target_0_3": [
+          "voice1"
+        ],
+        "voice_message_attack_target_1_1": [
+          "voice1"
+        ],
+        "voice_message_attack_target_1_2": [
+          "voice1"
+        ],
+        "voice_message_attack_target_1_3": [
+          "voice1"
+        ],
+        "voice_message_attack_target_2_1": [
+          "voice1"
+        ],
+        "voice_message_attack_target_2_2": [
+          "voice1"
+        ],
+        "voice_message_attack_target_2_3": [
+          "voice1"
+        ],
+        "voice_message_attack_target_3_1": [
+          "voice1"
+        ],
+        "voice_message_attack_target_3_2": [
+          "voice1"
+        ],
+        "voice_message_attack_target_3_3": [
+          "voice1"
+        ]
+      },
+      "module": "radio",
+      "category": "信息"
+    },
+    "voice_message_attacking_target": {
+      "type": "matrix_suffix",
+      "names": [
+        "voice_message_attacking_target_0_1",
+        "voice_message_attacking_target_0_2",
+        "voice_message_attacking_target_0_3",
+        "voice_message_attacking_target_1_1",
+        "voice_message_attacking_target_1_2",
+        "voice_message_attacking_target_1_3",
+        "voice_message_attacking_target_2_1",
+        "voice_message_attacking_target_2_2",
+        "voice_message_attacking_target_2_3",
+        "voice_message_attacking_target_3_1",
+        "voice_message_attacking_target_3_2",
+        "voice_message_attacking_target_3_3"
+      ],
+      "sources": {
+        "voice_message_attacking_target_0_1": [
+          "voice1"
+        ],
+        "voice_message_attacking_target_0_2": [
+          "voice1"
+        ],
+        "voice_message_attacking_target_0_3": [
+          "voice1"
+        ],
+        "voice_message_attacking_target_1_1": [
+          "voice1"
+        ],
+        "voice_message_attacking_target_1_2": [
+          "voice1"
+        ],
+        "voice_message_attacking_target_1_3": [
+          "voice1"
+        ],
+        "voice_message_attacking_target_2_1": [
+          "voice1"
+        ],
+        "voice_message_attacking_target_2_2": [
+          "voice1"
+        ],
+        "voice_message_attacking_target_2_3": [
+          "voice1"
+        ],
+        "voice_message_attacking_target_3_1": [
+          "voice1"
+        ],
+        "voice_message_attacking_target_3_2": [
+          "voice1"
+        ],
+        "voice_message_attacking_target_3_3": [
+          "voice1"
+        ]
+      },
+      "module": "radio",
+      "category": "信息"
+    },
+    "voice_message_attention_to_point": {
+      "type": "matrix_suffix",
+      "names": [
+        "voice_message_attention_to_point_0_1",
+        "voice_message_attention_to_point_0_2",
+        "voice_message_attention_to_point_0_3",
+        "voice_message_attention_to_point_1_1",
+        "voice_message_attention_to_point_1_2",
+        "voice_message_attention_to_point_1_3",
+        "voice_message_attention_to_point_2_1",
+        "voice_message_attention_to_point_2_2",
+        "voice_message_attention_to_point_2_3",
+        "voice_message_attention_to_point_3_1",
+        "voice_message_attention_to_point_3_2",
+        "voice_message_attention_to_point_3_3"
+      ],
+      "sources": {
+        "voice_message_attention_to_point_0_1": [
+          "voice1"
+        ],
+        "voice_message_attention_to_point_0_2": [
+          "voice1"
+        ],
+        "voice_message_attention_to_point_0_3": [
+          "voice1"
+        ],
+        "voice_message_attention_to_point_1_1": [
+          "voice1"
+        ],
+        "voice_message_attention_to_point_1_2": [
+          "voice1"
+        ],
+        "voice_message_attention_to_point_1_3": [
+          "voice1"
+        ],
+        "voice_message_attention_to_point_2_1": [
+          "voice1"
+        ],
+        "voice_message_attention_to_point_2_2": [
+          "voice1"
+        ],
+        "voice_message_attention_to_point_2_3": [
+          "voice1"
+        ],
+        "voice_message_attention_to_point_3_1": [
+          "voice1"
+        ],
+        "voice_message_attention_to_point_3_2": [
+          "voice1"
+        ],
+        "voice_message_attention_to_point_3_3": [
+          "voice1"
+        ]
+      },
+      "module": "radio",
+      "category": "信息"
+    },
+    "voice_message_bearing": {
+      "type": "v_suffix",
+      "names": [
+        "voice_message_bearing_v1",
+        "voice_message_bearing_v2",
+        "voice_message_bearing_v3"
+      ],
+      "sources": {
+        "voice_message_bearing_v1": [
+          "additional_01"
+        ],
+        "voice_message_bearing_v2": [
+          "additional_01"
+        ],
+        "voice_message_bearing_v3": [
+          "additional_01"
+        ]
+      },
+      "module": "radio",
+      "category": "additional_01"
+    },
+    "voice_message_check_your_six": {
+      "type": "matrix_suffix",
+      "names": [
+        "voice_message_check_your_six_0_1",
+        "voice_message_check_your_six_0_2",
+        "voice_message_check_your_six_0_3",
+        "voice_message_check_your_six_1_1",
+        "voice_message_check_your_six_1_2",
+        "voice_message_check_your_six_1_3",
+        "voice_message_check_your_six_2_1",
+        "voice_message_check_your_six_2_2",
+        "voice_message_check_your_six_2_3",
+        "voice_message_check_your_six_3_1",
+        "voice_message_check_your_six_3_2",
+        "voice_message_check_your_six_3_3"
+      ],
+      "sources": {
+        "voice_message_check_your_six_0_1": [
+          "voice1"
+        ],
+        "voice_message_check_your_six_0_2": [
+          "voice1"
+        ],
+        "voice_message_check_your_six_0_3": [
+          "voice1"
+        ],
+        "voice_message_check_your_six_1_1": [
+          "voice1"
+        ],
+        "voice_message_check_your_six_1_2": [
+          "voice1"
+        ],
+        "voice_message_check_your_six_1_3": [
+          "voice1"
+        ],
+        "voice_message_check_your_six_2_1": [
+          "voice1"
+        ],
+        "voice_message_check_your_six_2_2": [
+          "voice1"
+        ],
+        "voice_message_check_your_six_2_3": [
+          "voice1"
+        ],
+        "voice_message_check_your_six_3_1": [
+          "voice1"
+        ],
+        "voice_message_check_your_six_3_2": [
+          "voice1"
+        ],
+        "voice_message_check_your_six_3_3": [
+          "voice1"
+        ]
+      },
+      "module": "radio",
+      "category": "信息"
+    },
+    "voice_message_cover_base": {
+      "type": "matrix_suffix",
+      "names": [
+        "voice_message_cover_base_0_1",
+        "voice_message_cover_base_0_2",
+        "voice_message_cover_base_0_3",
+        "voice_message_cover_base_1_1",
+        "voice_message_cover_base_1_2",
+        "voice_message_cover_base_1_3",
+        "voice_message_cover_base_2_1",
+        "voice_message_cover_base_2_2",
+        "voice_message_cover_base_2_3",
+        "voice_message_cover_base_3_1",
+        "voice_message_cover_base_3_2",
+        "voice_message_cover_base_3_3"
+      ],
+      "sources": {
+        "voice_message_cover_base_0_1": [
+          "voice1"
+        ],
+        "voice_message_cover_base_0_2": [
+          "voice1"
+        ],
+        "voice_message_cover_base_0_3": [
+          "voice1"
+        ],
+        "voice_message_cover_base_1_1": [
+          "voice1"
+        ],
+        "voice_message_cover_base_1_2": [
+          "voice1"
+        ],
+        "voice_message_cover_base_1_3": [
+          "voice1"
+        ],
+        "voice_message_cover_base_2_1": [
+          "voice1"
+        ],
+        "voice_message_cover_base_2_2": [
+          "voice1"
+        ],
+        "voice_message_cover_base_2_3": [
+          "voice1"
+        ],
+        "voice_message_cover_base_3_1": [
+          "voice1"
+        ],
+        "voice_message_cover_base_3_2": [
+          "voice1"
+        ],
+        "voice_message_cover_base_3_3": [
+          "voice1"
+        ]
+      },
+      "module": "radio",
+      "category": "信息"
+    },
+    "voice_message_cover_me": {
+      "type": "matrix_suffix",
+      "names": [
+        "voice_message_cover_me_0_1",
+        "voice_message_cover_me_0_2",
+        "voice_message_cover_me_0_3",
+        "voice_message_cover_me_1_1",
+        "voice_message_cover_me_1_2",
+        "voice_message_cover_me_1_3",
+        "voice_message_cover_me_2_1",
+        "voice_message_cover_me_2_2",
+        "voice_message_cover_me_2_3",
+        "voice_message_cover_me_3_1",
+        "voice_message_cover_me_3_2",
+        "voice_message_cover_me_3_3"
+      ],
+      "sources": {
+        "voice_message_cover_me_0_1": [
+          "voice1"
+        ],
+        "voice_message_cover_me_0_2": [
+          "voice1"
+        ],
+        "voice_message_cover_me_0_3": [
+          "voice1"
+        ],
+        "voice_message_cover_me_1_1": [
+          "voice1"
+        ],
+        "voice_message_cover_me_1_2": [
+          "voice1"
+        ],
+        "voice_message_cover_me_1_3": [
+          "voice1"
+        ],
+        "voice_message_cover_me_2_1": [
+          "voice1"
+        ],
+        "voice_message_cover_me_2_2": [
+          "voice1"
+        ],
+        "voice_message_cover_me_2_3": [
+          "voice1"
+        ],
+        "voice_message_cover_me_3_1": [
+          "voice1"
+        ],
+        "voice_message_cover_me_3_2": [
+          "voice1"
+        ],
+        "voice_message_cover_me_3_3": [
+          "voice1"
+        ]
+      },
+      "module": "radio",
+      "category": "信息"
+    },
+    "voice_message_defend_A": {
+      "type": "matrix_suffix",
+      "names": [
+        "voice_message_defend_A_0_1",
+        "voice_message_defend_A_0_2",
+        "voice_message_defend_A_0_3",
+        "voice_message_defend_A_1_1",
+        "voice_message_defend_A_1_2",
+        "voice_message_defend_A_1_3",
+        "voice_message_defend_A_2_1",
+        "voice_message_defend_A_2_2",
+        "voice_message_defend_A_2_3",
+        "voice_message_defend_A_3_1",
+        "voice_message_defend_A_3_2",
+        "voice_message_defend_A_3_3"
+      ],
+      "sources": {
+        "voice_message_defend_A_0_1": [
+          "voice1"
+        ],
+        "voice_message_defend_A_0_2": [
+          "voice1"
+        ],
+        "voice_message_defend_A_0_3": [
+          "voice1"
+        ],
+        "voice_message_defend_A_1_1": [
+          "voice1"
+        ],
+        "voice_message_defend_A_1_2": [
+          "voice1"
+        ],
+        "voice_message_defend_A_1_3": [
+          "voice1"
+        ],
+        "voice_message_defend_A_2_1": [
+          "voice1"
+        ],
+        "voice_message_defend_A_2_2": [
+          "voice1"
+        ],
+        "voice_message_defend_A_2_3": [
+          "voice1"
+        ],
+        "voice_message_defend_A_3_1": [
+          "voice1"
+        ],
+        "voice_message_defend_A_3_2": [
+          "voice1"
+        ],
+        "voice_message_defend_A_3_3": [
+          "voice1"
+        ]
+      },
+      "module": "radio",
+      "category": "信息"
+    },
+    "voice_message_defend_B": {
+      "type": "matrix_suffix",
+      "names": [
+        "voice_message_defend_B_0_1",
+        "voice_message_defend_B_0_2",
+        "voice_message_defend_B_0_3",
+        "voice_message_defend_B_1_1",
+        "voice_message_defend_B_1_2",
+        "voice_message_defend_B_1_3",
+        "voice_message_defend_B_2_1",
+        "voice_message_defend_B_2_2",
+        "voice_message_defend_B_2_3",
+        "voice_message_defend_B_3_1",
+        "voice_message_defend_B_3_2",
+        "voice_message_defend_B_3_3"
+      ],
+      "sources": {
+        "voice_message_defend_B_0_1": [
+          "voice1"
+        ],
+        "voice_message_defend_B_0_2": [
+          "voice1"
+        ],
+        "voice_message_defend_B_0_3": [
+          "voice1"
+        ],
+        "voice_message_defend_B_1_1": [
+          "voice1"
+        ],
+        "voice_message_defend_B_1_2": [
+          "voice1"
+        ],
+        "voice_message_defend_B_1_3": [
+          "voice1"
+        ],
+        "voice_message_defend_B_2_1": [
+          "voice1"
+        ],
+        "voice_message_defend_B_2_2": [
+          "voice1"
+        ],
+        "voice_message_defend_B_2_3": [
+          "voice1"
+        ],
+        "voice_message_defend_B_3_1": [
+          "voice1"
+        ],
+        "voice_message_defend_B_3_2": [
+          "voice1"
+        ],
+        "voice_message_defend_B_3_3": [
+          "voice1"
+        ]
+      },
+      "module": "radio",
+      "category": "信息"
+    },
+    "voice_message_defend_C": {
+      "type": "matrix_suffix",
+      "names": [
+        "voice_message_defend_C_0_1",
+        "voice_message_defend_C_0_2",
+        "voice_message_defend_C_0_3",
+        "voice_message_defend_C_1_1",
+        "voice_message_defend_C_1_2",
+        "voice_message_defend_C_1_3",
+        "voice_message_defend_C_2_1",
+        "voice_message_defend_C_2_2",
+        "voice_message_defend_C_2_3",
+        "voice_message_defend_C_3_1",
+        "voice_message_defend_C_3_2",
+        "voice_message_defend_C_3_3"
+      ],
+      "sources": {
+        "voice_message_defend_C_0_1": [
+          "voice1"
+        ],
+        "voice_message_defend_C_0_2": [
+          "voice1"
+        ],
+        "voice_message_defend_C_0_3": [
+          "voice1"
+        ],
+        "voice_message_defend_C_1_1": [
+          "voice1"
+        ],
+        "voice_message_defend_C_1_2": [
+          "voice1"
+        ],
+        "voice_message_defend_C_1_3": [
+          "voice1"
+        ],
+        "voice_message_defend_C_2_1": [
+          "voice1"
+        ],
+        "voice_message_defend_C_2_2": [
+          "voice1"
+        ],
+        "voice_message_defend_C_2_3": [
+          "voice1"
+        ],
+        "voice_message_defend_C_3_1": [
+          "voice1"
+        ],
+        "voice_message_defend_C_3_2": [
+          "voice1"
+        ],
+        "voice_message_defend_C_3_3": [
+          "voice1"
+        ]
+      },
+      "module": "radio",
+      "category": "信息"
+    },
+    "voice_message_defend_D": {
+      "type": "matrix_suffix",
+      "names": [
+        "voice_message_defend_D_0_1",
+        "voice_message_defend_D_0_2",
+        "voice_message_defend_D_0_3",
+        "voice_message_defend_D_1_1",
+        "voice_message_defend_D_1_2",
+        "voice_message_defend_D_1_3",
+        "voice_message_defend_D_2_1",
+        "voice_message_defend_D_2_2",
+        "voice_message_defend_D_2_3",
+        "voice_message_defend_D_3_1",
+        "voice_message_defend_D_3_2",
+        "voice_message_defend_D_3_3"
+      ],
+      "sources": {
+        "voice_message_defend_D_0_1": [
+          "voice1"
+        ],
+        "voice_message_defend_D_0_2": [
+          "voice1"
+        ],
+        "voice_message_defend_D_0_3": [
+          "voice1"
+        ],
+        "voice_message_defend_D_1_1": [
+          "voice1"
+        ],
+        "voice_message_defend_D_1_2": [
+          "voice1"
+        ],
+        "voice_message_defend_D_1_3": [
+          "voice1"
+        ],
+        "voice_message_defend_D_2_1": [
+          "voice1"
+        ],
+        "voice_message_defend_D_2_2": [
+          "voice1"
+        ],
+        "voice_message_defend_D_2_3": [
+          "voice1"
+        ],
+        "voice_message_defend_D_3_1": [
+          "voice1"
+        ],
+        "voice_message_defend_D_3_2": [
+          "voice1"
+        ],
+        "voice_message_defend_D_3_3": [
+          "voice1"
+        ]
+      },
+      "module": "radio",
+      "category": "信息"
+    },
+    "voice_message_degrees": {
+      "type": "v_suffix",
+      "names": [
+        "voice_message_degrees_v1",
+        "voice_message_degrees_v2",
+        "voice_message_degrees_v3"
+      ],
+      "sources": {
+        "voice_message_degrees_v1": [
+          "additional_01"
+        ],
+        "voice_message_degrees_v2": [
+          "additional_01"
+        ],
+        "voice_message_degrees_v3": [
+          "additional_01"
+        ]
+      },
+      "module": "radio",
+      "category": "additional_01"
+    },
+    "voice_message_follow_me": {
+      "type": "matrix_suffix",
+      "names": [
+        "voice_message_follow_me_0_1",
+        "voice_message_follow_me_0_2",
+        "voice_message_follow_me_0_3",
+        "voice_message_follow_me_1_1",
+        "voice_message_follow_me_1_2",
+        "voice_message_follow_me_1_3",
+        "voice_message_follow_me_2_1",
+        "voice_message_follow_me_2_2",
+        "voice_message_follow_me_2_3",
+        "voice_message_follow_me_3_1",
+        "voice_message_follow_me_3_2",
+        "voice_message_follow_me_3_3"
+      ],
+      "sources": {
+        "voice_message_follow_me_0_1": [
+          "voice1"
+        ],
+        "voice_message_follow_me_0_2": [
+          "voice1"
+        ],
+        "voice_message_follow_me_0_3": [
+          "voice1"
+        ],
+        "voice_message_follow_me_1_1": [
+          "voice1"
+        ],
+        "voice_message_follow_me_1_2": [
+          "voice1"
+        ],
+        "voice_message_follow_me_1_3": [
+          "voice1"
+        ],
+        "voice_message_follow_me_2_1": [
+          "voice1"
+        ],
+        "voice_message_follow_me_2_2": [
+          "voice1"
+        ],
+        "voice_message_follow_me_2_3": [
+          "voice1"
+        ],
+        "voice_message_follow_me_3_1": [
+          "voice1"
+        ],
+        "voice_message_follow_me_3_2": [
+          "voice1"
+        ],
+        "voice_message_follow_me_3_3": [
+          "voice1"
+        ]
+      },
+      "module": "radio",
+      "category": "信息"
+    },
+    "voice_message_height": {
+      "type": "v_suffix",
+      "names": [
+        "voice_message_height_v1",
+        "voice_message_height_v2",
+        "voice_message_height_v3"
+      ],
+      "sources": {
+        "voice_message_height_v1": [
+          "additional_01"
+        ],
+        "voice_message_height_v2": [
+          "additional_01"
+        ],
+        "voice_message_height_v3": [
+          "additional_01"
+        ]
+      },
+      "module": "radio",
+      "category": "additional_01"
+    },
+    "voice_message_landing": {
+      "type": "matrix_suffix",
+      "names": [
+        "voice_message_landing_0_1",
+        "voice_message_landing_0_2",
+        "voice_message_landing_0_3",
+        "voice_message_landing_1_1",
+        "voice_message_landing_1_2",
+        "voice_message_landing_1_3",
+        "voice_message_landing_2_1",
+        "voice_message_landing_2_2",
+        "voice_message_landing_2_3",
+        "voice_message_landing_3_1",
+        "voice_message_landing_3_2",
+        "voice_message_landing_3_3"
+      ],
+      "sources": {
+        "voice_message_landing_0_1": [
+          "voice1"
+        ],
+        "voice_message_landing_0_2": [
+          "voice1"
+        ],
+        "voice_message_landing_0_3": [
+          "voice1"
+        ],
+        "voice_message_landing_1_1": [
+          "voice1"
+        ],
+        "voice_message_landing_1_2": [
+          "voice1"
+        ],
+        "voice_message_landing_1_3": [
+          "voice1"
+        ],
+        "voice_message_landing_2_1": [
+          "voice1"
+        ],
+        "voice_message_landing_2_2": [
+          "voice1"
+        ],
+        "voice_message_landing_2_3": [
+          "voice1"
+        ],
+        "voice_message_landing_3_1": [
+          "voice1"
+        ],
+        "voice_message_landing_3_2": [
+          "voice1"
+        ],
+        "voice_message_landing_3_3": [
+          "voice1"
+        ]
+      },
+      "module": "radio",
+      "category": "信息"
+    },
+    "voice_message_no": {
+      "type": "matrix_suffix",
+      "names": [
+        "voice_message_no_0_1",
+        "voice_message_no_0_2",
+        "voice_message_no_0_3",
+        "voice_message_no_1_1",
+        "voice_message_no_1_2",
+        "voice_message_no_1_3",
+        "voice_message_no_2_1",
+        "voice_message_no_2_2",
+        "voice_message_no_2_3",
+        "voice_message_no_3_1",
+        "voice_message_no_3_2",
+        "voice_message_no_3_3"
+      ],
+      "sources": {
+        "voice_message_no_0_1": [
+          "voice1"
+        ],
+        "voice_message_no_0_2": [
+          "voice1"
+        ],
+        "voice_message_no_0_3": [
+          "voice1"
+        ],
+        "voice_message_no_1_1": [
+          "voice1"
+        ],
+        "voice_message_no_1_2": [
+          "voice1"
+        ],
+        "voice_message_no_1_3": [
+          "voice1"
+        ],
+        "voice_message_no_2_1": [
+          "voice1"
+        ],
+        "voice_message_no_2_2": [
+          "voice1"
+        ],
+        "voice_message_no_2_3": [
+          "voice1"
+        ],
+        "voice_message_no_3_1": [
+          "voice1"
+        ],
+        "voice_message_no_3_2": [
+          "voice1"
+        ],
+        "voice_message_no_3_3": [
+          "voice1"
+        ]
+      },
+      "module": "radio",
+      "category": "信息"
+    },
+    "voice_message_recon_enemy_spotted": {
+      "type": "v_suffix",
+      "names": [
+        "voice_message_recon_enemy_spotted_v1",
+        "voice_message_recon_enemy_spotted_v2",
+        "voice_message_recon_enemy_spotted_v3"
+      ],
+      "sources": {
+        "voice_message_recon_enemy_spotted_v1": [
+          "additional_01"
+        ],
+        "voice_message_recon_enemy_spotted_v2": [
+          "additional_01"
+        ],
+        "voice_message_recon_enemy_spotted_v3": [
+          "additional_01"
+        ]
+      },
+      "module": "radio",
+      "category": "additional_01"
+    },
+    "voice_message_reloading": {
+      "type": "matrix_suffix",
+      "names": [
+        "voice_message_reloading_0_1",
+        "voice_message_reloading_0_2",
+        "voice_message_reloading_0_3",
+        "voice_message_reloading_1_1",
+        "voice_message_reloading_1_2",
+        "voice_message_reloading_1_3",
+        "voice_message_reloading_2_1",
+        "voice_message_reloading_2_2",
+        "voice_message_reloading_2_3",
+        "voice_message_reloading_3_1",
+        "voice_message_reloading_3_2",
+        "voice_message_reloading_3_3"
+      ],
+      "sources": {
+        "voice_message_reloading_0_1": [
+          "voice1"
+        ],
+        "voice_message_reloading_0_2": [
+          "voice1"
+        ],
+        "voice_message_reloading_0_3": [
+          "voice1"
+        ],
+        "voice_message_reloading_1_1": [
+          "voice1"
+        ],
+        "voice_message_reloading_1_2": [
+          "voice1"
+        ],
+        "voice_message_reloading_1_3": [
+          "voice1"
+        ],
+        "voice_message_reloading_2_1": [
+          "voice1"
+        ],
+        "voice_message_reloading_2_2": [
+          "voice1"
+        ],
+        "voice_message_reloading_2_3": [
+          "voice1"
+        ],
+        "voice_message_reloading_3_1": [
+          "voice1"
+        ],
+        "voice_message_reloading_3_2": [
+          "voice1"
+        ],
+        "voice_message_reloading_3_3": [
+          "voice1"
+        ]
+      },
+      "module": "radio",
+      "category": "信息"
+    },
+    "voice_message_repairing": {
+      "type": "matrix_suffix",
+      "names": [
+        "voice_message_repairing_0_1",
+        "voice_message_repairing_0_2",
+        "voice_message_repairing_0_3",
+        "voice_message_repairing_1_1",
+        "voice_message_repairing_1_2",
+        "voice_message_repairing_1_3",
+        "voice_message_repairing_2_1",
+        "voice_message_repairing_2_2",
+        "voice_message_repairing_2_3",
+        "voice_message_repairing_3_1",
+        "voice_message_repairing_3_2",
+        "voice_message_repairing_3_3"
+      ],
+      "sources": {
+        "voice_message_repairing_0_1": [
+          "voice1"
+        ],
+        "voice_message_repairing_0_2": [
+          "voice1"
+        ],
+        "voice_message_repairing_0_3": [
+          "voice1"
+        ],
+        "voice_message_repairing_1_1": [
+          "voice1"
+        ],
+        "voice_message_repairing_1_2": [
+          "voice1"
+        ],
+        "voice_message_repairing_1_3": [
+          "voice1"
+        ],
+        "voice_message_repairing_2_1": [
+          "voice1"
+        ],
+        "voice_message_repairing_2_2": [
+          "voice1"
+        ],
+        "voice_message_repairing_2_3": [
+          "voice1"
+        ],
+        "voice_message_repairing_3_1": [
+          "voice1"
+        ],
+        "voice_message_repairing_3_2": [
+          "voice1"
+        ],
+        "voice_message_repairing_3_3": [
+          "voice1"
+        ]
+      },
+      "module": "radio",
+      "category": "信息"
+    },
+    "voice_message_return_to_base": {
+      "type": "matrix_suffix",
+      "names": [
+        "voice_message_return_to_base_0_1",
+        "voice_message_return_to_base_0_2",
+        "voice_message_return_to_base_0_3",
+        "voice_message_return_to_base_1_1",
+        "voice_message_return_to_base_1_2",
+        "voice_message_return_to_base_1_3",
+        "voice_message_return_to_base_2_1",
+        "voice_message_return_to_base_2_2",
+        "voice_message_return_to_base_2_3",
+        "voice_message_return_to_base_3_1",
+        "voice_message_return_to_base_3_2",
+        "voice_message_return_to_base_3_3"
+      ],
+      "sources": {
+        "voice_message_return_to_base_0_1": [
+          "voice1"
+        ],
+        "voice_message_return_to_base_0_2": [
+          "voice1"
+        ],
+        "voice_message_return_to_base_0_3": [
+          "voice1"
+        ],
+        "voice_message_return_to_base_1_1": [
+          "voice1"
+        ],
+        "voice_message_return_to_base_1_2": [
+          "voice1"
+        ],
+        "voice_message_return_to_base_1_3": [
+          "voice1"
+        ],
+        "voice_message_return_to_base_2_1": [
+          "voice1"
+        ],
+        "voice_message_return_to_base_2_2": [
+          "voice1"
+        ],
+        "voice_message_return_to_base_2_3": [
+          "voice1"
+        ],
+        "voice_message_return_to_base_3_1": [
+          "voice1"
+        ],
+        "voice_message_return_to_base_3_2": [
+          "voice1"
+        ],
+        "voice_message_return_to_base_3_3": [
+          "voice1"
+        ]
+      },
+      "module": "radio",
+      "category": "信息"
+    },
+    "voice_message_sorry": {
+      "type": "matrix_suffix",
+      "names": [
+        "voice_message_sorry_0_1",
+        "voice_message_sorry_0_2",
+        "voice_message_sorry_0_3",
+        "voice_message_sorry_1_1",
+        "voice_message_sorry_1_2",
+        "voice_message_sorry_1_3",
+        "voice_message_sorry_2_1",
+        "voice_message_sorry_2_2",
+        "voice_message_sorry_2_3",
+        "voice_message_sorry_3_1",
+        "voice_message_sorry_3_2",
+        "voice_message_sorry_3_3"
+      ],
+      "sources": {
+        "voice_message_sorry_0_1": [
+          "voice1"
+        ],
+        "voice_message_sorry_0_2": [
+          "voice1"
+        ],
+        "voice_message_sorry_0_3": [
+          "voice1"
+        ],
+        "voice_message_sorry_1_1": [
+          "voice1"
+        ],
+        "voice_message_sorry_1_2": [
+          "voice1"
+        ],
+        "voice_message_sorry_1_3": [
+          "voice1"
+        ],
+        "voice_message_sorry_2_1": [
+          "voice1"
+        ],
+        "voice_message_sorry_2_2": [
+          "voice1"
+        ],
+        "voice_message_sorry_2_3": [
+          "voice1"
+        ],
+        "voice_message_sorry_3_1": [
+          "voice1"
+        ],
+        "voice_message_sorry_3_2": [
+          "voice1"
+        ],
+        "voice_message_sorry_3_3": [
+          "voice1"
+        ]
+      },
+      "module": "radio",
+      "category": "信息"
+    },
+    "voice_message_target_for_airstrike": {
+      "type": "v_suffix",
+      "names": [
+        "voice_message_target_for_airstrike_v1",
+        "voice_message_target_for_airstrike_v2",
+        "voice_message_target_for_airstrike_v3"
+      ],
+      "sources": {
+        "voice_message_target_for_airstrike_v1": [
+          "additional_01"
+        ],
+        "voice_message_target_for_airstrike_v2": [
+          "additional_01"
+        ],
+        "voice_message_target_for_airstrike_v3": [
+          "additional_01"
+        ]
+      },
+      "module": "radio",
+      "category": "additional_01"
+    },
+    "voice_message_tech_assist": {
+      "type": "v_suffix",
+      "names": [
+        "voice_message_tech_assist_v1",
+        "voice_message_tech_assist_v2",
+        "voice_message_tech_assist_v3"
+      ],
+      "sources": {
+        "voice_message_tech_assist_v1": [
+          "additional_01"
+        ],
+        "voice_message_tech_assist_v2": [
+          "additional_01"
+        ],
+        "voice_message_tech_assist_v3": [
+          "additional_01"
+        ]
+      },
+      "module": "radio",
+      "category": "additional_01"
+    },
+    "voice_message_thank_you": {
+      "type": "matrix_suffix",
+      "names": [
+        "voice_message_thank_you_0_1",
+        "voice_message_thank_you_0_2",
+        "voice_message_thank_you_0_3",
+        "voice_message_thank_you_1_1",
+        "voice_message_thank_you_1_2",
+        "voice_message_thank_you_1_3",
+        "voice_message_thank_you_2_1",
+        "voice_message_thank_you_2_2",
+        "voice_message_thank_you_2_3",
+        "voice_message_thank_you_3_1",
+        "voice_message_thank_you_3_2",
+        "voice_message_thank_you_3_3"
+      ],
+      "sources": {
+        "voice_message_thank_you_0_1": [
+          "voice1"
+        ],
+        "voice_message_thank_you_0_2": [
+          "voice1"
+        ],
+        "voice_message_thank_you_0_3": [
+          "voice1"
+        ],
+        "voice_message_thank_you_1_1": [
+          "voice1"
+        ],
+        "voice_message_thank_you_1_2": [
+          "voice1"
+        ],
+        "voice_message_thank_you_1_3": [
+          "voice1"
+        ],
+        "voice_message_thank_you_2_1": [
+          "voice1"
+        ],
+        "voice_message_thank_you_2_2": [
+          "voice1"
+        ],
+        "voice_message_thank_you_2_3": [
+          "voice1"
+        ],
+        "voice_message_thank_you_3_1": [
+          "voice1"
+        ],
+        "voice_message_thank_you_3_2": [
+          "voice1"
+        ],
+        "voice_message_thank_you_3_3": [
+          "voice1"
+        ]
+      },
+      "module": "radio",
+      "category": "信息"
+    },
+    "voice_message_well_done": {
+      "type": "matrix_suffix",
+      "names": [
+        "voice_message_well_done_0_1",
+        "voice_message_well_done_0_2",
+        "voice_message_well_done_0_3",
+        "voice_message_well_done_1_1",
+        "voice_message_well_done_1_2",
+        "voice_message_well_done_1_3",
+        "voice_message_well_done_2_1",
+        "voice_message_well_done_2_2",
+        "voice_message_well_done_2_3",
+        "voice_message_well_done_3_1",
+        "voice_message_well_done_3_2",
+        "voice_message_well_done_3_3"
+      ],
+      "sources": {
+        "voice_message_well_done_0_1": [
+          "voice1"
+        ],
+        "voice_message_well_done_0_2": [
+          "voice1"
+        ],
+        "voice_message_well_done_0_3": [
+          "voice1"
+        ],
+        "voice_message_well_done_1_1": [
+          "voice1"
+        ],
+        "voice_message_well_done_1_2": [
+          "voice1"
+        ],
+        "voice_message_well_done_1_3": [
+          "voice1"
+        ],
+        "voice_message_well_done_2_1": [
+          "voice1"
+        ],
+        "voice_message_well_done_2_2": [
+          "voice1"
+        ],
+        "voice_message_well_done_2_3": [
+          "voice1"
+        ],
+        "voice_message_well_done_3_1": [
+          "voice1"
+        ],
+        "voice_message_well_done_3_2": [
+          "voice1"
+        ],
+        "voice_message_well_done_3_3": [
+          "voice1"
+        ]
+      },
+      "module": "radio",
+      "category": "信息"
+    },
+    "voice_message_yes": {
+      "type": "matrix_suffix",
+      "names": [
+        "voice_message_yes_0_1",
+        "voice_message_yes_0_2",
+        "voice_message_yes_0_3",
+        "voice_message_yes_1_1",
+        "voice_message_yes_1_2",
+        "voice_message_yes_1_3",
+        "voice_message_yes_2_1",
+        "voice_message_yes_2_2",
+        "voice_message_yes_2_3",
+        "voice_message_yes_3_1",
+        "voice_message_yes_3_2",
+        "voice_message_yes_3_3"
+      ],
+      "sources": {
+        "voice_message_yes_0_1": [
+          "voice1"
+        ],
+        "voice_message_yes_0_2": [
+          "voice1"
+        ],
+        "voice_message_yes_0_3": [
+          "voice1"
+        ],
+        "voice_message_yes_1_1": [
+          "voice1"
+        ],
+        "voice_message_yes_1_2": [
+          "voice1"
+        ],
+        "voice_message_yes_1_3": [
+          "voice1"
+        ],
+        "voice_message_yes_2_1": [
+          "voice1"
+        ],
+        "voice_message_yes_2_2": [
+          "voice1"
+        ],
+        "voice_message_yes_2_3": [
+          "voice1"
+        ],
+        "voice_message_yes_3_1": [
+          "voice1"
+        ],
+        "voice_message_yes_3_2": [
+          "voice1"
+        ],
+        "voice_message_yes_3_3": [
+          "voice1"
+        ]
+      },
+      "module": "radio",
+      "category": "信息"
+    }
+  }
+}

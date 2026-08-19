@@ -1,0 +1,31 @@
+{
+  "backend": "PyQtGraph 0.13.7",
+  "numpy": "1.26.4",
+  "maximum_pixels_per_second": 1000,
+  "cases": [
+    {
+      "clip_count": 1,
+      "duration_ms": 4000,
+      "initial_render_ms": 16.01,
+      "zoom_frame_average_ms": 13.69,
+      "zoom_frame_max_ms": 55.775,
+      "tracemalloc_peak_mib": 0.449
+    },
+    {
+      "clip_count": 10,
+      "duration_ms": 40000,
+      "initial_render_ms": 29.93,
+      "zoom_frame_average_ms": 20.299,
+      "zoom_frame_max_ms": 70.182,
+      "tracemalloc_peak_mib": 0.554
+    },
+    {
+      "clip_count": 30,
+      "duration_ms": 120000,
+      "initial_render_ms": 88.306,
+      "zoom_frame_average_ms": 26.245,
+      "zoom_frame_max_ms": 77.986,
+      "tracemalloc_peak_mib": 0.741
+    }
+  ]
+}

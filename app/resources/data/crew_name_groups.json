@@ -1,0 +1,1569 @@
+{
+  "voice_message_artillery_acknowledged": {
+    "type": "single",
+    "names": [
+      "voice_message_artillery_acknowledged_v1",
+      "voice_message_artillery_acknowledged_v2",
+      "voice_message_artillery_acknowledged_v3"
+    ],
+    "module": "crew",
+    "category": "artillery"
+  },
+  "voice_message_artillery_bracketed": {
+    "type": "single",
+    "names": [
+      "voice_message_artillery_bracketed_v1",
+      "voice_message_artillery_bracketed_v2",
+      "voice_message_artillery_bracketed_v3"
+    ],
+    "module": "crew",
+    "category": "artillery"
+  },
+  "voice_message_artillery_open_fire": {
+    "type": "single",
+    "names": [
+      "voice_message_artillery_open_fire_v1",
+      "voice_message_artillery_open_fire_v2",
+      "voice_message_artillery_open_fire_v3"
+    ],
+    "module": "crew",
+    "category": "artillery"
+  },
+  "voice_message_artillery_understood": {
+    "type": "single",
+    "names": [
+      "voice_message_artillery_understood_v1",
+      "voice_message_artillery_understood_v2",
+      "voice_message_artillery_understood_v3"
+    ],
+    "module": "crew",
+    "category": "artillery"
+  },
+  "voice_message_aviation_on_the_way": {
+    "type": "single",
+    "names": [
+      "voice_message_aviation_on_the_way_v1",
+      "voice_message_aviation_on_the_way_v2",
+      "voice_message_aviation_on_the_way_v3"
+    ],
+    "module": "crew",
+    "category": "aviation"
+  },
+  "voice_message_chief_air_danger": {
+    "type": "double",
+    "names": [
+      "voice_message_chief_air_danger_v1_1",
+      "voice_message_chief_air_danger_v1_2",
+      "voice_message_chief_air_danger_v1_3",
+      "voice_message_chief_air_danger_v2_1",
+      "voice_message_chief_air_danger_v2_2",
+      "voice_message_chief_air_danger_v2_3"
+    ],
+    "module": "crew",
+    "category": "chief_m"
+  },
+  "voice_message_chief_artillery_danger": {
+    "type": "double",
+    "names": [
+      "voice_message_chief_artillery_danger_v1_1",
+      "voice_message_chief_artillery_danger_v1_2",
+      "voice_message_chief_artillery_danger_v2_1",
+      "voice_message_chief_artillery_danger_v2_2",
+      "voice_message_chief_artillery_danger_v3_1",
+      "voice_message_chief_artillery_danger_v3_2",
+      "voice_message_chief_artillery_danger_v4_1",
+      "voice_message_chief_artillery_danger_v4_2"
+    ],
+    "module": "crew",
+    "category": "chief_m"
+  },
+  "voice_message_chief_battle_loose": {
+    "type": "single",
+    "names": [
+      "voice_message_chief_battle_loose_v1",
+      "voice_message_chief_battle_loose_v2",
+      "voice_message_chief_battle_loose_v3",
+      "voice_message_chief_battle_loose_v4"
+    ],
+    "module": "crew",
+    "category": "chief_m"
+  },
+  "voice_message_chief_battle_start": {
+    "type": "double",
+    "names": [
+      "voice_message_chief_battle_start_v1_1",
+      "voice_message_chief_battle_start_v1_2",
+      "voice_message_chief_battle_start_v1_3",
+      "voice_message_chief_battle_start_v2_1",
+      "voice_message_chief_battle_start_v2_2",
+      "voice_message_chief_battle_start_v2_3",
+      "voice_message_chief_battle_start_v3_1",
+      "voice_message_chief_battle_start_v3_2",
+      "voice_message_chief_battle_start_v3_3"
+    ],
+    "module": "crew",
+    "category": "chief_m"
+  },
+  "voice_message_chief_battle_win": {
+    "type": "single",
+    "names": [
+      "voice_message_chief_battle_win_v1",
+      "voice_message_chief_battle_win_v2",
+      "voice_message_chief_battle_win_v3",
+      "voice_message_chief_battle_win_v4"
+    ],
+    "module": "crew",
+    "category": "chief_m"
+  },
+  "voice_message_commander_art_barrage": {
+    "type": "double",
+    "names": [
+      "voice_message_commander_art_barrage_v1_1",
+      "voice_message_commander_art_barrage_v1_2",
+      "voice_message_commander_art_barrage_v2_1",
+      "voice_message_commander_art_barrage_v2_2"
+    ],
+    "module": "crew",
+    "category": "commander"
+  },
+  "voice_message_commander_art_coordinates": {
+    "type": "double",
+    "names": [
+      "voice_message_commander_art_coordinates_v1_1",
+      "voice_message_commander_art_coordinates_v1_2",
+      "voice_message_commander_art_coordinates_v2_1",
+      "voice_message_commander_art_coordinates_v2_2"
+    ],
+    "module": "crew",
+    "category": "commander"
+  },
+  "voice_message_commander_art_destroy": {
+    "type": "single",
+    "names": [
+      "voice_message_commander_art_destroy_v1",
+      "voice_message_commander_art_destroy_v2",
+      "voice_message_commander_art_destroy_v3"
+    ],
+    "module": "crew",
+    "category": "commander"
+  },
+  "voice_message_commander_art_on_me": {
+    "type": "double",
+    "names": [
+      "voice_message_commander_art_on_me_v1_1",
+      "voice_message_commander_art_on_me_v1_2",
+      "voice_message_commander_art_on_me_v2_1",
+      "voice_message_commander_art_on_me_v2_2"
+    ],
+    "module": "crew",
+    "category": "commander"
+  },
+  "voice_message_commander_art_request": {
+    "type": "double",
+    "names": [
+      "voice_message_commander_art_request_v1_1",
+      "voice_message_commander_art_request_v1_2",
+      "voice_message_commander_art_request_v1_3",
+      "voice_message_commander_art_request_v2_1",
+      "voice_message_commander_art_request_v2_2",
+      "voice_message_commander_art_request_v2_3"
+    ],
+    "module": "crew",
+    "category": "commander"
+  },
+  "voice_message_commander_bail": {
+    "type": "double",
+    "names": [
+      "voice_message_commander_bail_v1_1",
+      "voice_message_commander_bail_v1_2",
+      "voice_message_commander_bail_v1_3",
+      "voice_message_commander_bail_v2_1",
+      "voice_message_commander_bail_v2_2",
+      "voice_message_commander_bail_v2_3"
+    ],
+    "module": "crew",
+    "category": "commander"
+  },
+  "voice_message_commander_battle_start": {
+    "type": "double",
+    "names": [
+      "voice_message_commander_battle_start_v1_1",
+      "voice_message_commander_battle_start_v1_2",
+      "voice_message_commander_battle_start_v1_3",
+      "voice_message_commander_battle_start_v2_1",
+      "voice_message_commander_battle_start_v2_2",
+      "voice_message_commander_battle_start_v2_3"
+    ],
+    "module": "crew",
+    "category": "commander"
+  },
+  "voice_message_commander_correction_left": {
+    "type": "single",
+    "names": [
+      "voice_message_commander_correction_left_v1",
+      "voice_message_commander_correction_left_v2",
+      "voice_message_commander_correction_left_v3"
+    ],
+    "module": "crew",
+    "category": "commander"
+  },
+  "voice_message_commander_correction_right": {
+    "type": "single",
+    "names": [
+      "voice_message_commander_correction_right_v1",
+      "voice_message_commander_correction_right_v2",
+      "voice_message_commander_correction_right_v3"
+    ],
+    "module": "crew",
+    "category": "commander"
+  },
+  "voice_message_commander_correction_target_destroyed_nice_shot": {
+    "type": "single",
+    "names": [
+      "voice_message_commander_correction_target_destroyed_nice_shot_v1",
+      "voice_message_commander_correction_target_destroyed_nice_shot_v2",
+      "voice_message_commander_correction_target_destroyed_nice_shot_v3"
+    ],
+    "module": "crew",
+    "category": "commander"
+  },
+  "voice_message_commander_crew_lost": {
+    "type": "single",
+    "names": [
+      "voice_message_commander_crew_lost_v1",
+      "voice_message_commander_crew_lost_v2",
+      "voice_message_commander_crew_lost_v3"
+    ],
+    "module": "crew",
+    "category": "commander"
+  },
+  "voice_message_commander_engine_start": {
+    "type": "single",
+    "names": [
+      "voice_message_commander_engine_start_v1",
+      "voice_message_commander_engine_start_v2",
+      "voice_message_commander_engine_start_v3"
+    ],
+    "module": "crew",
+    "category": "commander"
+  },
+  "voice_message_commander_engine_stop": {
+    "type": "single",
+    "names": [
+      "voice_message_commander_engine_stop_v1",
+      "voice_message_commander_engine_stop_v2",
+      "voice_message_commander_engine_stop_v3"
+    ],
+    "module": "crew",
+    "category": "commander"
+  },
+  "voice_message_commander_load_AP": {
+    "type": "single",
+    "names": [
+      "voice_message_commander_load_AP_v1",
+      "voice_message_commander_load_AP_v2",
+      "voice_message_commander_load_AP_v3"
+    ],
+    "module": "crew",
+    "category": "commander"
+  },
+  "voice_message_commander_load_APCR": {
+    "type": "single",
+    "names": [
+      "voice_message_commander_load_APCR_v1",
+      "voice_message_commander_load_APCR_v2",
+      "voice_message_commander_load_APCR_v3"
+    ],
+    "module": "crew",
+    "category": "commander"
+  },
+  "voice_message_commander_load_HE": {
+    "type": "single",
+    "names": [
+      "voice_message_commander_load_HE_v1",
+      "voice_message_commander_load_HE_v2",
+      "voice_message_commander_load_HE_v3"
+    ],
+    "module": "crew",
+    "category": "commander"
+  },
+  "voice_message_commander_load_HEAT": {
+    "type": "single",
+    "names": [
+      "voice_message_commander_load_HEAT_v1",
+      "voice_message_commander_load_HEAT_v2",
+      "voice_message_commander_load_HEAT_v3"
+    ],
+    "module": "crew",
+    "category": "commander"
+  },
+  "voice_message_commander_load_HESH": {
+    "type": "single",
+    "names": [
+      "voice_message_commander_load_HESH_v1",
+      "voice_message_commander_load_HESH_v2",
+      "voice_message_commander_load_HESH_v3"
+    ],
+    "module": "crew",
+    "category": "commander"
+  },
+  "voice_message_commander_load_canister": {
+    "type": "single",
+    "names": [
+      "voice_message_commander_load_canister_v1",
+      "voice_message_commander_load_canister_v2",
+      "voice_message_commander_load_canister_v3"
+    ],
+    "module": "crew",
+    "category": "commander"
+  },
+  "voice_message_commander_load_flares": {
+    "type": "single",
+    "names": [
+      "voice_message_commander_load_flares_v1",
+      "voice_message_commander_load_flares_v2",
+      "voice_message_commander_load_flares_v3"
+    ],
+    "module": "crew",
+    "category": "commander"
+  },
+  "voice_message_commander_load_frag": {
+    "type": "single",
+    "names": [
+      "voice_message_commander_load_frag_v1",
+      "voice_message_commander_load_frag_v2",
+      "voice_message_commander_load_frag_v3"
+    ],
+    "module": "crew",
+    "category": "commander"
+  },
+  "voice_message_commander_load_missile": {
+    "type": "single",
+    "names": [
+      "voice_message_commander_load_missile_v1",
+      "voice_message_commander_load_missile_v2",
+      "voice_message_commander_load_missile_v3"
+    ],
+    "module": "crew",
+    "category": "commander"
+  },
+  "voice_message_commander_load_sabot": {
+    "type": "single",
+    "names": [
+      "voice_message_commander_load_sabot_v1",
+      "voice_message_commander_load_sabot_v2",
+      "voice_message_commander_load_sabot_v3"
+    ],
+    "module": "crew",
+    "category": "commander"
+  },
+  "voice_message_commander_load_shrapnel": {
+    "type": "single",
+    "names": [
+      "voice_message_commander_load_shrapnel_v1",
+      "voice_message_commander_load_shrapnel_v2",
+      "voice_message_commander_load_shrapnel_v3"
+    ],
+    "module": "crew",
+    "category": "commander"
+  },
+  "voice_message_commander_load_smoke": {
+    "type": "single",
+    "names": [
+      "voice_message_commander_load_smoke_v1",
+      "voice_message_commander_load_smoke_v2",
+      "voice_message_commander_load_smoke_v3"
+    ],
+    "module": "crew",
+    "category": "commander"
+  },
+  "voice_message_commander_move_backward": {
+    "type": "single",
+    "names": [
+      "voice_message_commander_move_backward_v1",
+      "voice_message_commander_move_backward_v2",
+      "voice_message_commander_move_backward_v3"
+    ],
+    "module": "crew",
+    "category": "commander"
+  },
+  "voice_message_commander_move_faster": {
+    "type": "single",
+    "names": [
+      "voice_message_commander_move_faster_v1",
+      "voice_message_commander_move_faster_v2",
+      "voice_message_commander_move_faster_v3"
+    ],
+    "module": "crew",
+    "category": "commander"
+  },
+  "voice_message_commander_move_forward": {
+    "type": "single",
+    "names": [
+      "voice_message_commander_move_forward_v1",
+      "voice_message_commander_move_forward_v2",
+      "voice_message_commander_move_forward_v3"
+    ],
+    "module": "crew",
+    "category": "commander"
+  },
+  "voice_message_commander_move_revvs": {
+    "type": "single",
+    "names": [
+      "voice_message_commander_move_revvs_v1",
+      "voice_message_commander_move_revvs_v2",
+      "voice_message_commander_move_revvs_v3"
+    ],
+    "module": "crew",
+    "category": "commander"
+  },
+  "voice_message_commander_move_slower": {
+    "type": "single",
+    "names": [
+      "voice_message_commander_move_slower_v1",
+      "voice_message_commander_move_slower_v2",
+      "voice_message_commander_move_slower_v3"
+    ],
+    "module": "crew",
+    "category": "commander"
+  },
+  "voice_message_commander_move_stop": {
+    "type": "single",
+    "names": [
+      "voice_message_commander_move_stop_v1",
+      "voice_message_commander_move_stop_v2",
+      "voice_message_commander_move_stop_v3"
+    ],
+    "module": "crew",
+    "category": "commander"
+  },
+  "voice_message_commander_night_vision_off": {
+    "type": "single",
+    "names": [
+      "voice_message_commander_night_vision_off_v1",
+      "voice_message_commander_night_vision_off_v2",
+      "voice_message_commander_night_vision_off_v3"
+    ],
+    "module": "crew"
+  },
+  "voice_message_commander_night_vision_on": {
+    "type": "single",
+    "names": [
+      "voice_message_commander_night_vision_on_v1",
+      "voice_message_commander_night_vision_on_v2",
+      "voice_message_commander_night_vision_on_v3"
+    ],
+    "module": "crew"
+  },
+  "voice_message_commander_reload": {
+    "type": "single",
+    "names": [
+      "voice_message_commander_reload_v1",
+      "voice_message_commander_reload_v2",
+      "voice_message_commander_reload_v3"
+    ],
+    "module": "crew",
+    "category": "commander"
+  },
+  "voice_message_commander_repair_needed": {
+    "type": "single",
+    "names": [
+      "voice_message_commander_repair_needed_v1",
+      "voice_message_commander_repair_needed_v2",
+      "voice_message_commander_repair_needed_v3",
+      "voice_message_commander_repair_needed_v4"
+    ],
+    "module": "crew",
+    "category": "commander"
+  },
+  "voice_message_commander_shot": {
+    "type": "single",
+    "names": [
+      "voice_message_commander_shot_v1",
+      "voice_message_commander_shot_v2",
+      "voice_message_commander_shot_v3"
+    ],
+    "module": "crew",
+    "category": "commander"
+  },
+  "voice_message_commander_shovel_off": {
+    "type": "double",
+    "names": [
+      "voice_message_commander_shovel_off_v2_2",
+      "voice_message_commander_shovel_off_v2_3"
+    ],
+    "module": "crew",
+    "category": "commander"
+  },
+  "voice_message_commander_shovel_on": {
+    "type": "double",
+    "names": [
+      "voice_message_commander_shovel_on_v1_1",
+      "voice_message_commander_shovel_on_v1_2",
+      "voice_message_commander_shovel_on_v1_3",
+      "voice_message_commander_shovel_on_v2_1"
+    ],
+    "module": "crew",
+    "category": "commander"
+  },
+  "voice_message_commander_stabilizer_off": {
+    "type": "single",
+    "names": [
+      "voice_message_commander_stabilizer_off_v1",
+      "voice_message_commander_stabilizer_off_v2",
+      "voice_message_commander_stabilizer_off_v3"
+    ],
+    "module": "crew",
+    "category": "commander"
+  },
+  "voice_message_commander_stabilizer_on": {
+    "type": "single",
+    "names": [
+      "voice_message_commander_stabilizer_on_v1",
+      "voice_message_commander_stabilizer_on_v2",
+      "voice_message_commander_stabilizer_on_v3"
+    ],
+    "module": "crew",
+    "category": "commander"
+  },
+  "voice_message_commander_target_distance": {
+    "type": "single",
+    "names": [
+      "voice_message_commander_target_distance_v1",
+      "voice_message_commander_target_distance_v2",
+      "voice_message_commander_target_distance_v3"
+    ],
+    "module": "crew",
+    "category": "commander"
+  },
+  "voice_message_commander_target_near": {
+    "type": "double",
+    "names": [
+      "voice_message_commander_target_near_v1_1",
+      "voice_message_commander_target_near_v1_2",
+      "voice_message_commander_target_near_v1_3",
+      "voice_message_commander_target_near_v2_1",
+      "voice_message_commander_target_near_v2_2",
+      "voice_message_commander_target_near_v2_3"
+    ],
+    "module": "crew",
+    "category": "commander"
+  },
+  "voice_message_commander_target_on_the_move": {
+    "type": "single",
+    "names": [
+      "voice_message_commander_target_on_the_move_v1",
+      "voice_message_commander_target_on_the_move_v2",
+      "voice_message_commander_target_on_the_move_v3"
+    ],
+    "module": "crew",
+    "category": "commander"
+  },
+  "voice_message_commander_target_prem": {
+    "type": "single",
+    "names": [
+      "voice_message_commander_target_prem_v1",
+      "voice_message_commander_target_prem_v2"
+    ],
+    "module": "crew"
+  },
+  "voice_message_commander_ucav_launch": {
+    "type": "mixed",
+    "names": [
+      "voice_message_commander_ucav_launch_v1_1",
+      "voice_message_commander_ucav_launch_v1_2",
+      "voice_message_commander_ucav_launch_v1_3",
+      "voice_message_commander_ucav_launch_v2",
+      "voice_message_commander_ucav_launch_v3",
+      "voice_message_commander_ucav_launch_v4"
+    ],
+    "module": "crew",
+    "category": "commander"
+  },
+  "voice_message_commander_ucav_recover": {
+    "type": "mixed",
+    "names": [
+      "voice_message_commander_ucav_recover_v1_1",
+      "voice_message_commander_ucav_recover_v1_2",
+      "voice_message_commander_ucav_recover_v1_3",
+      "voice_message_commander_ucav_recover_v2"
+    ],
+    "module": "crew",
+    "category": "commander"
+  },
+  "voice_message_driver_armor_breached": {
+    "type": "single",
+    "names": [
+      "voice_message_driver_armor_breached_v1",
+      "voice_message_driver_armor_breached_v2",
+      "voice_message_driver_armor_breached_v3"
+    ],
+    "module": "crew",
+    "category": "driver"
+  },
+  "voice_message_driver_battle_ready": {
+    "type": "single",
+    "names": [
+      "voice_message_driver_battle_ready_v1",
+      "voice_message_driver_battle_ready_v2",
+      "voice_message_driver_battle_ready_v3"
+    ],
+    "module": "crew",
+    "category": "driver"
+  },
+  "voice_message_driver_correction_bracketed": {
+    "type": "single",
+    "names": [
+      "voice_message_driver_correction_bracketed_v1",
+      "voice_message_driver_correction_bracketed_v2",
+      "voice_message_driver_correction_bracketed_v3"
+    ],
+    "module": "crew",
+    "category": "driver"
+  },
+  "voice_message_driver_correction_hit": {
+    "type": "single",
+    "names": [
+      "voice_message_driver_correction_hit_v1",
+      "voice_message_driver_correction_hit_v2",
+      "voice_message_driver_correction_hit_v3",
+      "voice_message_driver_correction_hit_v4",
+      "voice_message_driver_correction_hit_v5",
+      "voice_message_driver_correction_hit_v6"
+    ],
+    "module": "crew",
+    "category": "driver"
+  },
+  "voice_message_driver_correction_left": {
+    "type": "single",
+    "names": [
+      "voice_message_driver_correction_left_v1",
+      "voice_message_driver_correction_left_v2",
+      "voice_message_driver_correction_left_v3"
+    ],
+    "module": "crew",
+    "category": "driver"
+  },
+  "voice_message_driver_correction_retreat": {
+    "type": "single",
+    "names": [
+      "voice_message_driver_correction_retreat_v1",
+      "voice_message_driver_correction_retreat_v2",
+      "voice_message_driver_correction_retreat_v3"
+    ],
+    "module": "crew",
+    "category": "driver"
+  },
+  "voice_message_driver_correction_right": {
+    "type": "single",
+    "names": [
+      "voice_message_driver_correction_right_v1",
+      "voice_message_driver_correction_right_v2",
+      "voice_message_driver_correction_right_v3"
+    ],
+    "module": "crew",
+    "category": "driver"
+  },
+  "voice_message_driver_correction_target_destroyed_revenge": {
+    "type": "single",
+    "names": [
+      "voice_message_driver_correction_target_destroyed_revenge_v1",
+      "voice_message_driver_correction_target_destroyed_revenge_v2",
+      "voice_message_driver_correction_target_destroyed_revenge_v3"
+    ],
+    "module": "crew",
+    "category": "driver"
+  },
+  "voice_message_driver_correction_target_hit": {
+    "type": "single",
+    "names": [
+      "voice_message_driver_correction_target_hit_v1",
+      "voice_message_driver_correction_target_hit_v2",
+      "voice_message_driver_correction_target_hit_v3",
+      "voice_message_driver_correction_target_hit_v4",
+      "voice_message_driver_correction_target_hit_v5",
+      "voice_message_driver_correction_target_hit_v6"
+    ],
+    "module": "crew",
+    "category": "driver"
+  },
+  "voice_message_driver_correction_undershoot": {
+    "type": "single",
+    "names": [
+      "voice_message_driver_correction_undershoot_v1",
+      "voice_message_driver_correction_undershoot_v2",
+      "voice_message_driver_correction_undershoot_v3"
+    ],
+    "module": "crew",
+    "category": "driver"
+  },
+  "voice_message_driver_damaged": {
+    "type": "single",
+    "names": [
+      "voice_message_driver_damaged_v1",
+      "voice_message_driver_damaged_v2",
+      "voice_message_driver_damaged_v3"
+    ],
+    "module": "crew",
+    "category": "driver"
+  },
+  "voice_message_driver_engine_fuel_leak": {
+    "type": "double",
+    "names": [
+      "voice_message_driver_engine_fuel_leak_v1_1",
+      "voice_message_driver_engine_fuel_leak_v1_2",
+      "voice_message_driver_engine_fuel_leak_v1_3",
+      "voice_message_driver_engine_fuel_leak_v2_1",
+      "voice_message_driver_engine_fuel_leak_v2_2",
+      "voice_message_driver_engine_fuel_leak_v2_3"
+    ],
+    "module": "crew",
+    "category": "driver"
+  },
+  "voice_message_driver_engine_ready": {
+    "type": "single",
+    "names": [
+      "voice_message_driver_engine_ready_v1",
+      "voice_message_driver_engine_ready_v2",
+      "voice_message_driver_engine_ready_v3"
+    ],
+    "module": "crew",
+    "category": "driver"
+  },
+  "voice_message_driver_engine_repaired": {
+    "type": "double",
+    "names": [
+      "voice_message_driver_engine_repaired_v1_1",
+      "voice_message_driver_engine_repaired_v1_2",
+      "voice_message_driver_engine_repaired_v1_3",
+      "voice_message_driver_engine_repaired_v2_1",
+      "voice_message_driver_engine_repaired_v2_2",
+      "voice_message_driver_engine_repaired_v2_3"
+    ],
+    "module": "crew",
+    "category": "driver"
+  },
+  "voice_message_driver_fire": {
+    "type": "single",
+    "names": [
+      "voice_message_driver_fire_v1",
+      "voice_message_driver_fire_v2",
+      "voice_message_driver_fire_v3"
+    ],
+    "module": "crew",
+    "category": "driver"
+  },
+  "voice_message_driver_fire_engine": {
+    "type": "single",
+    "names": [
+      "voice_message_driver_fire_engine_v1",
+      "voice_message_driver_fire_engine_v2",
+      "voice_message_driver_fire_engine_v3"
+    ],
+    "module": "crew",
+    "category": "driver"
+  },
+  "voice_message_driver_fire_extinguished": {
+    "type": "single",
+    "names": [
+      "voice_message_driver_fire_extinguished_v1",
+      "voice_message_driver_fire_extinguished_v2",
+      "voice_message_driver_fire_extinguished_v3"
+    ],
+    "module": "crew",
+    "category": "driver"
+  },
+  "voice_message_driver_fire_fighting_compartment": {
+    "type": "single",
+    "names": [
+      "voice_message_driver_fire_fighting_compartment_v1",
+      "voice_message_driver_fire_fighting_compartment_v2",
+      "voice_message_driver_fire_fighting_compartment_v3"
+    ],
+    "module": "crew",
+    "category": "driver"
+  },
+  "voice_message_driver_fire_munition_compartment": {
+    "type": "single",
+    "names": [
+      "voice_message_driver_fire_munition_compartment_v1",
+      "voice_message_driver_fire_munition_compartment_v2",
+      "voice_message_driver_fire_munition_compartment_v3"
+    ],
+    "module": "crew",
+    "category": "driver"
+  },
+  "voice_message_driver_gunner_stunned": {
+    "type": "single",
+    "names": [
+      "voice_message_driver_gunner_stunned_v1",
+      "voice_message_driver_gunner_stunned_v2",
+      "voice_message_driver_gunner_stunned_v3"
+    ],
+    "module": "crew",
+    "category": "driver"
+  },
+  "voice_message_driver_gunner_unconscious": {
+    "type": "single",
+    "names": [
+      "voice_message_driver_gunner_unconscious_v1",
+      "voice_message_driver_gunner_unconscious_v2",
+      "voice_message_driver_gunner_unconscious_v3"
+    ],
+    "module": "crew",
+    "category": "driver"
+  },
+  "voice_message_driver_left_track": {
+    "type": "single",
+    "names": [
+      "voice_message_driver_left_track_v1",
+      "voice_message_driver_left_track_v2",
+      "voice_message_driver_left_track_v3"
+    ],
+    "module": "crew",
+    "category": "driver"
+  },
+  "voice_message_driver_loader_stunned": {
+    "type": "single",
+    "names": [
+      "voice_message_driver_loader_stunned_v1",
+      "voice_message_driver_loader_stunned_v2",
+      "voice_message_driver_loader_stunned_v3"
+    ],
+    "module": "crew",
+    "category": "driver"
+  },
+  "voice_message_driver_loader_unconscious": {
+    "type": "single",
+    "names": [
+      "voice_message_driver_loader_unconscious_v1",
+      "voice_message_driver_loader_unconscious_v2",
+      "voice_message_driver_loader_unconscious_v3"
+    ],
+    "module": "crew",
+    "category": "driver"
+  },
+  "voice_message_driver_move_forward": {
+    "type": "single",
+    "names": [
+      "voice_message_driver_move_forward_v1",
+      "voice_message_driver_move_forward_v2",
+      "voice_message_driver_move_forward_v3"
+    ],
+    "module": "crew",
+    "category": "driver"
+  },
+  "voice_message_driver_obstacle": {
+    "type": "single",
+    "names": [
+      "voice_message_driver_obstacle_v1",
+      "voice_message_driver_obstacle_v2",
+      "voice_message_driver_obstacle_v3"
+    ],
+    "module": "crew",
+    "category": "driver"
+  },
+  "voice_message_driver_on_the_move": {
+    "type": "single",
+    "names": [
+      "voice_message_driver_on_the_move_v1",
+      "voice_message_driver_on_the_move_v2",
+      "voice_message_driver_on_the_move_v3"
+    ],
+    "module": "crew",
+    "category": "driver"
+  },
+  "voice_message_driver_radiator_damaged": {
+    "type": "single",
+    "names": [
+      "voice_message_driver_radiator_damaged_v1",
+      "voice_message_driver_radiator_damaged_v2",
+      "voice_message_driver_radiator_damaged_v3"
+    ],
+    "module": "crew",
+    "category": "driver"
+  },
+  "voice_message_driver_right_track": {
+    "type": "single",
+    "names": [
+      "voice_message_driver_right_track_v1",
+      "voice_message_driver_right_track_v2",
+      "voice_message_driver_right_track_v3"
+    ],
+    "module": "crew",
+    "category": "driver"
+  },
+  "voice_message_driver_running_gear_damaged": {
+    "type": "single",
+    "names": [
+      "voice_message_driver_running_gear_damaged_v1",
+      "voice_message_driver_running_gear_damaged_v2",
+      "voice_message_driver_running_gear_damaged_v3"
+    ],
+    "module": "crew",
+    "category": "driver"
+  },
+  "voice_message_driver_taking_command": {
+    "type": "single",
+    "names": [
+      "voice_message_driver_taking_command_v1",
+      "voice_message_driver_taking_command_v2",
+      "voice_message_driver_taking_command_v3"
+    ],
+    "module": "crew",
+    "category": "driver"
+  },
+  "voice_message_driver_track_lost": {
+    "type": "double",
+    "names": [
+      "voice_message_driver_track_lost_v1_1",
+      "voice_message_driver_track_lost_v1_2",
+      "voice_message_driver_track_lost_v1_3",
+      "voice_message_driver_track_lost_v2_1",
+      "voice_message_driver_track_lost_v2_2",
+      "voice_message_driver_track_lost_v2_3"
+    ],
+    "module": "crew",
+    "category": "driver"
+  },
+  "voice_message_driver_tracks_repaired": {
+    "type": "double",
+    "names": [
+      "voice_message_driver_tracks_repaired_v1_1",
+      "voice_message_driver_tracks_repaired_v1_2",
+      "voice_message_driver_tracks_repaired_v1_3",
+      "voice_message_driver_tracks_repaired_v2_1",
+      "voice_message_driver_tracks_repaired_v2_2",
+      "voice_message_driver_tracks_repaired_v2_3"
+    ],
+    "module": "crew",
+    "category": "driver"
+  },
+  "voice_message_driver_transmission_damaged": {
+    "type": "single",
+    "names": [
+      "voice_message_driver_transmission_damaged_v1",
+      "voice_message_driver_transmission_damaged_v2",
+      "voice_message_driver_transmission_damaged_v3"
+    ],
+    "module": "crew",
+    "category": "driver"
+  },
+  "voice_message_driver_turning_left": {
+    "type": "single",
+    "names": [
+      "voice_message_driver_turning_left_v1",
+      "voice_message_driver_turning_left_v2",
+      "voice_message_driver_turning_left_v3"
+    ],
+    "module": "crew",
+    "category": "driver"
+  },
+  "voice_message_driver_turning_right": {
+    "type": "single",
+    "names": [
+      "voice_message_driver_turning_right_v1",
+      "voice_message_driver_turning_right_v2",
+      "voice_message_driver_turning_right_v3"
+    ],
+    "module": "crew",
+    "category": "driver"
+  },
+  "voice_message_driver_weve_been_hit": {
+    "type": "single",
+    "names": [
+      "voice_message_driver_weve_been_hit_v1",
+      "voice_message_driver_weve_been_hit_v2",
+      "voice_message_driver_weve_been_hit_v3"
+    ],
+    "module": "crew",
+    "category": "driver"
+  },
+  "voice_message_driver_wheel_lost": {
+    "type": "double",
+    "names": [
+      "voice_message_driver_wheel_lost_v1_1",
+      "voice_message_driver_wheel_lost_v1_2",
+      "voice_message_driver_wheel_lost_v1_3",
+      "voice_message_driver_wheel_lost_v2_1",
+      "voice_message_driver_wheel_lost_v2_2",
+      "voice_message_driver_wheel_lost_v2_3"
+    ],
+    "module": "crew",
+    "category": "driver"
+  },
+  "voice_message_driver_wheel_repaired": {
+    "type": "single",
+    "names": [
+      "voice_message_driver_wheel_repaired_v1",
+      "voice_message_driver_wheel_repaired_v2",
+      "voice_message_driver_wheel_repaired_v3"
+    ],
+    "module": "crew",
+    "category": "driver"
+  },
+  "voice_message_gunner_armor_breached": {
+    "type": "single",
+    "names": [
+      "voice_message_gunner_armor_breached_v1",
+      "voice_message_gunner_armor_breached_v2",
+      "voice_message_gunner_armor_breached_v3"
+    ],
+    "module": "crew",
+    "category": "gunner"
+  },
+  "voice_message_gunner_barrel_damaged": {
+    "type": "single",
+    "names": [
+      "voice_message_gunner_barrel_damaged_v1",
+      "voice_message_gunner_barrel_damaged_v2",
+      "voice_message_gunner_barrel_damaged_v3"
+    ],
+    "module": "crew",
+    "category": "gunner"
+  },
+  "voice_message_gunner_battle_ready": {
+    "type": "single",
+    "names": [
+      "voice_message_gunner_battle_ready_v1",
+      "voice_message_gunner_battle_ready_v2",
+      "voice_message_gunner_battle_ready_v3"
+    ],
+    "module": "crew",
+    "category": "gunner"
+  },
+  "voice_message_gunner_breech_damaged": {
+    "type": "single",
+    "names": [
+      "voice_message_gunner_breech_damaged_v1",
+      "voice_message_gunner_breech_damaged_v2",
+      "voice_message_gunner_breech_damaged_v3"
+    ],
+    "module": "crew",
+    "category": "gunner"
+  },
+  "voice_message_gunner_cannon_drives_repaired": {
+    "type": "single",
+    "names": [
+      "voice_message_gunner_cannon_drives_repaired_v1",
+      "voice_message_gunner_cannon_drives_repaired_v2",
+      "voice_message_gunner_cannon_drives_repaired_v3"
+    ],
+    "module": "crew",
+    "category": "gunner"
+  },
+  "voice_message_gunner_cannon_ready": {
+    "type": "double",
+    "names": [
+      "voice_message_gunner_cannon_ready_v1_1",
+      "voice_message_gunner_cannon_ready_v1_2",
+      "voice_message_gunner_cannon_ready_v1_3",
+      "voice_message_gunner_cannon_ready_v2_1",
+      "voice_message_gunner_cannon_ready_v2_2",
+      "voice_message_gunner_cannon_ready_v2_3"
+    ],
+    "module": "crew",
+    "category": "gunner"
+  },
+  "voice_message_gunner_damaged": {
+    "type": "single",
+    "names": [
+      "voice_message_gunner_damaged_v1",
+      "voice_message_gunner_damaged_v2",
+      "voice_message_gunner_damaged_v3"
+    ],
+    "module": "crew",
+    "category": "gunner"
+  },
+  "voice_message_gunner_driver_stunned": {
+    "type": "single",
+    "names": [
+      "voice_message_gunner_driver_stunned_v1",
+      "voice_message_gunner_driver_stunned_v2",
+      "voice_message_gunner_driver_stunned_v3"
+    ],
+    "module": "crew",
+    "category": "gunner"
+  },
+  "voice_message_gunner_driver_unconscious": {
+    "type": "single",
+    "names": [
+      "voice_message_gunner_driver_unconscious_v1",
+      "voice_message_gunner_driver_unconscious_v2",
+      "voice_message_gunner_driver_unconscious_v3"
+    ],
+    "module": "crew",
+    "category": "gunner"
+  },
+  "voice_message_gunner_elevation_drive_damaged": {
+    "type": "single",
+    "names": [
+      "voice_message_gunner_elevation_drive_damaged_v1",
+      "voice_message_gunner_elevation_drive_damaged_v2",
+      "voice_message_gunner_elevation_drive_damaged_v3"
+    ],
+    "module": "crew",
+    "category": "gunner"
+  },
+  "voice_message_gunner_elevation_drive_repaired": {
+    "type": "single",
+    "names": [
+      "voice_message_gunner_elevation_drive_repaired_v1",
+      "voice_message_gunner_elevation_drive_repaired_v2",
+      "voice_message_gunner_elevation_drive_repaired_v3"
+    ],
+    "module": "crew",
+    "category": "gunner"
+  },
+  "voice_message_gunner_fire": {
+    "type": "single",
+    "names": [
+      "voice_message_gunner_fire_v1",
+      "voice_message_gunner_fire_v2",
+      "voice_message_gunner_fire_v3"
+    ],
+    "module": "crew",
+    "category": "gunner"
+  },
+  "voice_message_gunner_fire_engine": {
+    "type": "single",
+    "names": [
+      "voice_message_gunner_fire_engine_v1",
+      "voice_message_gunner_fire_engine_v2",
+      "voice_message_gunner_fire_engine_v3"
+    ],
+    "module": "crew",
+    "category": "gunner"
+  },
+  "voice_message_gunner_fire_extinguished": {
+    "type": "single",
+    "names": [
+      "voice_message_gunner_fire_extinguished_v1",
+      "voice_message_gunner_fire_extinguished_v2",
+      "voice_message_gunner_fire_extinguished_v3"
+    ],
+    "module": "crew",
+    "category": "gunner"
+  },
+  "voice_message_gunner_fire_fighting_compartment": {
+    "type": "single",
+    "names": [
+      "voice_message_gunner_fire_fighting_compartment_v1",
+      "voice_message_gunner_fire_fighting_compartment_v2",
+      "voice_message_gunner_fire_fighting_compartment_v3"
+    ],
+    "module": "crew",
+    "category": "gunner"
+  },
+  "voice_message_gunner_fire_munition_compartment": {
+    "type": "single",
+    "names": [
+      "voice_message_gunner_fire_munition_compartment_v1",
+      "voice_message_gunner_fire_munition_compartment_v2",
+      "voice_message_gunner_fire_munition_compartment_v3"
+    ],
+    "module": "crew",
+    "category": "gunner"
+  },
+  "voice_message_gunner_loader_stunned": {
+    "type": "single",
+    "names": [
+      "voice_message_gunner_loader_stunned_v1",
+      "voice_message_gunner_loader_stunned_v2",
+      "voice_message_gunner_loader_stunned_v3"
+    ],
+    "module": "crew",
+    "category": "gunner"
+  },
+  "voice_message_gunner_loader_unconscious": {
+    "type": "single",
+    "names": [
+      "voice_message_gunner_loader_unconscious_v1",
+      "voice_message_gunner_loader_unconscious_v2",
+      "voice_message_gunner_loader_unconscious_v3"
+    ],
+    "module": "crew",
+    "category": "gunner"
+  },
+  "voice_message_gunner_mg_aa_lost": {
+    "type": "single",
+    "names": [
+      "voice_message_gunner_mg_aa_lost_v1",
+      "voice_message_gunner_mg_aa_lost_v2",
+      "voice_message_gunner_mg_aa_lost_v3"
+    ],
+    "module": "crew",
+    "category": "gunner"
+  },
+  "voice_message_gunner_mg_directional_lost": {
+    "type": "single",
+    "names": [
+      "voice_message_gunner_mg_directional_lost_v1",
+      "voice_message_gunner_mg_directional_lost_v2",
+      "voice_message_gunner_mg_directional_lost_v3"
+    ],
+    "module": "crew",
+    "category": "gunner"
+  },
+  "voice_message_gunner_mg_ready": {
+    "type": "single",
+    "names": [
+      "voice_message_gunner_mg_ready_v1",
+      "voice_message_gunner_mg_ready_v2",
+      "voice_message_gunner_mg_ready_v3"
+    ],
+    "module": "crew",
+    "category": "gunner"
+  },
+  "voice_message_gunner_misfire": {
+    "type": "single",
+    "names": [
+      "voice_message_gunner_misfire_v1",
+      "voice_message_gunner_misfire_v2",
+      "voice_message_gunner_misfire_v3"
+    ],
+    "module": "crew",
+    "category": "gunner"
+  },
+  "voice_message_gunner_rotation_drive_damaged": {
+    "type": "single",
+    "names": [
+      "voice_message_gunner_rotation_drive_damaged_v1",
+      "voice_message_gunner_rotation_drive_damaged_v2",
+      "voice_message_gunner_rotation_drive_damaged_v3"
+    ],
+    "module": "crew",
+    "category": "gunner"
+  },
+  "voice_message_gunner_rotation_drive_repaired": {
+    "type": "single",
+    "names": [
+      "voice_message_gunner_rotation_drive_repaired_v1",
+      "voice_message_gunner_rotation_drive_repaired_v2",
+      "voice_message_gunner_rotation_drive_repaired_v3"
+    ],
+    "module": "crew",
+    "category": "gunner"
+  },
+  "voice_message_gunner_shot": {
+    "type": "single",
+    "names": [
+      "voice_message_gunner_shot_v1",
+      "voice_message_gunner_shot_v2",
+      "voice_message_gunner_shot_v3"
+    ],
+    "module": "crew",
+    "category": "gunner"
+  },
+  "voice_message_gunner_taking_command": {
+    "type": "single",
+    "names": [
+      "voice_message_gunner_taking_command_v1",
+      "voice_message_gunner_taking_command_v2",
+      "voice_message_gunner_taking_command_v3"
+    ],
+    "module": "crew",
+    "category": "gunner"
+  },
+  "voice_message_gunner_turret_left": {
+    "type": "single",
+    "names": [
+      "voice_message_gunner_turret_left_v1",
+      "voice_message_gunner_turret_left_v2",
+      "voice_message_gunner_turret_left_v3"
+    ],
+    "module": "crew",
+    "category": "gunner"
+  },
+  "voice_message_gunner_turret_right": {
+    "type": "single",
+    "names": [
+      "voice_message_gunner_turret_right_v1",
+      "voice_message_gunner_turret_right_v2",
+      "voice_message_gunner_turret_right_v3"
+    ],
+    "module": "crew",
+    "category": "gunner"
+  },
+  "voice_message_gunner_weve_been_hit": {
+    "type": "single",
+    "names": [
+      "voice_message_gunner_weve_been_hit_v1",
+      "voice_message_gunner_weve_been_hit_v2",
+      "voice_message_gunner_weve_been_hit_v3"
+    ],
+    "module": "crew",
+    "category": "gunner"
+  },
+  "voice_message_loader_armor_breached": {
+    "type": "single",
+    "names": [
+      "voice_message_loader_armor_breached_v1",
+      "voice_message_loader_armor_breached_v2",
+      "voice_message_loader_armor_breached_v3"
+    ],
+    "module": "crew",
+    "category": "loader"
+  },
+  "voice_message_loader_battle_ready": {
+    "type": "single",
+    "names": [
+      "voice_message_loader_battle_ready_v1",
+      "voice_message_loader_battle_ready_v2",
+      "voice_message_loader_battle_ready_v3"
+    ],
+    "module": "crew",
+    "category": "loader"
+  },
+  "voice_message_loader_damaged": {
+    "type": "single",
+    "names": [
+      "voice_message_loader_damaged_v1",
+      "voice_message_loader_damaged_v2",
+      "voice_message_loader_damaged_v3"
+    ],
+    "module": "crew",
+    "category": "loader"
+  },
+  "voice_message_loader_driver_stunned": {
+    "type": "single",
+    "names": [
+      "voice_message_loader_driver_stunned_v1",
+      "voice_message_loader_driver_stunned_v2",
+      "voice_message_loader_driver_stunned_v3"
+    ],
+    "module": "crew",
+    "category": "loader"
+  },
+  "voice_message_loader_driver_unconscious": {
+    "type": "single",
+    "names": [
+      "voice_message_loader_driver_unconscious_v1",
+      "voice_message_loader_driver_unconscious_v2",
+      "voice_message_loader_driver_unconscious_v3"
+    ],
+    "module": "crew",
+    "category": "loader"
+  },
+  "voice_message_loader_fire": {
+    "type": "single",
+    "names": [
+      "voice_message_loader_fire_v1",
+      "voice_message_loader_fire_v2",
+      "voice_message_loader_fire_v3"
+    ],
+    "module": "crew",
+    "category": "loader"
+  },
+  "voice_message_loader_fire_engine": {
+    "type": "single",
+    "names": [
+      "voice_message_loader_fire_engine_v1",
+      "voice_message_loader_fire_engine_v2",
+      "voice_message_loader_fire_engine_v3"
+    ],
+    "module": "crew",
+    "category": "loader"
+  },
+  "voice_message_loader_fire_extinguished": {
+    "type": "single",
+    "names": [
+      "voice_message_loader_fire_extinguished_v1",
+      "voice_message_loader_fire_extinguished_v2",
+      "voice_message_loader_fire_extinguished_v3"
+    ],
+    "module": "crew",
+    "category": "loader"
+  },
+  "voice_message_loader_fire_fighting_compartment": {
+    "type": "single",
+    "names": [
+      "voice_message_loader_fire_fighting_compartment_v1",
+      "voice_message_loader_fire_fighting_compartment_v2",
+      "voice_message_loader_fire_fighting_compartment_v3"
+    ],
+    "module": "crew",
+    "category": "loader"
+  },
+  "voice_message_loader_fire_munition_compartment": {
+    "type": "single",
+    "names": [
+      "voice_message_loader_fire_munition_compartment_v1",
+      "voice_message_loader_fire_munition_compartment_v2",
+      "voice_message_loader_fire_munition_compartment_v3"
+    ],
+    "module": "crew",
+    "category": "loader"
+  },
+  "voice_message_loader_gunner_stunned": {
+    "type": "single",
+    "names": [
+      "voice_message_loader_gunner_stunned_v1",
+      "voice_message_loader_gunner_stunned_v2",
+      "voice_message_loader_gunner_stunned_v3"
+    ],
+    "module": "crew",
+    "category": "loader"
+  },
+  "voice_message_loader_gunner_unconscious": {
+    "type": "single",
+    "names": [
+      "voice_message_loader_gunner_unconscious_v1",
+      "voice_message_loader_gunner_unconscious_v2",
+      "voice_message_loader_gunner_unconscious_v3"
+    ],
+    "module": "crew",
+    "category": "loader"
+  },
+  "voice_message_loader_load_AP": {
+    "type": "single",
+    "names": [
+      "voice_message_loader_load_AP_v1",
+      "voice_message_loader_load_AP_v2",
+      "voice_message_loader_load_AP_v3"
+    ],
+    "module": "crew",
+    "category": "loader"
+  },
+  "voice_message_loader_load_HE": {
+    "type": "single",
+    "names": [
+      "voice_message_loader_load_HE_v1",
+      "voice_message_loader_load_HE_v2",
+      "voice_message_loader_load_HE_v3"
+    ],
+    "module": "crew",
+    "category": "loader"
+  },
+  "voice_message_loader_load_HEAT": {
+    "type": "single",
+    "names": [
+      "voice_message_loader_load_HEAT_v1",
+      "voice_message_loader_load_HEAT_v2",
+      "voice_message_loader_load_HEAT_v3"
+    ],
+    "module": "crew",
+    "category": "loader"
+  },
+  "voice_message_loader_load_HESH": {
+    "type": "single",
+    "names": [
+      "voice_message_loader_load_HESH_v1",
+      "voice_message_loader_load_HESH_v2",
+      "voice_message_loader_load_HESH_v3"
+    ],
+    "module": "crew",
+    "category": "loader"
+  },
+  "voice_message_loader_load_canister": {
+    "type": "single",
+    "names": [
+      "voice_message_loader_load_canister_v1",
+      "voice_message_loader_load_canister_v2",
+      "voice_message_loader_load_canister_v3"
+    ],
+    "module": "crew",
+    "category": "loader"
+  },
+  "voice_message_loader_load_flares": {
+    "type": "single",
+    "names": [
+      "voice_message_loader_load_flares_v1",
+      "voice_message_loader_load_flares_v2",
+      "voice_message_loader_load_flares_v3"
+    ],
+    "module": "crew",
+    "category": "loader"
+  },
+  "voice_message_loader_load_frag": {
+    "type": "single",
+    "names": [
+      "voice_message_loader_load_frag_v1",
+      "voice_message_loader_load_frag_v2",
+      "voice_message_loader_load_frag_v3"
+    ],
+    "module": "crew",
+    "category": "loader"
+  },
+  "voice_message_loader_load_missile": {
+    "type": "single",
+    "names": [
+      "voice_message_loader_load_missile_v1",
+      "voice_message_loader_load_missile_v2",
+      "voice_message_loader_load_missile_v3"
+    ],
+    "module": "crew",
+    "category": "loader"
+  },
+  "voice_message_loader_load_sabot": {
+    "type": "single",
+    "names": [
+      "voice_message_loader_load_sabot_v1",
+      "voice_message_loader_load_sabot_v2",
+      "voice_message_loader_load_sabot_v3"
+    ],
+    "module": "crew",
+    "category": "loader"
+  },
+  "voice_message_loader_load_smoke": {
+    "type": "single",
+    "names": [
+      "voice_message_loader_load_smoke_v1",
+      "voice_message_loader_load_smoke_v2",
+      "voice_message_loader_load_smoke_v3"
+    ],
+    "module": "crew",
+    "category": "loader"
+  },
+  "voice_message_loader_mg_ready": {
+    "type": "single",
+    "names": [
+      "voice_message_loader_mg_ready_v1",
+      "voice_message_loader_mg_ready_v2",
+      "voice_message_loader_mg_ready_v3"
+    ],
+    "module": "crew",
+    "category": "loader"
+  },
+  "voice_message_loader_taking_command": {
+    "type": "single",
+    "names": [
+      "voice_message_loader_taking_command_v1",
+      "voice_message_loader_taking_command_v2",
+      "voice_message_loader_taking_command_v3"
+    ],
+    "module": "crew",
+    "category": "loader"
+  },
+  "voice_message_loader_weve_been_hit": {
+    "type": "single",
+    "names": [
+      "voice_message_loader_weve_been_hit_v1",
+      "voice_message_loader_weve_been_hit_v2",
+      "voice_message_loader_weve_been_hit_v3"
+    ],
+    "module": "crew",
+    "category": "loader"
+  },
+  "voice_message_driver_engine_stalled__v1_layers": {
+    "base_name": "voice_message_driver_engine_stalled",
+    "type": "double",
+    "names": [
+      "voice_message_driver_engine_stalled_v1_1",
+      "voice_message_driver_engine_stalled_v1_2",
+      "voice_message_driver_engine_stalled_v1_3"
+    ],
+    "module": "crew",
+    "category": "driver"
+  },
+  "voice_message_driver_engine_stalled__v2_v3": {
+    "base_name": "voice_message_driver_engine_stalled",
+    "type": "single",
+    "names": [
+      "voice_message_driver_engine_stalled_v2",
+      "voice_message_driver_engine_stalled_v3"
+    ],
+    "module": "crew",
+    "category": "driver"
+  }
+}
