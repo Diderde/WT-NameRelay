@@ -8,7 +8,6 @@ from pathlib import Path
 
 from openpyxl import load_workbook
 
-
 NAME_PATTERN = re.compile(
     r"^(?P<base>[A-Za-z0-9]+(?:_[A-Za-z0-9]+)*)_v(?P<major>[1-9]\d*)(?:_(?P<minor>[1-9]\d*))?$"
 )
@@ -75,7 +74,7 @@ def group_type(names: list[tuple[str, re.Match[str]]]) -> str:
 
 
 def parse_arguments() -> argparse.Namespace:
-    parser = argparse.ArgumentParser(description="从 Excel 提取 WT-NameRelay 车组名称组。")
+    parser = argparse.ArgumentParser(description="从 Excel 提取 WT-Tool 车组名称组。")
     parser.add_argument("--input", type=Path, required=True, help="输入 .xlsx 文件")
     parser.add_argument(
         "--output",

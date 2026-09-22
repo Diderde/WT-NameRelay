@@ -4,7 +4,8 @@ import json
 
 from PySide6.QtCore import QFile, QIODevice
 
-from app.resources import resources_rc as _resources_rc
+# 副作用导入：注册内嵌名称库等 Qt 资源（:/data/...），不直接引用其符号。
+from app.resources import resources_rc as _resources_rc  # noqa: F401
 
 
 class BankNameRepository:
@@ -22,7 +23,7 @@ class BankNameRepository:
             resource.close()
         categories = payload.get("categories")
         if not isinstance(categories, dict):
-            raise RuntimeError("内置 Bank 名称库格式无效。")
+            raise RuntimeError("内置 Bank 名称库格式无效。")  # noqa: TRY004  # 资源数据格式无效，非参数类型错误
         self._categories: dict[str, dict[str, dict[str, object]]] = {
             category: entry.get("countries", {}) for category, entry in categories.items()
         }

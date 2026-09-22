@@ -4,7 +4,14 @@ import random
 from collections import defaultdict
 from collections.abc import Iterable, Mapping
 
-from app.models import BankCountryAssignment, BankCountryGroup, BankFileRole, CopyPlan, CopyTask
+from app.contracts import TaskRandomSource
+from app.models import (
+    BankCountryAssignment,
+    BankCountryGroup,
+    BankFileRole,
+    CopyPlan,
+    CopyTask,
+)
 
 from .bank_name_repository import BankNameRepository
 
@@ -12,7 +19,7 @@ from .bank_name_repository import BankNameRepository
 class BankCopyTaskBuilder:
     """Create country-level assignments, then flatten them for the shared worker."""
 
-    def __init__(self, repository: BankNameRepository, rng: random.Random | None = None) -> None:
+    def __init__(self, repository: BankNameRepository, rng: TaskRandomSource | None = None) -> None:
         self._repository = repository
         self._rng = rng or random.SystemRandom()
 

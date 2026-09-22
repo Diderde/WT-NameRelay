@@ -8,7 +8,6 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent
 PYINSTALLER = [sys.executable, "-m", "PyInstaller", "--noconfirm", "--clean"]
-ICON = ROOT / "app" / "resources" / "icons" / "wt_name_relay.ico"
 VERSION = ROOT / "windows_version_info.txt"
 HOOKS = ROOT / "packaging" / "hooks"
 
@@ -59,8 +58,6 @@ def build(
         *PYINSTALLER,
         "--name",
         name,
-        "--icon",
-        str(ICON),
         "--version-file",
         str(VERSION),
         "--distpath",
@@ -91,7 +88,7 @@ def build(
 
 def stage_release() -> Path:
     """Stage the verified onedir build with notices and license texts."""
-    release = ROOT / "release" / "WT-NameRelay-beta-0.2.0"
+    release = ROOT / "release" / "WT-NameRelay-1.0.0"
     if release.exists():
         shutil.rmtree(release)
     shutil.copytree(ROOT / "dist" / "onedir" / "WT-NameRelay", release)
@@ -101,7 +98,7 @@ def stage_release() -> Path:
     shutil.copy2(ROOT / "FFMPEG_BUILD_INFO.md", release / "FFMPEG_BUILD_INFO.md")
     shutil.copy2(ROOT / "release" / "README.txt", release / "README.txt")
     shutil.copytree(ROOT / "licenses", release / "licenses")
-    archive = ROOT / "release" / "WT-NameRelay-beta-0.2.0-windows-x64"
+    archive = ROOT / "release" / "WT-NameRelay-1.0.0-windows-x64"
     shutil.make_archive(str(archive), "zip", release.parent, release.name)
     return release
 

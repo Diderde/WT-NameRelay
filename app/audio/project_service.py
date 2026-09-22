@@ -6,9 +6,8 @@ from pathlib import Path
 
 from PySide6.QtCore import QFile, QIODevice
 
-from app.services.directory_scanner import SUPPORTED_AUDIO_SUFFIXES
 from app.models import CrewGroupType
-
+from app.services.directory_scanner import SUPPORTED_AUDIO_SUFFIXES
 
 CREW_CATEGORIES = ("artillery", "aviation", "chief_m", "commander", "driver", "gunner", "loader")
 RADIO_CATEGORIES = ("additional_01", "\u6001\u52bf\u64ad\u62a5", "\u4fe1\u606f")

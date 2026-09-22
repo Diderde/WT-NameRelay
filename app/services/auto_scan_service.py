@@ -1,12 +1,10 @@
 from __future__ import annotations
 
-import threading
 import logging
+import threading
 from pathlib import Path
 
 from PySide6.QtCore import QObject, QThread, Signal, Slot
-
-from app.models import DirectoryScanResult
 
 from .directory_scanner import DirectoryScanner, ScanCancelled
 

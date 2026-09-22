@@ -6,8 +6,9 @@ from typing import Final
 from PySide6.QtCore import QFile, QIODevice
 
 from app.models import CrewGroupType, CrewNameGroup
-from app.resources import resources_rc as _resources_rc
 
+# 副作用导入：注册内嵌名称库等 Qt 资源（:/data/...），不直接引用其符号。
+from app.resources import resources_rc as _resources_rc  # noqa: F401
 
 RESOURCE_PATH: Final = ":/data/crew_name_groups.json"
 
@@ -41,7 +42,7 @@ class CrewNameRepository:
 
         raw_groups = payload.get("groups") if isinstance(payload, dict) and "groups" in payload else payload
         if not isinstance(raw_groups, dict):
-            raise RuntimeError("内置名称库根对象无效")
+            raise RuntimeError("内置名称库根对象无效")  # noqa: TRY004  # 资源数据格式无效，非参数类型错误
         groups_by_key: dict[str, CrewNameGroup] = {}
         groups_by_name: dict[str, CrewNameGroup] = {}
         for group_key, entry in raw_groups.items():

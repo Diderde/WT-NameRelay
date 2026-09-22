@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import hashlib
 import os
-from collections.abc import Callable, Iterable, Mapping, Sequence
+from collections.abc import Callable, Iterable, Sequence
 from dataclasses import dataclass
 from pathlib import Path
 
@@ -15,7 +15,6 @@ from app.models.average_distribution import (
 )
 
 from .matrix_group_planner import MatrixGroupPlanner
-
 
 AUDIO_SUFFIX_PRIORITY = (".wav", ".flac", ".ogg", ".mp3", ".m4a", ".aac", ".opus")
 _SUFFIX_ORDER = {suffix: index for index, suffix in enumerate(AUDIO_SUFFIX_PRIORITY)}
@@ -240,9 +239,9 @@ class RadioManualSourceAdapter:
         return self._planner.build(
             module="radio",
             category=getattr(group, "category", None),
-            group_id=getattr(group, "group_key"),
-            group_display_name=getattr(group, "base_name"),
-            group_members=getattr(group, "names"),
+            group_id=group.group_key,
+            group_display_name=group.base_name,
+            group_members=group.names,
             source_paths=source_paths,
             target_directory=target_directory,
             owner_key_for_name=owner_lookup,
@@ -255,11 +254,11 @@ class AudioProcessingSourceAdapter:
 
     def build(self, group: object, source_paths: Iterable[Path], target_directory: Path, owner_lookup: Callable[[str], str | None]) -> DistributionPlan:
         return self._planner.build(
-            module=getattr(group, "module"),
+            module=group.module,
             category=getattr(group, "category", None),
-            group_id=getattr(group, "group_key"),
-            group_display_name=getattr(group, "base_name"),
-            group_members=getattr(group, "names"),
+            group_id=group.group_key,
+            group_display_name=group.base_name,
+            group_members=group.names,
             source_paths=source_paths,
             target_directory=target_directory,
             owner_key_for_name=owner_lookup,

@@ -1,3 +1,3 @@
-"""WT-NameRelay application package."""
+"""WT-Tool application package."""
 
 __version__ = "0.1.0"

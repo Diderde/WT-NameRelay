@@ -39,6 +39,10 @@ class FileCopyWorker(QObject):
         self._default_conflict_policy = default_conflict_policy
         self._preexisting_targets: set[Path] = set()
         self._results: list[CopyResult] = list(plan.pre_skipped)
+        # 增量计数：避免每次发快照都对全部结果重新求和（O(n^2) -> O(1)）。
+        self._counters = {"succeeded": 0, "skipped": 0, "failed": 0}
+        for _seed in self._results:
+            self._count(_seed)
         self._waiting_for_policy = False
         self._finished = False
 
@@ -95,7 +99,7 @@ class FileCopyWorker(QObject):
             task = pending.pop(0)
             self._emit_snapshot(TaskState.RUNNING, "正在复制", task.target_path.name)
             result = self._copy_one(task, policy)
-            self._results.append(result)
+            self._append(result)
             self.item_finished.emit(result)
             self._emit_snapshot(TaskState.RUNNING, "正在复制", task.target_path.name)
         self._finish_terminal()
@@ -123,7 +127,7 @@ class FileCopyWorker(QObject):
                 shutil.copyfileobj(source_stream, target_stream, length=1024 * 1024)
 
             if policy is ConflictPolicy.OVERWRITE_EXISTING:
-                os.replace(temporary_path, target_path)
+                temporary_path.replace(target_path)
             else:
                 if target_path.exists():
                     return CopyResult(task, CopyResultStatus.SKIPPED, "目标文件已存在，已跳过。")
@@ -148,7 +152,7 @@ class FileCopyWorker(QObject):
     def _finish_cancelled(self, pending: tuple[CopyTask, ...] | list[CopyTask]) -> None:
         for task in pending:
             result = CopyResult(task, CopyResultStatus.CANCELLED, "任务已取消，未执行。")
-            self._results.append(result)
+            self._append(result)
             self.item_finished.emit(result)
         self._emit_snapshot(TaskState.CANCELLED, "任务已取消", "")
         self._emit_finished(TaskState.CANCELLED)
@@ -170,10 +174,21 @@ class FileCopyWorker(QObject):
         self._emit_snapshot(state, message, "")
         self._emit_finished(state)
 
+    def _count(self, result: CopyResult) -> None:
+        if result.status is CopyResultStatus.SUCCESS:
+            self._counters["succeeded"] += 1
+        elif result.status is CopyResultStatus.SKIPPED:
+            self._counters["skipped"] += 1
+        elif result.status is CopyResultStatus.FAILED:
+            self._counters["failed"] += 1
+
+    def _append(self, result: CopyResult) -> None:
+        self._results.append(result)
+        self._count(result)
+
     def _emit_snapshot(self, state: TaskState, message: str, current_file: str) -> None:
-        succeeded = sum(result.status is CopyResultStatus.SUCCESS for result in self._results)
-        skipped = sum(result.status is CopyResultStatus.SKIPPED for result in self._results)
-        failed = sum(result.status is CopyResultStatus.FAILED for result in self._results)
+        counters = self._counters
+        succeeded, skipped, failed = counters["succeeded"], counters["skipped"], counters["failed"]
         processed = succeeded + skipped + failed
         total = self._plan.total
         progress = round(processed * 100 / total) if total else 0

@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import weakref
 
-from PySide6.QtCore import QEvent, QObject, QPoint, QTimer
+from PySide6.QtCore import QEvent, QObject, QTimer
 from PySide6.QtGui import QWheelEvent
 from PySide6.QtWidgets import (
     QAbstractItemView,
@@ -49,7 +49,7 @@ class AudioPageScrollRouter(QObject):
             current = current.parentWidget()
         return False
 
-    def eventFilter(self, watched: QObject, event: QEvent) -> bool:  # noqa: N802 - Qt API
+    def eventFilter(self, watched: QObject, event: QEvent) -> bool:
         if event.type() is not QEvent.Type.Wheel or not isinstance(event, QWheelEvent):
             return False
         if not isinstance(watched, QWidget):

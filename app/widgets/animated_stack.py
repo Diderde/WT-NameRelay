@@ -2,9 +2,23 @@ from __future__ import annotations
 
 from enum import IntEnum
 
-from PySide6.QtCore import QEasingCurve, QPoint, QParallelAnimationGroup, QPropertyAnimation, QRect, Signal, Qt
+from PySide6.QtCore import (
+    QEasingCurve,
+    QParallelAnimationGroup,
+    QPoint,
+    QPropertyAnimation,
+    QRect,
+    Qt,
+    Signal,
+)
 from PySide6.QtGui import QCloseEvent, QPixmap, QResizeEvent
-from PySide6.QtWidgets import QGraphicsOpacityEffect, QLabel, QStackedLayout, QStackedWidget, QWidget
+from PySide6.QtWidgets import (
+    QGraphicsOpacityEffect,
+    QLabel,
+    QStackedLayout,
+    QStackedWidget,
+    QWidget,
+)
 
 
 class TransitionDirection(IntEnum):

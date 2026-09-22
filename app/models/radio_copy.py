@@ -5,10 +5,10 @@ from dataclasses import dataclass
 from enum import Enum
 from pathlib import Path
 
+from .average_distribution import ConflictKind, DistributionPlan
 from .copy_task import CopyPlan, CopyResult, CopyTask
 from .crew_name_group import CrewNameGroup
 from .source_file import SourceFile
-from .average_distribution import ConflictKind, DistributionPlan
 
 
 class ManualCopyMode(str, Enum):

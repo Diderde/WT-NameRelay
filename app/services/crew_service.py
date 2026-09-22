@@ -1,9 +1,9 @@
 from __future__ import annotations
 
-import threading
 import logging
+import threading
 
-from PySide6.QtCore import QThread, Qt, Signal
+from PySide6.QtCore import Qt, QThread, Signal
 
 from app.models import ConflictPolicy, CopyBatchResult, CopyPlan
 

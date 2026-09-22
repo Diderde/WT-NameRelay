@@ -6,24 +6,33 @@ from dataclasses import dataclass
 
 import pyqtgraph as pg
 from PySide6.QtCore import (
+    QAbstractAnimation,
     QEasingCurve,
     QPointF,
     QRectF,
-    Qt,
-    QAbstractAnimation,
-    QTimer,
-    Signal,
-    QVariantAnimation,
     QSize,
+    Qt,
+    QTimer,
+    QVariantAnimation,
+    Signal,
 )
 from PySide6.QtGui import QColor, QFontMetricsF, QPainter, QPainterPath, QPen
-from PySide6.QtWidgets import QApplication, QGraphicsItem, QSizePolicy, QVBoxLayout, QWidget
+from PySide6.QtWidgets import (
+    QApplication,
+    QGraphicsItem,
+    QSizePolicy,
+    QVBoxLayout,
+    QWidget,
+)
 
 from app.audio.models import AudioClip, TimelineClipKind, TimelineItem, TimelineModel
+from app.styles import theme
 
 # PyQtGraph's global ViewBox cleanup can emit a harmless disconnect warning during
 # PySide6 interpreter shutdown. Qt owns these scene objects, so OS/Qt cleanup is used.
 pg.setConfigOption("exitCleanup", False)
+# 背景透明：跟随页面主题背景，避免浅色主题下时间轴呈 pyqtgraph 默认的
+# 使用 pyqtgraph，全局配置无其他影响面。
 
 
 @dataclass(frozen=True, slots=True)
@@ -45,9 +54,13 @@ class AdaptiveTimeAxisItem(pg.AxisItem):
         self._visible_span = 60.0
         self._major_step = 5.0
         self.setTickFont(QApplication.font())
-        self.setTextPen(pg.mkPen("#9eb3c2"))
-        self.setPen(pg.mkPen("#63798b"))
         self.setHeight(42)
+        self.refresh_theme()
+
+    def refresh_theme(self) -> None:
+        """跟随日/夜主题更新刻度文字与轴线颜色。"""
+        self.setTextPen(pg.mkPen(theme.color("timeline_axis_text")))
+        self.setPen(pg.mkPen(theme.color("timeline_axis_pen")))
         self.setStyle(tickTextOffset=8, autoExpandTextSpace=False, tickTextHeight=20)
 
     @property
@@ -58,7 +71,7 @@ class AdaptiveTimeAxisItem(pg.AxisItem):
     def major_step(self) -> float:
         return self._major_step
 
-    def tickValues(self, minVal: float, maxVal: float, size: float):  # noqa: N802 - Qt API
+    def tickValues(self, minVal: float, maxVal: float, size: float):
         self._visible_span = max(0.001, maxVal - minVal)
         font = getattr(self, "_tickFont", None) or QApplication.font()
         metrics = QFontMetricsF(font)
@@ -78,10 +91,10 @@ class AdaptiveTimeAxisItem(pg.AxisItem):
     @staticmethod
     def _ticks(start: float, end: float, spacing: float) -> list[float]:
         first = math.ceil(start / spacing) * spacing
-        count = max(0, int(math.floor((end - first) / spacing)) + 1)
+        count = max(0, math.floor((end - first) / spacing) + 1)
         return [first + index * spacing for index in range(count)]
 
-    def tickStrings(self, values, scale, spacing):  # noqa: N802 - Qt API
+    def tickStrings(self, values, scale, spacing):
         if not values:
             return []
         # Only the major level receives text. Minor ticks remain short lines.
@@ -100,7 +113,7 @@ class TimelineViewBox(pg.ViewBox):
     zoom_requested = Signal(float)
     horizontal_pan_requested = Signal(float)
 
-    def wheelEvent(self, event, axis=None) -> None:  # noqa: N802 - Qt API
+    def wheelEvent(self, event, axis=None) -> None:
         modifiers = event.modifiers()
         delta = event.delta()
         if modifiers & Qt.KeyboardModifier.ControlModifier:
@@ -147,7 +160,7 @@ class ClipGraphicsItem(pg.GraphicsObject):
         name = self.item.source_path.name if isinstance(self.item, AudioClip) else "空白片段"
         self.label = pg.TextItem(
             f"{name}  {self.item.duration_ms / 1000:.3f} s",
-            color="#dce7ef",
+            color=theme.color("timeline_text"),
             anchor=(0, 0),
         )
         self.label.setParentItem(self)
@@ -177,7 +190,11 @@ class ClipGraphicsItem(pg.GraphicsObject):
         self._selected = selected
         self.update()
 
-    def hoverMoveEvent(self, event) -> None:  # noqa: N802 - Qt API
+    def refresh_theme(self) -> None:
+        self.label.setColor(QColor(theme.color("timeline_text")))
+        self.update()
+
+    def hoverMoveEvent(self, event) -> None:
         mode = self._hit_mode(event.pos().x())
         cursor = Qt.CursorShape.SizeHorCursor if mode.startswith("trim") else Qt.CursorShape.OpenHandCursor
         self.setCursor(cursor)
@@ -185,12 +202,12 @@ class ClipGraphicsItem(pg.GraphicsObject):
         self.hovered.emit((self.item.clip_id, round(self.start_seconds * 1000) + local_ms))
         event.accept()
 
-    def hoverLeaveEvent(self, event) -> None:  # noqa: N802 - Qt API
+    def hoverLeaveEvent(self, event) -> None:
         self.unsetCursor()
         self.hovered.emit(None)
         event.accept()
 
-    def mousePressEvent(self, event) -> None:  # noqa: N802 - Qt API
+    def mousePressEvent(self, event) -> None:
         self._drag_mode = self._hit_mode(event.pos().x())
         self._press_local_x = event.pos().x()
         self._press_scene_x = event.scenePos().x()
@@ -200,7 +217,7 @@ class ClipGraphicsItem(pg.GraphicsObject):
         self.setCursor(cursor)
         event.accept()
 
-    def mouseMoveEvent(self, event) -> None:  # noqa: N802 - Qt API
+    def mouseMoveEvent(self, event) -> None:
         self._last_scene_x = event.scenePos().x()
         # Item-local X is expressed in ViewBox seconds; scene X is pixels.
         delta_ms = round((event.pos().x() - self._press_local_x) * 1000)
@@ -228,7 +245,7 @@ class ClipGraphicsItem(pg.GraphicsObject):
         self.update()
         event.accept()
 
-    def mouseReleaseEvent(self, event) -> None:  # noqa: N802 - Qt API
+    def mouseReleaseEvent(self, event) -> None:
         if self._preview_start_ms is not None and self._preview_end_ms is not None:
             self.trim_committed.emit(self.item.clip_id, self._preview_start_ms, self._preview_end_ms)
         elif self._drag_mode == "move_or_select" and abs(self._last_scene_x - self._press_scene_x) > 4:
@@ -269,15 +286,15 @@ class ClipGraphicsItem(pg.GraphicsObject):
     def paint(self, painter: QPainter, option, widget=None) -> None:
         rect = self.boundingRect()
         selected = self._selected
-        painter.fillRect(rect, QColor("#b97838" if selected else "#334351"))
-        pen = QPen(QColor("#e3a353" if selected else "#63798b"))
+        painter.fillRect(rect, QColor(theme.color("timeline_clip_selected" if selected else "timeline_clip")))
+        pen = QPen(QColor(theme.color("timeline_border_selected" if selected else "timeline_border")))
         pen.setCosmetic(True)
         pen.setWidth(2 if selected else 1)
         painter.setPen(pen)
         painter.drawRect(rect)
 
         mid = rect.center().y()
-        painter.setPen(QPen(QColor("#d7edf6" if selected else "#91b8cc"), 0))
+        painter.setPen(QPen(QColor(theme.color("timeline_waveform_selected" if selected else "timeline_waveform")), 0))
         visible = option.exposedRect.intersected(rect)
         pixel_width = max(1, round(visible.width() / max(self.pixelWidth(), 1e-9)))
         points = self._waveform_slice(visible, pixel_width)
@@ -328,14 +345,14 @@ class PlayheadHandleItem(pg.GraphicsObject):
     def paint(self, painter: QPainter, option, widget=None) -> None:
         del option, widget
         painter.setPen(Qt.PenStyle.NoPen)
-        painter.setBrush(QColor("#e3a353"))
+        painter.setBrush(QColor(theme.color("timeline_handle")))
         painter.drawPath(self.shape())
 
-    def hoverEnterEvent(self, event) -> None:  # noqa: N802 - Qt API
+    def hoverEnterEvent(self, event) -> None:
         self.setCursor(Qt.CursorShape.SizeHorCursor)
         event.accept()
 
-    def mousePressEvent(self, event) -> None:  # noqa: N802 - Qt API
+    def mousePressEvent(self, event) -> None:
         self._dragging = True
         self.drag_started.emit()
         event.accept()
@@ -344,12 +361,12 @@ class PlayheadHandleItem(pg.GraphicsObject):
         seconds = self._view_box.mapSceneToView(event.scenePos()).x()
         return max(0, round(seconds * 1000))
 
-    def mouseMoveEvent(self, event) -> None:  # noqa: N802 - Qt API
+    def mouseMoveEvent(self, event) -> None:
         if self._dragging:
             self.position_preview.emit(self._position_from_event(event))
         event.accept()
 
-    def mouseReleaseEvent(self, event) -> None:  # noqa: N802 - Qt API
+    def mouseReleaseEvent(self, event) -> None:
         if self._dragging:
             self.position_committed.emit(self._position_from_event(event))
         self._dragging = False
@@ -389,6 +406,11 @@ class PyQtGraphTimeline(QWidget):
         self.axis = AdaptiveTimeAxisItem()
         self.view_box = TimelineViewBox(enableMenu=False)
         self.graph = pg.GraphicsLayoutWidget()
+        # 背景透明：跟随页面主题，浅色主题下不再呈 pyqtgraph 默认黑块。
+        self.graph.setBackground(None)
+        # QGraphicsView 的 viewport 默认用调色板 Base 色填充，需关闭才能透出页面背景。
+        self.graph.viewport().setAutoFillBackground(False)
+        self.graph.setStyleSheet("background: transparent; border: none;")
         self.plot = self.graph.addPlot(axisItems={"top": self.axis}, viewBox=self.view_box)
         self.plot.showAxis("top")
         self.plot.hideAxis("bottom")
@@ -401,15 +423,10 @@ class PyQtGraphTimeline(QWidget):
         self.view_box.zoom_requested.connect(self.zoom_requested)
         self.view_box.horizontal_pan_requested.connect(self._pan)
         self.view_box.sigXRangeChanged.connect(self._range_changed)
-        self.playhead = pg.InfiniteLine(
-            pos=0,
-            angle=90,
-            movable=False,
-            pen=pg.mkPen("#e3a353", width=2),
-        )
+        self.playhead = pg.InfiniteLine(pos=0, angle=90, movable=False)
         self.playhead.setZValue(100)
         self.plot.addItem(self.playhead)
-        self.playhead_label = pg.TextItem("00:00.000", color="#f0b66a", anchor=(0.5, 1))
+        self.playhead_label = pg.TextItem("00:00.000", anchor=(0.5, 1))
         self.playhead_label.setZValue(103)
         self.plot.addItem(self.playhead_label)
         self.playhead_handle = PlayheadHandleItem(self.view_box)
@@ -417,25 +434,15 @@ class PyQtGraphTimeline(QWidget):
         self.playhead_handle.position_preview.connect(self._preview_playhead_drag)
         self.playhead_handle.position_committed.connect(self._commit_playhead_drag)
         self.plot.addItem(self.playhead_handle)
-        self.hover_line = pg.InfiniteLine(
-            pos=0,
-            angle=90,
-            movable=False,
-            pen=pg.mkPen(QColor(143, 190, 214, 155), width=1, style=Qt.PenStyle.DashLine),
-        )
+        self.hover_line = pg.InfiniteLine(pos=0, angle=90, movable=False)
         self.hover_line.setZValue(80)
         self.hover_line.hide()
         self.plot.addItem(self.hover_line)
-        self.hover_label = pg.TextItem("", color="#a9cddd", anchor=(0, 1))
+        self.hover_label = pg.TextItem("", anchor=(0, 1))
         self.hover_label.setZValue(81)
         self.hover_label.hide()
         self.plot.addItem(self.hover_label)
-        self.split_flash = pg.InfiniteLine(
-            pos=0,
-            angle=90,
-            movable=False,
-            pen=pg.mkPen(QColor(227, 163, 83, 190), width=4),
-        )
+        self.split_flash = pg.InfiniteLine(pos=0, angle=90, movable=False)
         self.split_flash.setZValue(99)
         self.split_flash.hide()
         self.plot.addItem(self.split_flash)
@@ -448,6 +455,8 @@ class PyQtGraphTimeline(QWidget):
         self._split_flash_timer.setInterval(200)
         self._split_flash_timer.timeout.connect(self.split_flash.hide)
         self.plot.scene().sigMouseClicked.connect(self._scene_clicked)
+        self._apply_theme_colors()
+        theme.on_mode_changed(self._apply_theme_colors)
         layout = QVBoxLayout(self)
         layout.setContentsMargins(0, 0, 0, 0)
         layout.addWidget(self.graph)
@@ -455,7 +464,23 @@ class PyQtGraphTimeline(QWidget):
         self.setMinimumHeight(220)
         self.setMaximumHeight(340)
 
-    def sizeHint(self) -> QSize:  # noqa: N802 - Qt API
+    def _apply_theme_colors(self, _mode: str | None = None) -> None:
+        """QSS 之外的自绘元素统一取调色板；主题切换时由广播触发。"""
+        self.axis.refresh_theme()
+        self.playhead.setPen(pg.mkPen(theme.color("timeline_playhead"), width=2))
+        self.playhead_label.setColor(QColor(theme.color("timeline_playhead_label")))
+        hover_color = QColor(theme.color("timeline_hover_line"))
+        hover_color.setAlpha(155)
+        self.hover_line.setPen(pg.mkPen(hover_color, width=1, style=Qt.PenStyle.DashLine))
+        self.hover_label.setColor(QColor(theme.color("timeline_hover_text")))
+        flash_color = QColor(theme.color("timeline_split_flash"))
+        flash_color.setAlpha(190)
+        self.split_flash.setPen(pg.mkPen(flash_color, width=4))
+        for clip in self._clip_items:
+            clip.refresh_theme()
+        self.plot.update()
+
+    def sizeHint(self) -> QSize:
         return QSize(900, 300)
 
     @property

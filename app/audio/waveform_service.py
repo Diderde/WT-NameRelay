@@ -4,20 +4,21 @@ import array
 import subprocess
 import threading
 from pathlib import Path
+from typing import ClassVar
 
 from PySide6.QtCore import QObject, Signal, Slot
 
-from .ffmpeg_service import FfmpegLocator, _FLAGS
+from .ffmpeg_service import _FLAGS, FfmpegLocator
 from .models import WaveformEnvelope
 
 
 class WaveformCache:
     """Process-local cache keyed by path metadata; zoom never invokes FFmpeg."""
 
-    _lock = threading.Lock()
-    _values: dict[tuple[str, int, int], tuple[int, WaveformEnvelope]] = {}
-    hits = 0
-    misses = 0
+    _lock: ClassVar[threading.Lock] = threading.Lock()
+    _values: ClassVar[dict[tuple[str, int, int], tuple[int, WaveformEnvelope]]] = {}
+    hits: ClassVar[int] = 0
+    misses: ClassVar[int] = 0
 
     @classmethod
     def key(cls, path: Path) -> tuple[str, int, int]:
@@ -40,7 +41,7 @@ class WaveformCache:
         key = cls.key(path)
         with cls._lock:
             # Remove stale metadata variants for the same normalized path.
-            for stale in [candidate for candidate in cls._values if candidate[0] == key[0] and candidate != key]:
+            for stale in (candidate for candidate in cls._values if candidate[0] == key[0] and candidate != key):
                 cls._values.pop(stale, None)
             cls._values[key] = (duration_ms, envelope)
 
@@ -96,6 +97,7 @@ class WaveformWorker(QObject):
                 capture_output=True,
                 creationflags=_FLAGS,
                 check=True,
+                timeout=300,
             )
             values = array.array("h")
             values.frombytes(result.stdout)
@@ -117,5 +119,5 @@ class WaveformWorker(QObject):
             envelope = WaveformEnvelope(tuple(levels), sample_rate, len(values))
             WaveformCache.put(self.path, duration_ms, envelope)
             self.finished.emit(self.clip_id, duration_ms, envelope, "")
-        except Exception as error:
+        except Exception as error:  # noqa: BLE001  # 工作线程边界：统一转为失败信号  # 工作线程边界：统一转为失败信号
             self.finished.emit(self.clip_id, 0, None, str(error))

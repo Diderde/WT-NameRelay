@@ -47,7 +47,7 @@ class CrewNameParser:
             file_name=absolute_path.name,
             stem=stem,
             suffix=suffix,
-                state=RecognitionState.RECOGNIZED,
-                group_base=group.base_name,
-                group_key=group.group_key,
-            )
+            state=RecognitionState.RECOGNIZED,
+            group_base=group.base_name,
+            group_key=group.group_key,
+        )

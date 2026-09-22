@@ -1,0 +1,26 @@
+<!-- UTF-8 数据文件：GPT-SoVITS 预训练权重清单（大小字节|相对路径），供 download_tts_verify.bat 的 for /f 读取 -->
+1449|chinese-hubert-base/config.json
+212|chinese-hubert-base/preprocessor_config.json
+188811417|chinese-hubert-base/pytorch_model.bin
+963|chinese-roberta-wwm-ext-large/config.json
+651225145|chinese-roberta-wwm-ext-large/pytorch_model.bin
+268962|chinese-roberta-wwm-ext-large/tokenizer.json
+155315150|gsv-v2final-pretrained/s1bert25hz-5kh-longer-epoch=12-step=369668.ckpt
+93534164|gsv-v2final-pretrained/s2D2333k.pth
+106035259|gsv-v2final-pretrained/s2G2333k.pth
+769025545|gsv-v4-pretrained/s2Gv4.pth
+57781109|gsv-v4-pretrained/vocoder.pth
+845|hifigan_config.json
+821422096|hifigan_do_03357000
+450088331|models--nvidia--bigvgan_v2_24khz_100band_256x/bigvgan_generator.pt
+1402|models--nvidia--bigvgan_v2_24khz_100band_256x/config.json
+155093966|s1bert25hz-2kh-longer-epoch=68e-step=50232.ckpt
+155284856|s1v3.ckpt
+93533667|s2D488k.pth
+105973721|s2G488k.pth
+769025145|s2Gv3.pth
+107528697|sv/pretrained_eres2netv2w24s4ep4.ckpt
+126431971|v2Pro/s2Dv2Pro.pth
+126432639|v2Pro/s2Dv2ProPlus.pth
+162303657|v2Pro/s2Gv2Pro.pth
+200125741|v2Pro/s2Gv2ProPlus.pth

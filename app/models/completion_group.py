@@ -4,6 +4,7 @@ from dataclasses import dataclass
 from pathlib import Path
 
 from .copy_task import CrewGroupPlan
+from .directory_scan_result import DirectoryScanResult
 from .source_file import SourceFile
 
 
@@ -35,7 +36,7 @@ class CompletionGroup:
 
 @dataclass(frozen=True, slots=True)
 class AutoCompletionAnalysis:
-    scan_result: "DirectoryScanResult"
+    scan_result: DirectoryScanResult
     groups: tuple[CompletionGroup, ...]
     triggered_group_count: int
     complete_group_count: int

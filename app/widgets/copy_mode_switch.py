@@ -1,8 +1,25 @@
 from __future__ import annotations
 
-from PySide6.QtCore import Property, QEasingCurve, QPropertyAnimation, QRectF, QSize, Qt, Signal
-from PySide6.QtGui import QColor, QFontMetrics, QKeyEvent, QMouseEvent, QPainter, QPaintEvent
+from PySide6.QtCore import (
+    Property,
+    QEasingCurve,
+    QPropertyAnimation,
+    QRectF,
+    QSize,
+    Qt,
+    Signal,
+)
+from PySide6.QtGui import (
+    QColor,
+    QFontMetrics,
+    QKeyEvent,
+    QMouseEvent,
+    QPainter,
+    QPaintEvent,
+)
 from PySide6.QtWidgets import QAbstractButton, QWidget
+
+from app.styles import theme
 
 
 class CopyModeSwitch(QAbstractButton):
@@ -77,19 +94,20 @@ class CopyModeSwitch(QAbstractButton):
         painter = QPainter(self)
         painter.setRenderHint(QPainter.RenderHint.Antialiasing)
         outer = QRectF(self.rect()).adjusted(1, 1, -1, -1)
-        painter.setPen(QColor("#314250"))
-        painter.setBrush(QColor("#111a22"))
+        painter.setPen(QColor(theme.color("border")))
+        painter.setBrush(QColor(theme.color("triple_bg")))
         painter.drawRoundedRect(outer, 10, 10)
 
         half = outer.width() / 2
         thumb = QRectF(outer.left() + self._position * half, outer.top(), half, outer.height())
         painter.setPen(Qt.PenStyle.NoPen)
-        painter.setBrush(QColor("#c58a49"))
+        painter.setBrush(QColor(theme.color("accent")))
         painter.drawRoundedRect(thumb.adjusted(2, 2, -2, -2), 8, 8)
 
         metrics = QFontMetrics(self.font())
         labels = (("顺序复制", QRectF(outer.left(), outer.top(), half, outer.height()), self._position < 0.5),
                   ("平均分配", QRectF(outer.left() + half, outer.top(), half, outer.height()), self._position >= 0.5))
         for text, rect, selected in labels:
-            painter.setPen(QColor("#101820") if selected else QColor("#a7b8c8"))
+            # 选中侧文字画在琥珀色 thumb 上用深色，未选中侧用主题次级文字色。
+            painter.setPen(QColor(theme.color("on_accent")) if selected else QColor(theme.color("text_muted")))
             painter.drawText(rect, Qt.AlignmentFlag.AlignCenter, metrics.elidedText(text, Qt.TextElideMode.ElideRight, int(rect.width() - 10)))
