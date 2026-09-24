@@ -1,8 +1,8 @@
 # WT-Tool-Experimental Version
 
-> **本仓库是 fork，不是原项目的官方版本。** 本仓库是 [Beiku（@beikuwawa）](https://github.com/beikuwawa) 的原项目 [WT-NameRelay](https://github.com/beikuwawa/WT-NameRelay)（beta 0.2.0）的实验性 fork，由 Diderde（[@Diderde](https://github.com/Diderde)）制作与维护，仅供个人学习与实验使用，不构成正式发布版本。
+> **本仓库是 fork，仅用作学习交流，不是原项目的官方版本。** 本仓库是 [Beiku（@beikuwawa）](https://github.com/beikuwawa) 的原项目 [WT-NameRelay](https://github.com/beikuwawa/WT-NameRelay)（beta 0.2.0）的实验性 fork，由 Diderde（[@Diderde](https://github.com/Diderde)）制作与维护，仅供个人学习与实验使用。
 
- **本仓库所有内容依然处于不完善的阶段，请勿将其视为最终版本。** 欢迎提交Issue报告你所遇到的问题。
+ **本仓库所有内容依然处于不完善/残缺的阶段，请勿将其视为最终版本。**  欢迎提交Issue报告你所遇到的问题。
 
 - 原始项目：[WT-NameRelay](https://github.com/beikuwawa/WT-NameRelay)（原始作者：Beiku，原始仓库：`beikuwawa/WT-NameRelay`）
 - 基线版本：beta 0.2.0
