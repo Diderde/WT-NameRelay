@@ -21,8 +21,21 @@ import sys
 import zipfile
 from pathlib import Path
 
-# 判定用的"路径形状"字样（本文件因此必然包含这些字面量：公开分支的泄漏扫描已按名单排除本文件）
-NEEDLES = (b"<dev-root>", b"<user>", b"C:\\Users", b"D:\\")
+# 判定用的"路径形状"字样。**本机身份字样（用户名、开发根目录名）不写死在这里** ——
+# 本文件随公开分支分发，写死等于把身份信息当名单一起发布；改为运行时从环境推导
+# （在构建机上检出效果与写死一致）。泛化的路径形状可以保留。
+def _identity_needles() -> tuple[bytes, ...]:
+    items: list[bytes] = []
+    home = Path.home()
+    if home.name:
+        items.append(home.name.encode("utf-8", "replace"))
+    parent = Path(__file__).resolve().parents[1].parent.name
+    if parent:
+        items.append(parent.encode("utf-8", "replace"))
+    return tuple(dict.fromkeys(items))
+
+
+NEEDLES = (*_identity_needles(), b"C:\\Users", b"D:\\")
 
 # SBOM 里的绝对路径引用：`path+file:///<构建机上的任意绝对路径>/<包名>#<版本>`
 # → 归一为 `<包名>#<版本>`（无路径形状，且不同构建机产出完全一致）。

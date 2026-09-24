@@ -18,9 +18,26 @@ from pathlib import Path
 
 REPO = Path(__file__).resolve().parents[1]
 
+
+def _machine_needles() -> tuple[bytes, ...]:
+    """本机身份字样（用户名、开发根目录名）——**运行时推导，不写死在源码里**。
+
+    本文件会随公开分支分发，把真实用户名/开发根名字面量写在 NEEDLES 里，
+    等于把身份信息当成"名单"一起发布。改为运行时从环境推导：
+    在构建机上检出效果与写死完全一致，在别的机器上则自动只查那台机器自己的痕迹。
+    """
+    items: list[bytes] = []
+    home = Path.home()
+    if home.name:
+        items.append(home.name.encode("utf-8", "replace"))
+    parent = REPO.parent.name
+    if parent:
+        items.append(parent.encode("utf-8", "replace"))
+    return tuple(dict.fromkeys(items))
+
+
 NEEDLES = (
-    b"<dev-root>",
-    b"<user>",
+    *_machine_needles(),
     b"C:\\Users",
     b"/Users/",
     b".cargo",

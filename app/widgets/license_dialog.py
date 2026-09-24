@@ -21,11 +21,15 @@ from app.i18n import tr
 _PAGES = (
     ("修改版声明（GPL-3.0）", ":/licenses/ModificationNotice.md", True),
     ("WT-NameRelay Source-Available License 1.0", ":/licenses/WT-NameRelay-Source-Available.txt", False),
-    ("GNU General Public License v2.0", ":/licenses/GPL-2.0.txt", False),
+    # 此处原有一页 "GNU General Public License v2.0"（:/licenses/GPL-2.0.txt），
+    # 但该资源既不在 resources.qrc 里、磁盘上也没有对应的 licenses/GPL-2.0.txt，
+    # 打开只会显示"许可证资源不可用。"。本修改版没有任何组件单独适用 GPL-2.0 正文：
+    # PyInstaller 走 GPL-2.0-with-exception（下方已列，正文含 GPL-2.0 全文），
+    # FFTW 的 GPL-2.0-or-later 正文随 licenses/ffmpeg/ 分发并在 THIRD_PARTY_LICENSES.md 中说明。
     ("GNU General Public License v3.0", ":/licenses/GPL-3.0.txt", False),
     ("CPython 3.11.5 — PSF License 2.0", ":/licenses/Python-PSF-2.0.txt", False),
     ("PySide6 / Qt 6.7.3 — LGPL-3.0", ":/licenses/LGPL-3.0.txt", False),
-    ("FFmpeg N-125829 — LGPL-3.0-or-later", ":/licenses/FFmpeg-LGPL-3.0-or-later.txt", False),
+    ("FFmpeg N-125829-gfe953596e9 — LGPL-3.0-or-later", ":/licenses/FFmpeg-LGPL-3.0-or-later.txt", False),
     ("PyQtGraph 0.13.7 — MIT", ":/licenses/PyQtGraph-MIT.txt", False),
     ("NumPy 1.26.4 — BSD-3-Clause", ":/licenses/NumPy-BSD-3-Clause.txt", False),
     ("OpenSSL 3.0.10 — Apache-2.0", ":/licenses/OpenSSL-Apache-2.0.txt", False),

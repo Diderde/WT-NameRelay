@@ -1,0 +1,49 @@
+{
+  "_scope": "范围 = 随包该 FFmpeg 构建（自建 MSYS2 + mingw-w64，commit fe953596e9）实际链接的第三方组件。本构建刻意最小化：--disable-autodetect 且只显式启用 3 个外部库（libmp3lame / libopus / zlib），另有 mingw 运行时（libgcc / winpthreads / CRT）动态或静态随附。**不含 chromaprint，因而也不含 GPL 的 FFTW。**",
+  "_caution": "旧构建（BtbN win64-lgpl-shared）曾把 GPL-2.0-or-later 的 FFTW 3.3.11 经 chromaprint 静态链入 avformat-63.dll，导致该 DLL 实为 GPL。2026-09-24 已用自建最小 LGPL 构建替换，GPL 组件清零。请以 `python tools/audit_ffmpeg_license.py` 的结果为准，不要仅凭 ffmpeg -L 的自报。",
+  "_hash_note": "sha256 按 LF 归一后的内容计算（content_digest），与工作区 CRLF 无关。",
+  "files": [
+    {
+      "lib": "libgcc (GCC runtime)",
+      "spdx": "GPL-3.0-or-later",
+      "file": "GCC-GPL-3.0.txt",
+      "sha256": "8ceb4b9ee5adedde47b31e975c1d90c73ad27b6b165a1dcd80c7c545eb65b903"
+    },
+    {
+      "lib": "libgcc (GCC runtime)",
+      "spdx": "GCC-exception-3.1",
+      "file": "GCC-Runtime-Library-Exception-3.1.txt",
+      "sha256": "9d6b43ce4d8de0c878bf16b54d8e7a10d9bd42b75178153e3af6a815bdc90f74"
+    },
+    {
+      "lib": "libmp3lame (LAME)",
+      "spdx": "LGPL-2.0-or-later",
+      "file": "LAME-LGPL-2.0-or-later.txt",
+      "sha256": "e64f9c5a18f56828c10a575df13ade641aa3af4512a7afe6c411256943b57aaf"
+    },
+    {
+      "lib": "libopus",
+      "spdx": "BSD-3-Clause",
+      "file": "Opus-BSD-3-Clause.txt",
+      "sha256": "01e1167d54a096d123cf6dfbbeb19587278845c6481d2d66d545669846079551"
+    },
+    {
+      "lib": "mingw-w64 CRT runtime",
+      "spdx": "ZPL-2.1 OR public-domain",
+      "file": "mingw-w64-CRT-runtime.txt",
+      "sha256": "1db8da07b436c68833c0673ffee3d9fcb2526047f3820b81661865dfedc79a1f"
+    },
+    {
+      "lib": "winpthreads",
+      "spdx": "MIT AND BSD-3-Clause",
+      "file": "winpthreads-MIT.txt",
+      "sha256": "63263614cdd29f2f93cba85e992f041b31f9fc7b4033692f31269489a8a1b177"
+    },
+    {
+      "lib": "zlib",
+      "spdx": "Zlib",
+      "file": "zlib-Zlib.txt",
+      "sha256": "e32ff4e00d9d94930537635291da39e7e612703334bf6fde8c7f1686fe8a45a2"
+    }
+  ]
+}

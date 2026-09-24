@@ -709,7 +709,7 @@ _ABOUT_ORIGINAL = """
               <li>PyQtGraph 0.13.7 — MIT</li>
               <li>NumPy 1.26.4 — BSD-3-Clause</li>
               <li>OpenSSL 3.0.10 — Apache-2.0</li>
-              <li>FFmpeg N-125829-gfe953596e9-20260728 — LGPL-3.0-or-later</li>
+              <li>FFmpeg N-125829-gfe953596e9 — LGPL-3.0-or-later（自建最小构建：外部库仅 libmp3lame / libopus / zlib）</li>
             </ul>
             <p>完整文本可在下方许可查看器与发布目录中查阅。</p>
     """
