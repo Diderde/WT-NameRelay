@@ -62,8 +62,6 @@ foreach ($test in $tests) {
 
 仓库通过 Git LFS 管理 `app/resources/ffmpeg/bin/` 中的 ffmpeg、ffprobe 与共享 DLL。克隆源码前请先安装 Git LFS；克隆后运行 `git lfs pull` 获取这些二进制资源。
 
-正式发布优先提供完整 onedir ZIP。`build/`、`dist/`、`release/`、虚拟环境、日志、用户音频和测试输出不会加入普通源码提交。
-
 FFmpeg 构建版本、源码披露、许可和第三方声明见 [`FFMPEG_BUILD_INFO.md`](FFMPEG_BUILD_INFO.md)、[`THIRD_PARTY_LICENSES.md`](THIRD_PARTY_LICENSES.md) 与 [`licenses/`](licenses/)。
 
 ## 已知限制
