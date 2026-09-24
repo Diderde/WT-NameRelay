@@ -5,9 +5,9 @@ APP_NAME = "WT-Tool-Experimental Version"
 FORK_AUTHOR = "Diderde"
 WINDOW_TITLE = APP_NAME
 
-# 本修改版自己的版本号：**固定为重置基线** `rc-0.0.01`（2026-09-23 重置）。
+# 本修改版自己的版本号：**固定为重置基线** `rc-0.0.02`（2026-09-24 重置）。
 # 此前"按提交数 − 30 推导 rc-0.2.x"的规则已作废，版本号不再随提交数变化。
-FORK_VERSION = "rc-0.0.01"
+FORK_VERSION = "rc-0.0.02"
 
 # 原项目（fork 来源）：作者、仓库与许可均为事实性署名，固定原文呈现。
 BASE_PROJECT = "WT-NameRelay"

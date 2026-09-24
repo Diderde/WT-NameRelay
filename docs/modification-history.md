@@ -1460,3 +1460,45 @@ AttributeError: module 'vtcore' has no attribute 'parse_container'
 验收（2026-09-23 00:0x）：`temp/ps_gate.ps1` **25 模块全绿（voice_batch 45→55 用例，
 新增发现/下拉/编辑器 10 例）**；ruff 0 项；`compileall` 通过；`git ls-files --eol` 行尾合规
 （唯一例外 `vtcore/Cargo.lock` 照旧）。
+
+### 追加登记（2026-09-24 · 随包 FFmpeg 改自建 LGPL 构建；版本基线重置为 `rc-0.0.02`）
+
+#### 1 · 缺陷：随包件名为 LGPL，实含 GPL 组件
+
+原随包件取自 BtbN FFmpeg-Builds 的 `win64-lgpl-shared`，但其 `avformat-63.dll` 经
+chromaprint（`-DFFT_LIB=fftw3`）**静态链入了 FFTW 3.3.11（GPL-2.0-or-later）**，
+该 DLL 须整体按 GPL-3.0 对待，与 README 与界面所标的 LGPL-3.0-or-later 不符。
+根因在上游构建脚本缺闸门：`scripts.d/25-fftw3.sh` 的 `ffbuild_enabled()` 是裸
+`return 0`，`scripts.d/50-chromaprint.sh` 只判断 FFmpeg 版本（对照 `50-x264.sh` 有
+`[[ $VARIANT == lgpl* ]] && return -1`），而 BtbN README 明示 lgpl 变体
+"Lacking libraries that are GPL-only"。
+
+#### 2 · 处置：自建最小 LGPL 构建并换件
+
+- 源码锁定 `fe953596e9f53e3d61c465bce7a29834cae3375b`（与原随包件同一 commit，
+  DLL 主版本号不变，不牵动 spec、打包与文档里的名字）。
+- configure 仅下列开关：`--enable-version3 --enable-shared --disable-static
+  --disable-autodetect --disable-network --disable-doc --disable-debug --disable-ffplay
+  --enable-libmp3lame --enable-libopus --enable-zlib`；**无** `--enable-chromaprint`、
+  **无** `--enable-gpl`、**无** `--enable-nonfree`。
+- 构建前缀归一为中性路径 `/ffbuild/ffmpeg-lgpl`，二进制内嵌的 `FFMPEG_CONFIGURATION`
+  不再带构建机目录。
+- 随包件 10 → 13 个（增 `libgcc_s_seh-1.dll`、`libwinpthread-1.dll`、`libmp3lame-0.dll`、
+  `libopus-0.dll`；去 `ffplay.exe`），体量约 145 MB → 30.6 MB。
+- 新增 `tools/audit_ffmpeg_license.py`（挖掉 configure 行后按组件特征扫描，再与界面
+  声明的许可标签对拍）、`tools/verify_ffmpeg_licenses.py`（许可文本哈希）、
+  `tests/test_ffmpeg_license.py`（换件绊线）、`tools/ffmpeg-build/`（可复现构建脚本）、
+  `licenses/ffmpeg/`（组件许可正文与清单）。
+- 功能等价逐项核对：程序只用 PCM 编码器、内置滤镜、`wav` muxer、`-f lavfi`
+  （libavdevice 的 lavfi indev）与 ffprobe，chromaprint 从未被引用，换件不损失现有能力。
+
+#### 3 · 发布面与版本基线
+
+- 二进制许可审计脚本 docstring 里遗留的构建机路径改写为占位符 `<构建机工作目录>`。
+- `FORK_VERSION` 重置基线由 `rc-0.0.01` 改为 **`rc-0.0.02`**，同步
+  `windows_version_info.txt`（数值形式 `0.0.2.0` 与 `ProductVersion`）。
+
+验收（2026-09-24）：`tools/run_gate.ps1` **26 模块全绿**；`tools/audit_ffmpeg_license.py`
+PASS（GPL-only 指纹 0 命中）；`tools/verify_ffmpeg_licenses.py` 7/7 一致；`compileall` 通过；
+两个工作区 `git ls-files --eol` 无 `w/mixed`；随包件自报版本 `N-125829-gfe953596e9`、
+内嵌前缀 `/ffbuild/ffmpeg-lgpl`。
