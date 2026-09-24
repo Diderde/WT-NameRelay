@@ -42,6 +42,14 @@ if not defined PY_EXE (
 )
 set "PROG_TOOL=%~dp0tools\download_progress.py"
 if not exist "%PROG_TOOL%" set "PROG_TOOL="
+rem ---- proxy autodetect (Watt Toolkit and other local proxies) ----
+rem Watt system-proxy mode writes the Windows proxy setting; any port is honored,
+rem and the port must be verified listening before it is used.
+rem Watt hosts mode / TUN-VPN mode leave no local proxy port -> direct is used,
+rem which is already the accelerated path in those modes.
+set "CURL_PROXY="
+call :detect_proxy
+if defined CURL_PROXY (echo   [proxy] %CURL_PROXY%) else (echo   [proxy] none, direct connection)
 
 echo [0/5] 前置工具与本地资产检测...
 where git >nul 2>&1
@@ -137,7 +145,7 @@ if errorlevel 1 (
 echo.
 echo [3/5] 检测 HF 端点: %HF_ENDPOINT%
 set "CODE=000"
-for /f %%C in ('curl -s -o nul -L --ssl-no-revoke --max-time 20 -w "%%{http_code}" "%HF_ENDPOINT%/%GGUF_REPO%/resolve/main/README.md" 2^>nul') do set "CODE=%%C"
+for /f %%C in ('curl -s -o nul -L %CURL_PROXY% --retry 3 --retry-all-errors --ssl-no-revoke --max-time 20 -w "%%{http_code}" "%HF_ENDPOINT%/%GGUF_REPO%/resolve/main/README.md" 2^>nul') do set "CODE=%%C"
 echo   HTTP 状态码: %CODE%
 if "%CODE%"=="000" goto :hf_fail
 if %CODE% LSS 400 goto :hf_ok
@@ -201,7 +209,7 @@ if exist "%GGUF_DIR%\%F%" (
     exit /b 0
 )
 echo   [排队] %F%
-start "" /b cmd /c curl -s -S -L -C - --retry 3 --retry-delay 2 --ssl-no-revoke --connect-timeout 15 --max-time 3600 -o "%GGUF_DIR%\%F%" "%HF_ENDPOINT%/%GGUF_REPO%/resolve/main/%F%"
+start "" /b cmd /c curl -s -S -L %CURL_PROXY% -C - --retry 10 --retry-delay 3 --retry-all-errors --speed-limit 2048 --speed-time 60 --ssl-no-revoke --connect-timeout 20 --max-time 3600 -o "%GGUF_DIR%\%F%" "%HF_ENDPOINT%/%GGUF_REPO%/resolve/main/%F%"
 exit /b 0
 
 :stage_weights
@@ -259,7 +267,7 @@ set "W_REL=%~2"
 set "W_OUT=%PM_DIR%\%W_REL%"
 if exist "%W_OUT%" for %%Z in ("%W_OUT%") do if %%~zZ GEQ %W_SIZE% exit /b 0
 set /a W_FAIL_N+=1
-start "" /b cmd /c curl -s -S -L -C - --retry 5 --retry-delay 2 --ssl-no-revoke --connect-timeout 15 --max-time 7200 -o "%W_OUT%" "%HF_RAW%/%W_REL%"
+start "" /b cmd /c curl -s -S -L -C - %CURL_PROXY% --retry 10 --retry-delay 3 --retry-all-errors --speed-limit 2048 --speed-time 60 --ssl-no-revoke --connect-timeout 20 --max-time 7200 -o "%W_OUT%" "%HF_RAW%/%W_REL%"
 set /a W_INFLIGHT+=1
 if %W_INFLIGHT% GEQ %PARALLEL% (
     call :wait_one
@@ -330,24 +338,24 @@ echo [5/6] ASR 识别模型（Faster Whisper large-v3，6 文件 / 约 3 GB）
 if not exist "%FW_DIR%" mkdir "%FW_DIR%"
 rem 注意：large-v3 仓库没有 vocabulary.txt（上游 fasterwhisper_asr.py 对 large-v3 亦主动移除）
 set "FW_LIST=config.json model.bin tokenizer.json preprocessor_config.json vocabulary.json"
-set "FAILED_A="
-for %%F in (%FW_LIST%) do if exist "%FW_DIR%\%%F" (
-    echo   [跳过] %%F
-) else (
-    echo   [下载] %%F（渠道1: %HF_ENDPOINT%）
-    curl -S -L -C - --retry 3 --retry-delay 2 --ssl-no-revoke --connect-timeout 15 --max-time 7200 -o "%FW_DIR%\%%F" "%HF_ENDPOINT%/%FW_REPO%/resolve/main/%%F%"
-    if errorlevel 1 (
-        echo   [渠道2] 改用官方 HuggingFace 直连...
-        curl -S -L -C - --retry 3 --retry-delay 2 --ssl-no-revoke --connect-timeout 15 --max-time 7200 -o "%FW_DIR%\%%F" "%FW_HF_FALLBACK%/%FW_REPO%/resolve/main/%%F%"
-    )
-)
+rem per-file: size match = complete; otherwise resume with -C - (repairs partial files)
 set "FAILED_A2="
-for %%F in (%FW_LIST%) do if not exist "%FW_DIR%\%%F" set "FAILED_A2=%FAILED_A2% %%F"
-if defined FAILED_A2 (
-    echo   [警告] 以下 ASR 文件不完整:%FAILED_A2%
-    echo   首次使用识别功能时也会自动下载；重跑本脚本可补齐。
+for %%F in (%FW_LIST%) do call :asr_fetch_one "%%F"
+rem verify with the repo tool afterwards (same check as start.bat); size-only fallback without Python
+set "ASR_BAD="
+if defined PY_EXE if exist "%~dp0tools\verify_tts_assets.py" if exist "%~dp0tts_assets_manifest.txt" (
+    "%PY_EXE%" "%~dp0tools\verify_tts_assets.py" --group asr --quiet
+    if errorlevel 1 set "ASR_BAD=1"
 ) else (
-    echo   ASR 模型全部就绪。
+    for %%Z in ("%FW_DIR%\model.bin") do if not "%%~zZ"=="3087284237" set "ASR_BAD=1"
+)
+if defined FAILED_A2 (
+    echo   [警告] 以下 ASR 文件缺失或不完整:%FAILED_A2%
+    echo   残件已保留，重跑本脚本会从断点续传。
+) else if defined ASR_BAD (
+    echo   [警告] ASR 文件体积与清单不符（残件）；重跑本脚本会从断点续传。
+) else (
+    echo   ASR 模型全部就绪（体积已与清单核对）。
 )
 goto :done
 
@@ -359,4 +367,84 @@ echo   GPT-SoVITS 代码:  %GPT_SOVITS_DIR%\
 echo   GGUF:      %GGUF_DIR%\（集合 %GGUF_SET%）
 echo   GPT-SoVITS 权重:  %PM_DIR%\
 echo 全部完成。
+exit /b 0
+rem ================= ASR subroutines =================
+:asr_expect
+rem arg1 = file name; sets FW_EXPECT (empty when unknown)
+set "FW_EXPECT="
+if /i "%~1"=="model.bin" set "FW_EXPECT=3087284237"
+if /i "%~1"=="tokenizer.json" set "FW_EXPECT=2480617"
+if /i "%~1"=="vocabulary.json" set "FW_EXPECT=1068114"
+if /i "%~1"=="config.json" set "FW_EXPECT=2394"
+if /i "%~1"=="preprocessor_config.json" set "FW_EXPECT=340"
+exit /b 0
+
+:asr_fetch_one
+rem arg1 = file name. complete -> skip; otherwise fetch with bounded-range chunks (resumable)
+set "FW_FILE=%~1"
+call :asr_expect "%FW_FILE%"
+set "FW_PATH=%FW_DIR%\%FW_FILE%"
+set "FW_SIZE="
+if exist "%FW_PATH%" for %%Z in ("%FW_PATH%") do set "FW_SIZE=%%~zZ"
+if defined FW_EXPECT if defined FW_SIZE if "%FW_SIZE%"=="%FW_EXPECT%" (
+    echo   [完整] %FW_FILE%
+    exit /b 0
+)
+if not defined FW_EXPECT if defined FW_SIZE (
+    echo   [跳过] %FW_FILE%
+    exit /b 0
+)
+if defined FW_SIZE (
+    echo   [续传] %FW_FILE%（本地 %FW_SIZE% / 应为 %FW_EXPECT%）
+) else (
+    echo   [下载] %FW_FILE%（应为 %FW_EXPECT%）
+)
+rem bounded ranges: some CDN edges reject open-ended "bytes=N-", but accept "bytes=A-B"
+if not defined PY_EXE goto :asr_fetch_curl
+if not exist "%~dp0tools\fetch_hf_chunks.py" goto :asr_fetch_curl
+"%PY_EXE%" "%~dp0tools\fetch_hf_chunks.py" --base "%HF_ENDPOINT%/%FW_REPO%/resolve/main" --name "%FW_FILE%" --dest "%FW_PATH%" --size %FW_EXPECT% --proxy "%CURL_PROXY%" --fallback "%FW_HF_FALLBACK%/%FW_REPO%/resolve/main"
+goto :asr_fetch_check
+
+:asr_fetch_curl
+curl -S -L -C - %CURL_PROXY% --retry 10 --retry-delay 3 --retry-all-errors --speed-limit 2048 --speed-time 60 --ssl-no-revoke --connect-timeout 20 --max-time 7200 -o "%FW_PATH%" "%HF_ENDPOINT%/%FW_REPO%/resolve/main/%FW_FILE%"
+if errorlevel 1 curl -S -L -C - %CURL_PROXY% --retry 10 --retry-delay 3 --retry-all-errors --speed-limit 2048 --speed-time 60 --ssl-no-revoke --connect-timeout 20 --max-time 7200 -o "%FW_PATH%" "%FW_HF_FALLBACK%/%FW_REPO%/resolve/main/%FW_FILE%"
+
+:asr_fetch_check
+set "FW_SIZE="
+if exist "%FW_PATH%" for %%Z in ("%FW_PATH%") do set "FW_SIZE=%%~zZ"
+if not defined FW_SIZE (
+    set "FAILED_A2=%FAILED_A2% %FW_FILE%（未下到）"
+    exit /b 1
+)
+if defined FW_EXPECT if not "%FW_SIZE%"=="%FW_EXPECT%" (
+    set "FAILED_A2=%FAILED_A2% %FW_FILE%（%FW_SIZE%/%FW_EXPECT%）"
+    exit /b 1
+)
+exit /b 0
+
+rem ---- proxy autodetect helpers ----
+:detect_proxy
+set "SYSON="
+set "SYSPROXY="
+set "SYSPORT="
+reg query "HKCU\Software\Microsoft\Windows\CurrentVersion\Internet Settings" /v ProxyEnable >nul 2>&1
+if errorlevel 1 exit /b 0
+for /f "tokens=2,*" %%A in ('reg query "HKCU\Software\Microsoft\Windows\CurrentVersion\Internet Settings" /v ProxyEnable 2^>nul') do set "SYSON=%%B"
+if not "%SYSON%"=="0x1" exit /b 0
+for /f "tokens=2,*" %%A in ('reg query "HKCU\Software\Microsoft\Windows\CurrentVersion\Internet Settings" /v ProxyServer 2^>nul') do set "SYSPROXY=%%B"
+if not defined SYSPROXY exit /b 0
+for /f "tokens=2 delims=:" %%P in ("%SYSPROXY%") do set "SYSPORT=%%P"
+for /f "tokens=1 delims=;" %%Q in ("%SYSPORT%") do set "SYSPORT=%%Q"
+call :probe_port %SYSPORT%
+if defined CURL_PROXY exit /b 0
+rem Watt default port range as fallback (hosts mode leaves none of these listening)
+for %%P in (26561 26562 26563 26564 26565) do call :probe_port %%P
+exit /b 0
+
+:probe_port
+rem arg1 = port; sets CURL_PROXY when that loopback port is listening
+if defined CURL_PROXY exit /b 0
+if "%~1"=="" exit /b 0
+netstat -an | findstr /c:"127.0.0.1:%~1 " | findstr /i "LISTENING" >nul 2>&1
+if not errorlevel 1 set "CURL_PROXY=http://127.0.0.1:%~1"
 exit /b 0

@@ -1502,3 +1502,39 @@ chromaprint（`-DFFT_LIB=fftw3`）**静态链入了 FFTW 3.3.11（GPL-2.0-or-lat
 PASS（GPL-only 指纹 0 命中）；`tools/verify_ffmpeg_licenses.py` 7/7 一致；`compileall` 通过；
 两个工作区 `git ls-files --eol` 无 `w/mixed`；随包件自报版本 `N-125829-gfe953596e9`、
 内嵌前缀 `/ffbuild/ffmpeg-lgpl`。
+
+### 追加登记（2026-09-24 · TTS 资源下载：代理自动探测 + 有界分片续传 +「每次启动都报 ASR 缺失」的修复）
+
+#### 1 · 现象与根因
+
+`start.bat` 每次启动都提示「缺失 - ASR 识别模型（Faster Whisper large-v3）」，但文件明明存在。
+查证：`model.bin` 实际只有 **33,912,329 / 3,087,284,237 B = 1.10%**，是**下载中断留下的残件**
+（创建到停写只隔 30 秒）。`start.bat` 第 60 行的存在性检查通过，但第 83 行调用的
+`tools/verify_tts_assets.py` 体积核对失败，因此 `NEED_ASR=1` —— **这个提示是对的**。
+根因在 `download_tts_verify.bat` 的 ASR 段：**只判断"文件是否存在"，不判断完整性**，
+残件被当作"已存在"跳过，于是永远补不齐。
+
+#### 2 · 处置
+
+- ASR 段改为「体积对得上才算完整」：不完整即续传；下完再调
+  `verify_tts_assets.py --group asr --quiet`（与 `start.bat` 同一套判定）。
+- **代理自动探测**（本轮实测：同一条链路直连 **3 KB/s**、经 Watt 代理 **115 KB/s–10 MB/s**，
+  差 40–3000 倍；原脚本的 curl 根本没走代理）：读注册表 `ProxyEnable`/`ProxyServer` 取系统代理
+  （**端口任意**，不写死 26561），验证端口确实在监听才使用；否则依次探 Watt 常用端口
+  26561-26565；都没有则直连（hosts / TUN 模式下直连本身就是加速路径）。
+- **抗断**：全部 curl 加 `--retry 10 --retry-delay 3 --retry-all-errors`
+  （`--retry` 不覆盖传输中途的连接重置，实测 `exit 56`）与 `--speed-limit 2048 --speed-time 60`。
+- **新增 `tools/fetch_hf_chunks.py`（有界分片续传）**：实测部分 CDN 边缘节点**拒绝开放式
+  Range**（`bytes=N-` → `curl: (33) HTTP server does not seem to support byte ranges`），
+  而**有界 Range**（`bytes=A-B` → 206）稳定可用；故把剩余部分切成 32 MiB 有界分片、逐片重试、
+  按序追加，最后核对总大小。ASR 段优先调用它，Python 不可用时退回单连接 `curl -C -`。
+- 新增的 `rem` 注释保持 ASCII（AGENTS.md §6.2）。
+
+#### 3 · 验收
+
+- `verify_tts_assets.py --group asr --hash`：**5/5 通过（含 sha256）** ✓
+- 代理探测隔离测试（把真实探测块拼成临时 bat 运行）：输出
+  `DETECTED-PROXY http://127.0.0.1:<端口>` ✓
+- `download_tts_verify.bat` CRLF 450 / 裸 LF 0；`tools/fetch_hf_chunks.py` `py_compile` 通过 ✓
+- 实测补齐 2.87 GB：15 个 32 MiB 分片，每片 1–5 秒 ✓
+- `TTS model/` 在 `.gitignore` 内、已跟踪文件 0 个 —— 约 3 GB 权重**不入库** ✓
