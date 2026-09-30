@@ -1,0 +1,23 @@
+{
+  "schema": "audioprep.package-contract.v1",
+  "design_revision": "R2.1.5.07",
+  "name": "audioprep-app",
+  "layer": 10,
+  "depends_on": [
+    "audioprep-config",
+    "audioprep-scheduler",
+    "audioprep-review"
+  ],
+  "responsibility": "Host-facing Context lifecycle and Public API v1 facade.",
+  "public_surface": [
+    "Context",
+    "open_context",
+    "Public API v1 facade"
+  ],
+  "must_not": [
+    "direct SQL access",
+    "plugin implementation details"
+  ],
+  "maturity": "PLANNING_ONLY",
+  "repository_model": "single-monorepo-unified-version"
+}

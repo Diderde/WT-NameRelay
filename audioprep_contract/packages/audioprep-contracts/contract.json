@@ -1,0 +1,21 @@
+{
+  "schema": "audioprep.package-contract.v1",
+  "design_revision": "R2.1.5.07",
+  "name": "audioprep-contracts",
+  "layer": 0,
+  "depends_on": [],
+  "responsibility": "Stable enums, value objects, error codes and cross-package protocols.",
+  "public_surface": [
+    "ErrorCode",
+    "JobStatus",
+    "DecisionStatus",
+    "immutable snapshot protocols"
+  ],
+  "must_not": [
+    "database access",
+    "plugin imports",
+    "process execution"
+  ],
+  "maturity": "PLANNING_ONLY",
+  "repository_model": "single-monorepo-unified-version"
+}

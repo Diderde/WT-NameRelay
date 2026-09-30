@@ -1,0 +1,21 @@
+{
+  "schema": "audioprep.package-contract.v1",
+  "design_revision": "R2.1.5.07",
+  "name": "audioprep-config",
+  "layer": 1,
+  "depends_on": [
+    "audioprep-contracts"
+  ],
+  "responsibility": "Configuration precedence, validation, redacted snapshots and capability switches.",
+  "public_surface": [
+    "resolve_config",
+    "ConfigSnapshot",
+    "CapabilityFlags"
+  ],
+  "must_not": [
+    "database writes",
+    "audio processing"
+  ],
+  "maturity": "PLANNING_ONLY",
+  "repository_model": "single-monorepo-unified-version"
+}

@@ -1,0 +1,22 @@
+{
+  "schema": "audioprep.package-contract.v1",
+  "design_revision": "R2.1.5.07",
+  "name": "audioprep-timeline",
+  "layer": 4,
+  "depends_on": [
+    "audioprep-contracts",
+    "audioprep-artifacts"
+  ],
+  "responsibility": "Integer-tick mappings, timebases and Manifest timeline semantics.",
+  "public_surface": [
+    "Timebase",
+    "TimelineMapping",
+    "TimelineSemanticValidator"
+  ],
+  "must_not": [
+    "filesystem publication",
+    "scheduler state transitions"
+  ],
+  "maturity": "PLANNING_ONLY",
+  "repository_model": "single-monorepo-unified-version"
+}

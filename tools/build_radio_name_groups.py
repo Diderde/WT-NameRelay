@@ -11,10 +11,9 @@ import json
 import re
 import sys
 from collections import Counter, defaultdict
+from collections.abc import Iterable
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Iterable
-
 
 SUPPORTED_AUDIO_SUFFIXES = frozenset({".wav", ".flac", ".ogg", ".mp3", ".m4a", ".aac", ".opus"})
 V_SUFFIX = re.compile(r"^(?P<base>.+)_v(?P<index>[1-9]\d*)$")
@@ -78,7 +77,7 @@ def classify(records: Iterable[AudioName]) -> tuple[dict[str, dict[str, object]]
             for members in outer_groups.values()
         ):
             continue
-        group_key = prefix[:-1] if prefix.endswith("_") else prefix
+        group_key = prefix.removesuffix("_")
         names = [record.stem for outer in (1, 2, 3) for record in sorted(outer_groups[outer], key=lambda item: natural_key(item.stem))]
         source_map = {name: sorted({record.source_id for record in by_stem[name]}) for name in names}
         if group_key in groups:

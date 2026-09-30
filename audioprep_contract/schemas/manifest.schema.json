@@ -1,0 +1,129 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://audioprep.local/schemas/manifest.v1.json",
+  "title": "AudioPrep Deliverable Manifest v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema", "manifest_version", "job_id", "source", "segments", "created_at"],
+  "properties": {
+    "schema": {"const": "audioprep.manifest.v1"},
+    "manifest_version": {"const": 1},
+    "job_id": {"type": "string", "minLength": 1, "maxLength": 200},
+    "created_at": {"type": "string", "format": "date-time"},
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["artifact_id", "content_hash", "size_bytes", "mtime_ns", "path_basename"],
+      "properties": {
+        "artifact_id": {"type": "string", "minLength": 1},
+        "content_hash": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$"},
+        "size_bytes": {"type": "integer", "minimum": 0},
+        "mtime_ns": {"type": "integer", "minimum": 0},
+        "path_basename": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 255,
+          "pattern": "^[^/\\\\]+$"
+        }
+      }
+    },
+    "segments": {
+      "type": "array",
+      "minItems": 1,
+      "items": {"$ref": "#/$defs/segment"}
+    }
+  },
+  "$defs": {
+    "positiveTimebase": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["num", "den"],
+      "properties": {
+        "num": {"type": "integer", "minimum": 1},
+        "den": {"type": "integer", "minimum": 1}
+      }
+    },
+    "range": {
+      "type": "array",
+      "prefixItems": [
+        {"type": "integer", "minimum": 0},
+        {"type": "integer", "minimum": 1}
+      ],
+      "items": false,
+      "minItems": 2,
+      "maxItems": 2
+    },
+    "timeMap": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["op", "dst"],
+      "properties": {
+        "op": {"enum": ["MAP", "SILENCE"]},
+        "src": {"$ref": "#/$defs/range"},
+        "dst": {"$ref": "#/$defs/range"}
+      },
+      "allOf": [
+        {
+          "if": {"properties": {"op": {"const": "MAP"}}},
+          "then": {"required": ["src"]}
+        },
+        {
+          "if": {"properties": {"op": {"const": "SILENCE"}}},
+          "then": {"not": {"required": ["src"]}}
+        }
+      ]
+    },
+    "audioFormat": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["container", "sample_rate_hz", "channels", "sample_format"],
+      "properties": {
+        "container": {"const": "wav"},
+        "sample_rate_hz": {"type": "integer", "minimum": 8000, "maximum": 384000},
+        "channels": {"type": "integer", "minimum": 1, "maximum": 32},
+        "sample_format": {"enum": ["s16le", "s24le", "s32le", "f32le"]}
+      }
+    },
+    "segment": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "segment_id", "ordinal", "wav", "artifact_id", "blob_hash", "format",
+        "src_start_ms", "src_end_ms", "mapping_kind", "timebase",
+        "dst_end_tick", "time_map_ticks", "quality_flags"
+      ],
+      "properties": {
+        "segment_id": {"type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$"},
+        "ordinal": {"type": "integer", "minimum": 0},
+        "wav": {"type": "string", "pattern": "^segments/[A-Za-z0-9][A-Za-z0-9._-]{0,127}\\.wav$"},
+        "artifact_id": {"type": "string", "minLength": 1},
+        "blob_hash": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$"},
+        "format": {"$ref": "#/$defs/audioFormat"},
+        "src_start_ms": {"type": "integer", "minimum": 0},
+        "src_end_ms": {"type": "integer", "minimum": 1},
+        "mapping_kind": {"enum": ["IDENTITY_SLICE", "PIECEWISE"]},
+        "timebase": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["src", "dst"],
+          "properties": {
+            "src": {"$ref": "#/$defs/positiveTimebase"},
+            "dst": {"$ref": "#/$defs/positiveTimebase"}
+          }
+        },
+        "dst_end_tick": {"type": "integer", "minimum": 1},
+        "time_map_ticks": {
+          "type": "array",
+          "minItems": 1,
+          "items": {"$ref": "#/$defs/timeMap"}
+        },
+        "speaker": {"type": ["string", "null"], "maxLength": 128},
+        "quality_flags": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {"type": "string", "pattern": "^[A-Z][A-Z0-9_]{0,63}$"}
+        }
+      }
+    }
+  }
+}

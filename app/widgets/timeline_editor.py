@@ -1,10 +1,22 @@
+"""Superseded canvas prototype kept only for source-history comparison.
+
+No page instantiates this widget: the PyQtGraph timeline
+(``app/widgets/pyqtgraph_timeline.py``) replaced it, see
+``TIMELINE_COMPONENT_EVALUATION.md``. Its palette is hard-coded dark and
+does not follow the application theme, so do not wire it into the UI
+without a theme pass first.
+"""
+
 from __future__ import annotations
 
 from enum import Enum
+
 from PySide6.QtCore import Qt, Signal
 from PySide6.QtGui import QColor, QPainter, QPaintEvent, QPen, QWheelEvent
 from PySide6.QtWidgets import QWidget
-from app.audio.models import AudioClip, TimelineItem, format_ms
+
+from app.audio.models import AudioClip, format_ms
+
 
 class _Mode(str,Enum): NONE='none';TRIM_LEFT='trim_left';TRIM_RIGHT='trim_right';MOVE='move'
 class TimelineEditor(QWidget):
@@ -42,7 +54,7 @@ class TimelineEditor(QWidget):
     def mousePressEvent(self,event):
         x=round(event.position().x());hit=self._hit(x)
         if not hit:self._selected.clear();self.selection_changed.emit(set());self.seek_requested.emit(round(x*1000/self._pps));return
-        index,item,start,end,_left,_width=hit;self._selected= self._selected ^ {item.clip_id} if event.modifiers()&Qt.KeyboardModifier.ControlModifier else {item.clip_id};self.selection_changed.emit(set(self._selected));self._mode=self._edge(x,hit);self._item=item;self._x=x;self._start=item.trim_start_ms if isinstance(item,AudioClip) else 0;self._end=item.effective_end_ms if isinstance(item,AudioClip) else item.duration_ms
+        _index,item,_start,_end,_left,_width=hit;self._selected= self._selected ^ {item.clip_id} if event.modifiers()&Qt.KeyboardModifier.ControlModifier else {item.clip_id};self.selection_changed.emit(set(self._selected));self._mode=self._edge(x,hit);self._item=item;self._x=x;self._start=item.trim_start_ms if isinstance(item,AudioClip) else 0;self._end=item.effective_end_ms if isinstance(item,AudioClip) else item.duration_ms
     def mouseReleaseEvent(self,event):
         if self._item and self._mode in (_Mode.TRIM_LEFT,_Mode.TRIM_RIGHT):
             delta=round((round(event.position().x())-self._x)*1000/self._pps)

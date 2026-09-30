@@ -1,0 +1,24 @@
+{
+  "schema": "audioprep.package-contract.v1",
+  "design_revision": "R2.1.5.07",
+  "name": "audioprep-pipeline",
+  "layer": 5,
+  "depends_on": [
+    "audioprep-contracts",
+    "audioprep-config",
+    "audioprep-timeline"
+  ],
+  "responsibility": "NodeSpec, MediaPortSpec, predicates, Plan graph and fingerprints.",
+  "public_surface": [
+    "NodeSpec",
+    "MediaPortSpec",
+    "PipelinePlan",
+    "PlanFingerprint"
+  ],
+  "must_not": [
+    "worker process control",
+    "SQLite access"
+  ],
+  "maturity": "PLANNING_ONLY",
+  "repository_model": "single-monorepo-unified-version"
+}

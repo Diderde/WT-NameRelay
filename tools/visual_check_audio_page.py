@@ -19,7 +19,7 @@ def main() -> int:
     app = QApplication(sys.argv)
     apply_theme(app)
     page = AudioProcessingPage()
-    page.setWindowTitle("WT-NameRelay 音轨组件验证")
+    page.setWindowTitle("WT-Tool 音轨组件验证")
     page.resize(1280, 900)
     page.show()
     page._add_audio_paths([str(make_test_wav())])

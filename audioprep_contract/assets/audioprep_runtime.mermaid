@@ -1,0 +1,14 @@
+flowchart LR
+    Host[Host application] -->|Public API v1| App[audioprep-app]
+    App --> Scheduler[audioprep-scheduler\nonly SQLite writer]
+    Scheduler --> Store[(SQLite control DB)]
+    Scheduler --> Planner[audioprep-planner]
+    Scheduler --> Worker[audioprep-worker subprocess]
+    Worker --> Tmp[Private tmp]
+    Worker -->|result envelope| Scheduler
+    Scheduler -->|verified CAS commit| CAS[(Immutable CAS)]
+    Scheduler --> Delivery[audioprep-delivery]
+    Delivery --> Staging[Deliverable staging]
+    Staging -->|fsync + same-FS rename| Published[Published directory]
+    App --> Review[audioprep-review]
+    Review --> Scheduler

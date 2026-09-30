@@ -28,12 +28,16 @@ WT-NameRelay-audio-check.spec
 *.aac
 *.opus
 *.bank
+*.vt
+*.vt.state
+*.vtmanifest
 *.sqlite
 *.sqlite3
 *.onnx
 *.pt
 *.pth
 *.ckpt
+*.gguf
 .env
 .env.*
 !.env.example
@@ -42,3 +46,12 @@ WT-NameRelay-audio-check.spec
 Thumbs.db
 Desktop.ini
 .DS_Store
+logs/
+config/
+temp/
+/tmp*/
+TTS model/
+tools/gate-results.txt
+vtcore/target/
+*.pyd
+*.so

@@ -1,5 +1,14 @@
 """Immutable domain models used by the crew manual-copy workflow."""
 
+from .average_distribution import (
+    ConflictKind,
+    DistributionPlan,
+    SourceCandidate,
+    TargetBucket,
+    TargetOperation,
+)
+from .bank_models import BankCountryAssignment, BankCountryGroup, BankFile, BankFileRole
+from .completion_group import AutoCompletionAnalysis, CompletionGroup
 from .copy_task import (
     ConflictPolicy,
     CopyBatchResult,
@@ -12,11 +21,7 @@ from .copy_task import (
     TargetAssignment,
 )
 from .crew_name_group import CrewGroupType, CrewNameGroup
-from .completion_group import AutoCompletionAnalysis, CompletionGroup
 from .directory_scan_result import AutoScanState, DirectoryScanResult, ScannedDirectory
-from .source_file import RecognitionState, SourceFile
-from .average_distribution import ConflictKind, DistributionPlan, SourceCandidate, TargetBucket, TargetOperation
-from .bank_models import BankCountryAssignment, BankCountryGroup, BankFile, BankFileRole
 from .radio_copy import (
     ManualCopyMode,
     RadioManualGroupPlan,
@@ -27,15 +32,17 @@ from .radio_copy import (
     RadioTargetOperation,
     RadioTargetTriple,
 )
+from .source_file import RecognitionState, SourceFile
 
 __all__ = [
     "AutoCompletionAnalysis",
+    "AutoScanState",
     "BankCountryAssignment",
     "BankCountryGroup",
     "BankFile",
     "BankFileRole",
-    "AutoScanState",
     "CompletionGroup",
+    "ConflictKind",
     "ConflictPolicy",
     "CopyBatchResult",
     "CopyPlan",
@@ -43,19 +50,11 @@ __all__ = [
     "CopyResultStatus",
     "CopyTask",
     "CrewGroupPlan",
-    "ManualBatchState",
     "CrewGroupType",
     "CrewNameGroup",
     "DirectoryScanResult",
-    "RecognitionState",
-    "SourceFile",
-    "ConflictKind",
     "DistributionPlan",
-    "SourceCandidate",
-    "TargetBucket",
-    "TargetOperation",
-    "ScannedDirectory",
-    "TargetAssignment",
+    "ManualBatchState",
     "ManualCopyMode",
     "RadioManualGroupPlan",
     "RadioSourceUnit",
@@ -64,4 +63,11 @@ __all__ = [
     "RadioTargetConflictKind",
     "RadioTargetOperation",
     "RadioTargetTriple",
+    "RecognitionState",
+    "ScannedDirectory",
+    "SourceCandidate",
+    "SourceFile",
+    "TargetAssignment",
+    "TargetBucket",
+    "TargetOperation",
 ]

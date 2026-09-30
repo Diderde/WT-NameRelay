@@ -46,7 +46,6 @@ exe = EXE(
     codesign_identity=None,
     entitlements_file=None,
     version=str(ROOT / 'windows_version_info.txt'),
-    icon=[str(ROOT / 'app' / 'resources' / 'icons' / 'wt_name_relay.ico')],
 )
 coll = COLLECT(
     exe,

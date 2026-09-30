@@ -1,0 +1,27 @@
+{
+  "schema": "audioprep.package-contract.v1",
+  "design_revision": "R2.1.5.07",
+  "name": "audioprep-scheduler",
+  "layer": 9,
+  "depends_on": [
+    "audioprep-store",
+    "audioprep-planner",
+    "audioprep-worker",
+    "audioprep-decisions",
+    "audioprep-delivery"
+  ],
+  "responsibility": "Single-machine single-writer orchestration, dispatch, local resource leases, execution fences and reconciliation.",
+  "public_surface": [
+    "Scheduler",
+    "DispatchFence",
+    "ResourceLeaseService",
+    "reconcile"
+  ],
+  "must_not": [
+    "running plugin code in-process",
+    "exposing internal DAOs to the host",
+    "distributed-cluster semantics"
+  ],
+  "maturity": "PLANNING_ONLY",
+  "repository_model": "single-monorepo-unified-version"
+}

@@ -1,0 +1,173 @@
+{
+  "schema": "audioprep.package-graph.v1",
+  "design_revision": "R2.1.5.07",
+  "package_count": 18,
+  "packages": [
+    {
+      "name": "audioprep-contracts",
+      "layer": 0,
+      "depends_on": [],
+      "responsibility": "Stable enums, value objects, error codes and cross-package protocols."
+    },
+    {
+      "name": "audioprep-config",
+      "layer": 1,
+      "depends_on": [
+        "audioprep-contracts"
+      ],
+      "responsibility": "Configuration precedence, validation, redacted snapshots and capability switches."
+    },
+    {
+      "name": "audioprep-store",
+      "layer": 2,
+      "depends_on": [
+        "audioprep-contracts",
+        "audioprep-config"
+      ],
+      "responsibility": "SQLite schema, transactions, DAOs, reconciliation metadata and migrations."
+    },
+    {
+      "name": "audioprep-artifacts",
+      "layer": 3,
+      "depends_on": [
+        "audioprep-contracts",
+        "audioprep-store"
+      ],
+      "responsibility": "CAS byte storage, Artifact occurrences, strong references and garbage collection."
+    },
+    {
+      "name": "audioprep-timeline",
+      "layer": 4,
+      "depends_on": [
+        "audioprep-contracts",
+        "audioprep-artifacts"
+      ],
+      "responsibility": "Integer-tick mappings, timebases and Manifest timeline semantics."
+    },
+    {
+      "name": "audioprep-pipeline",
+      "layer": 5,
+      "depends_on": [
+        "audioprep-contracts",
+        "audioprep-config",
+        "audioprep-timeline"
+      ],
+      "responsibility": "NodeSpec, MediaPortSpec, predicates, Plan graph and fingerprints."
+    },
+    {
+      "name": "audioprep-planner",
+      "layer": 6,
+      "depends_on": [
+        "audioprep-pipeline",
+        "audioprep-config"
+      ],
+      "responsibility": "Capability/resource snapshots, implementation selection and Plan sealing."
+    },
+    {
+      "name": "audioprep-worker",
+      "layer": 6,
+      "depends_on": [
+        "audioprep-contracts",
+        "audioprep-artifacts",
+        "audioprep-pipeline"
+      ],
+      "responsibility": "Isolated process protocol, cancellation, timeout and result envelopes."
+    },
+    {
+      "name": "audioprep-audio-io",
+      "layer": 7,
+      "depends_on": [
+        "audioprep-worker",
+        "audioprep-artifacts"
+      ],
+      "responsibility": "Probe, decode, resample, QUALITY_MASTER and ANALYSIS_COPY production."
+    },
+    {
+      "name": "audioprep-vad",
+      "layer": 8,
+      "depends_on": [
+        "audioprep-audio-io",
+        "audioprep-worker"
+      ],
+      "responsibility": "Voice activity detection nodes and speech interval artifacts."
+    },
+    {
+      "name": "audioprep-enhance",
+      "layer": 8,
+      "depends_on": [
+        "audioprep-audio-io",
+        "audioprep-worker"
+      ],
+      "responsibility": "Optional denoise, separation and enhancement candidate nodes."
+    },
+    {
+      "name": "audioprep-diarization",
+      "layer": 8,
+      "depends_on": [
+        "audioprep-audio-io",
+        "audioprep-worker"
+      ],
+      "responsibility": "Optional speaker analysis and speaker-attributed facts."
+    },
+    {
+      "name": "audioprep-asr-eval",
+      "layer": 8,
+      "depends_on": [
+        "audioprep-audio-io",
+        "audioprep-worker"
+      ],
+      "responsibility": "Optional advisory transcription/metrics for user comparison; never an authoritative audio-quality verdict."
+    },
+    {
+      "name": "audioprep-decisions",
+      "layer": 7,
+      "depends_on": [
+        "audioprep-store",
+        "audioprep-pipeline",
+        "audioprep-artifacts"
+      ],
+      "responsibility": "Candidate joins, policy evaluation and one-time Decision resolution."
+    },
+    {
+      "name": "audioprep-review",
+      "layer": 8,
+      "depends_on": [
+        "audioprep-decisions",
+        "audioprep-store"
+      ],
+      "responsibility": "Local audition/review contract, optional loopback adapter, compare-and-set resolution and event streaming."
+    },
+    {
+      "name": "audioprep-delivery",
+      "layer": 8,
+      "depends_on": [
+        "audioprep-store",
+        "audioprep-artifacts",
+        "audioprep-timeline"
+      ],
+      "responsibility": "Final rendering, Manifest validation, staging and atomic publication."
+    },
+    {
+      "name": "audioprep-scheduler",
+      "layer": 9,
+      "depends_on": [
+        "audioprep-store",
+        "audioprep-planner",
+        "audioprep-worker",
+        "audioprep-decisions",
+        "audioprep-delivery"
+      ],
+      "responsibility": "Single-machine single-writer orchestration, dispatch, local resource leases, execution fences and reconciliation."
+    },
+    {
+      "name": "audioprep-app",
+      "layer": 10,
+      "depends_on": [
+        "audioprep-config",
+        "audioprep-scheduler",
+        "audioprep-review"
+      ],
+      "responsibility": "Host-facing Context lifecycle and Public API v1 facade."
+    }
+  ]
+}

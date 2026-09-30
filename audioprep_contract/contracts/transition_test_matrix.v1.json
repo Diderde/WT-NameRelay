@@ -1,0 +1,1097 @@
+{
+  "schema": "audioprep.transition-test-matrix.v1",
+  "design_revision": "R2.1.5.07",
+  "machines": [
+    {
+      "name": "job",
+      "schema_trigger": "job_status_transition_guard",
+      "field": "status",
+      "states": [
+        "CREATED",
+        "QUEUED",
+        "RUNNING",
+        "WAITING_DECISION",
+        "SUCCEEDED",
+        "FAILED",
+        "STOPPED"
+      ],
+      "cases": [
+        {
+          "test_id": "TM-JOB-CREATED-TO-CREATED",
+          "from": "CREATED",
+          "to": "CREATED",
+          "allowed": true
+        },
+        {
+          "test_id": "TM-JOB-CREATED-TO-QUEUED",
+          "from": "CREATED",
+          "to": "QUEUED",
+          "allowed": true
+        },
+        {
+          "test_id": "TM-JOB-CREATED-TO-RUNNING",
+          "from": "CREATED",
+          "to": "RUNNING",
+          "allowed": false
+        },
+        {
+          "test_id": "TM-JOB-CREATED-TO-WAITING_DECISION",
+          "from": "CREATED",
+          "to": "WAITING_DECISION",
+          "allowed": false
+        },
+        {
+          "test_id": "TM-JOB-CREATED-TO-SUCCEEDED",
+          "from": "CREATED",
+          "to": "SUCCEEDED",
+          "allowed": false
+        },
+        {
+          "test_id": "TM-JOB-CREATED-TO-FAILED",
+          "from": "CREATED",
+          "to": "FAILED",
+          "allowed": true
+        },
+        {
+          "test_id": "TM-JOB-CREATED-TO-STOPPED",
+          "from": "CREATED",
+          "to": "STOPPED",
+          "allowed": true
+        },
+        {
+          "test_id": "TM-JOB-QUEUED-TO-CREATED",
+          "from": "QUEUED",
+          "to": "CREATED",
+          "allowed": false
+        },
+        {
+          "test_id": "TM-JOB-QUEUED-TO-QUEUED",
+          "from": "QUEUED",
+          "to": "QUEUED",
+          "allowed": true
+        },
+        {
+          "test_id": "TM-JOB-QUEUED-TO-RUNNING",
+          "from": "QUEUED",
+          "to": "RUNNING",
+          "allowed": true
+        },
+        {
+          "test_id": "TM-JOB-QUEUED-TO-WAITING_DECISION",
+          "from": "QUEUED",
+          "to": "WAITING_DECISION",
+          "allowed": false
+        },
+        {
+          "test_id": "TM-JOB-QUEUED-TO-SUCCEEDED",
+          "from": "QUEUED",
+          "to": "SUCCEEDED",
+          "allowed": false
+        },
+        {
+          "test_id": "TM-JOB-QUEUED-TO-FAILED",
+          "from": "QUEUED",
+          "to": "FAILED",
+          "allowed": true
+        },
+        {
+          "test_id": "TM-JOB-QUEUED-TO-STOPPED",
+          "from": "QUEUED",
+          "to": "STOPPED",
+          "allowed": true
+        },
+        {
+          "test_id": "TM-JOB-RUNNING-TO-CREATED",
+          "from": "RUNNING",
+          "to": "CREATED",
+          "allowed": false
+        },
+        {
+          "test_id": "TM-JOB-RUNNING-TO-QUEUED",
+          "from": "RUNNING",
+          "to": "QUEUED",
+          "allowed": false
+        },
+        {
+          "test_id": "TM-JOB-RUNNING-TO-RUNNING",
+          "from": "RUNNING",
+          "to": "RUNNING",
+          "allowed": true
+        },
+        {
+          "test_id": "TM-JOB-RUNNING-TO-WAITING_DECISION",
+          "from": "RUNNING",
+          "to": "WAITING_DECISION",
+          "allowed": true
+        },
+        {
+          "test_id": "TM-JOB-RUNNING-TO-SUCCEEDED",
+          "from": "RUNNING",
+          "to": "SUCCEEDED",
+          "allowed": true
+        },
+        {
+          "test_id": "TM-JOB-RUNNING-TO-FAILED",
+          "from": "RUNNING",
+          "to": "FAILED",
+          "allowed": true
+        },
+        {
+          "test_id": "TM-JOB-RUNNING-TO-STOPPED",
+          "from": "RUNNING",
+          "to": "STOPPED",
+          "allowed": true
+        },
+        {
+          "test_id": "TM-JOB-WAITING_DECISION-TO-CREATED",
+          "from": "WAITING_DECISION",
+          "to": "CREATED",
+          "allowed": false
+        },
+        {
+          "test_id": "TM-JOB-WAITING_DECISION-TO-QUEUED",
+          "from": "WAITING_DECISION",
+          "to": "QUEUED",
+          "allowed": false
+        },
+        {
+          "test_id": "TM-JOB-WAITING_DECISION-TO-RUNNING",
+          "from": "WAITING_DECISION",
+          "to": "RUNNING",
+          "allowed": true
+        },
+        {
+          "test_id": "TM-JOB-WAITING_DECISION-TO-WAITING_DECISION",
+          "from": "WAITING_DECISION",
+          "to": "WAITING_DECISION",
+          "allowed": true
+        },
+        {
+          "test_id": "TM-JOB-WAITING_DECISION-TO-SUCCEEDED",
+          "from": "WAITING_DECISION",
+          "to": "SUCCEEDED",
+          "allowed": false
+        },
+        {
+          "test_id": "TM-JOB-WAITING_DECISION-TO-FAILED",
+          "from": "WAITING_DECISION",
+          "to": "FAILED",
+          "allowed": true
+        },
+        {
+          "test_id": "TM-JOB-WAITING_DECISION-TO-STOPPED",
+          "from": "WAITING_DECISION",
+          "to": "STOPPED",
+          "allowed": true
+        },
+        {
+          "test_id": "TM-JOB-SUCCEEDED-TO-CREATED",
+          "from": "SUCCEEDED",
+          "to": "CREATED",
+          "allowed": false
+        },
+        {
+          "test_id": "TM-JOB-SUCCEEDED-TO-QUEUED",
+          "from": "SUCCEEDED",
+          "to": "QUEUED",
+          "allowed": false
+        },
+        {
+          "test_id": "TM-JOB-SUCCEEDED-TO-RUNNING",
+          "from": "SUCCEEDED",
+          "to": "RUNNING",
+          "allowed": false
+        },
+        {
+          "test_id": "TM-JOB-SUCCEEDED-TO-WAITING_DECISION",
+          "from": "SUCCEEDED",
+          "to": "WAITING_DECISION",
+          "allowed": false
+        },
+        {
+          "test_id": "TM-JOB-SUCCEEDED-TO-SUCCEEDED",
+          "from": "SUCCEEDED",
+          "to": "SUCCEEDED",
+          "allowed": true
+        },
+        {
+          "test_id": "TM-JOB-SUCCEEDED-TO-FAILED",
+          "from": "SUCCEEDED",
+          "to": "FAILED",
+          "allowed": false
+        },
+        {
+          "test_id": "TM-JOB-SUCCEEDED-TO-STOPPED",
+          "from": "SUCCEEDED",
+          "to": "STOPPED",
+          "allowed": false
+        },
+        {
+          "test_id": "TM-JOB-FAILED-TO-CREATED",
+          "from": "FAILED",
+          "to": "CREATED",
+          "allowed": false
+        },
+        {
+          "test_id": "TM-JOB-FAILED-TO-QUEUED",
+          "from": "FAILED",
+          "to": "QUEUED",
+          "allowed": false
+        },
+        {
+          "test_id": "TM-JOB-FAILED-TO-RUNNING",
+          "from": "FAILED",
+          "to": "RUNNING",
+          "allowed": false
+        },
+        {
+          "test_id": "TM-JOB-FAILED-TO-WAITING_DECISION",
+          "from": "FAILED",
+          "to": "WAITING_DECISION",
+          "allowed": false
+        },
+        {
+          "test_id": "TM-JOB-FAILED-TO-SUCCEEDED",
+          "from": "FAILED",
+          "to": "SUCCEEDED",
+          "allowed": false
+        },
+        {
+          "test_id": "TM-JOB-FAILED-TO-FAILED",
+          "from": "FAILED",
+          "to": "FAILED",
+          "allowed": true
+        },
+        {
+          "test_id": "TM-JOB-FAILED-TO-STOPPED",
+          "from": "FAILED",
+          "to": "STOPPED",
+          "allowed": false
+        },
+        {
+          "test_id": "TM-JOB-STOPPED-TO-CREATED",
+          "from": "STOPPED",
+          "to": "CREATED",
+          "allowed": false
+        },
+        {
+          "test_id": "TM-JOB-STOPPED-TO-QUEUED",
+          "from": "STOPPED",
+          "to": "QUEUED",
+          "allowed": false
+        },
+        {
+          "test_id": "TM-JOB-STOPPED-TO-RUNNING",
+          "from": "STOPPED",
+          "to": "RUNNING",
+          "allowed": false
+        },
+        {
+          "test_id": "TM-JOB-STOPPED-TO-WAITING_DECISION",
+          "from": "STOPPED",
+          "to": "WAITING_DECISION",
+          "allowed": false
+        },
+        {
+          "test_id": "TM-JOB-STOPPED-TO-SUCCEEDED",
+          "from": "STOPPED",
+          "to": "SUCCEEDED",
+          "allowed": false
+        },
+        {
+          "test_id": "TM-JOB-STOPPED-TO-FAILED",
+          "from": "STOPPED",
+          "to": "FAILED",
+          "allowed": false
+        },
+        {
+          "test_id": "TM-JOB-STOPPED-TO-STOPPED",
+          "from": "STOPPED",
+          "to": "STOPPED",
+          "allowed": true
+        }
+      ]
+    },
+    {
+      "name": "pipeline_plan",
+      "schema_trigger": "pipeline_plan_transition_guard",
+      "field": "status",
+      "states": [
+        "DRAFT",
+        "SEALED",
+        "SUPERSEDED"
+      ],
+      "cases": [
+        {
+          "test_id": "TM-PIPELINE_PLAN-DRAFT-TO-DRAFT",
+          "from": "DRAFT",
+          "to": "DRAFT",
+          "allowed": true
+        },
+        {
+          "test_id": "TM-PIPELINE_PLAN-DRAFT-TO-SEALED",
+          "from": "DRAFT",
+          "to": "SEALED",
+          "allowed": true
+        },
+        {
+          "test_id": "TM-PIPELINE_PLAN-DRAFT-TO-SUPERSEDED",
+          "from": "DRAFT",
+          "to": "SUPERSEDED",
+          "allowed": false
+        },
+        {
+          "test_id": "TM-PIPELINE_PLAN-SEALED-TO-DRAFT",
+          "from": "SEALED",
+          "to": "DRAFT",
+          "allowed": false
+        },
+        {
+          "test_id": "TM-PIPELINE_PLAN-SEALED-TO-SEALED",
+          "from": "SEALED",
+          "to": "SEALED",
+          "allowed": true
+        },
+        {
+          "test_id": "TM-PIPELINE_PLAN-SEALED-TO-SUPERSEDED",
+          "from": "SEALED",
+          "to": "SUPERSEDED",
+          "allowed": true
+        },
+        {
+          "test_id": "TM-PIPELINE_PLAN-SUPERSEDED-TO-DRAFT",
+          "from": "SUPERSEDED",
+          "to": "DRAFT",
+          "allowed": false
+        },
+        {
+          "test_id": "TM-PIPELINE_PLAN-SUPERSEDED-TO-SEALED",
+          "from": "SUPERSEDED",
+          "to": "SEALED",
+          "allowed": false
+        },
+        {
+          "test_id": "TM-PIPELINE_PLAN-SUPERSEDED-TO-SUPERSEDED",
+          "from": "SUPERSEDED",
+          "to": "SUPERSEDED",
+          "allowed": true
+        }
+      ]
+    },
+    {
+      "name": "node_execution",
+      "schema_trigger": "node_execution_transition_guard",
+      "field": "status",
+      "states": [
+        "PENDING",
+        "DISPATCHED",
+        "RUNNING",
+        "SUCCEEDED",
+        "FAILED",
+        "ABORTED",
+        "SKIPPED"
+      ],
+      "cases": [
+        {
+          "test_id": "TM-NODE_EXECUTION-PENDING-TO-PENDING",
+          "from": "PENDING",
+          "to": "PENDING",
+          "allowed": true
+        },
+        {
+          "test_id": "TM-NODE_EXECUTION-PENDING-TO-DISPATCHED",
+          "from": "PENDING",
+          "to": "DISPATCHED",
+          "allowed": true
+        },
+        {
+          "test_id": "TM-NODE_EXECUTION-PENDING-TO-RUNNING",
+          "from": "PENDING",
+          "to": "RUNNING",
+          "allowed": false
+        },
+        {
+          "test_id": "TM-NODE_EXECUTION-PENDING-TO-SUCCEEDED",
+          "from": "PENDING",
+          "to": "SUCCEEDED",
+          "allowed": false
+        },
+        {
+          "test_id": "TM-NODE_EXECUTION-PENDING-TO-FAILED",
+          "from": "PENDING",
+          "to": "FAILED",
+          "allowed": false
+        },
+        {
+          "test_id": "TM-NODE_EXECUTION-PENDING-TO-ABORTED",
+          "from": "PENDING",
+          "to": "ABORTED",
+          "allowed": true
+        },
+        {
+          "test_id": "TM-NODE_EXECUTION-PENDING-TO-SKIPPED",
+          "from": "PENDING",
+          "to": "SKIPPED",
+          "allowed": true
+        },
+        {
+          "test_id": "TM-NODE_EXECUTION-DISPATCHED-TO-PENDING",
+          "from": "DISPATCHED",
+          "to": "PENDING",
+          "allowed": false
+        },
+        {
+          "test_id": "TM-NODE_EXECUTION-DISPATCHED-TO-DISPATCHED",
+          "from": "DISPATCHED",
+          "to": "DISPATCHED",
+          "allowed": true
+        },
+        {
+          "test_id": "TM-NODE_EXECUTION-DISPATCHED-TO-RUNNING",
+          "from": "DISPATCHED",
+          "to": "RUNNING",
+          "allowed": true
+        },
+        {
+          "test_id": "TM-NODE_EXECUTION-DISPATCHED-TO-SUCCEEDED",
+          "from": "DISPATCHED",
+          "to": "SUCCEEDED",
+          "allowed": false
+        },
+        {
+          "test_id": "TM-NODE_EXECUTION-DISPATCHED-TO-FAILED",
+          "from": "DISPATCHED",
+          "to": "FAILED",
+          "allowed": true
+        },
+        {
+          "test_id": "TM-NODE_EXECUTION-DISPATCHED-TO-ABORTED",
+          "from": "DISPATCHED",
+          "to": "ABORTED",
+          "allowed": true
+        },
+        {
+          "test_id": "TM-NODE_EXECUTION-DISPATCHED-TO-SKIPPED",
+          "from": "DISPATCHED",
+          "to": "SKIPPED",
+          "allowed": false
+        },
+        {
+          "test_id": "TM-NODE_EXECUTION-RUNNING-TO-PENDING",
+          "from": "RUNNING",
+          "to": "PENDING",
+          "allowed": false
+        },
+        {
+          "test_id": "TM-NODE_EXECUTION-RUNNING-TO-DISPATCHED",
+          "from": "RUNNING",
+          "to": "DISPATCHED",
+          "allowed": false
+        },
+        {
+          "test_id": "TM-NODE_EXECUTION-RUNNING-TO-RUNNING",
+          "from": "RUNNING",
+          "to": "RUNNING",
+          "allowed": true
+        },
+        {
+          "test_id": "TM-NODE_EXECUTION-RUNNING-TO-SUCCEEDED",
+          "from": "RUNNING",
+          "to": "SUCCEEDED",
+          "allowed": true
+        },
+        {
+          "test_id": "TM-NODE_EXECUTION-RUNNING-TO-FAILED",
+          "from": "RUNNING",
+          "to": "FAILED",
+          "allowed": true
+        },
+        {
+          "test_id": "TM-NODE_EXECUTION-RUNNING-TO-ABORTED",
+          "from": "RUNNING",
+          "to": "ABORTED",
+          "allowed": true
+        },
+        {
+          "test_id": "TM-NODE_EXECUTION-RUNNING-TO-SKIPPED",
+          "from": "RUNNING",
+          "to": "SKIPPED",
+          "allowed": false
+        },
+        {
+          "test_id": "TM-NODE_EXECUTION-SUCCEEDED-TO-PENDING",
+          "from": "SUCCEEDED",
+          "to": "PENDING",
+          "allowed": false
+        },
+        {
+          "test_id": "TM-NODE_EXECUTION-SUCCEEDED-TO-DISPATCHED",
+          "from": "SUCCEEDED",
+          "to": "DISPATCHED",
+          "allowed": false
+        },
+        {
+          "test_id": "TM-NODE_EXECUTION-SUCCEEDED-TO-RUNNING",
+          "from": "SUCCEEDED",
+          "to": "RUNNING",
+          "allowed": false
+        },
+        {
+          "test_id": "TM-NODE_EXECUTION-SUCCEEDED-TO-SUCCEEDED",
+          "from": "SUCCEEDED",
+          "to": "SUCCEEDED",
+          "allowed": true
+        },
+        {
+          "test_id": "TM-NODE_EXECUTION-SUCCEEDED-TO-FAILED",
+          "from": "SUCCEEDED",
+          "to": "FAILED",
+          "allowed": false
+        },
+        {
+          "test_id": "TM-NODE_EXECUTION-SUCCEEDED-TO-ABORTED",
+          "from": "SUCCEEDED",
+          "to": "ABORTED",
+          "allowed": false
+        },
+        {
+          "test_id": "TM-NODE_EXECUTION-SUCCEEDED-TO-SKIPPED",
+          "from": "SUCCEEDED",
+          "to": "SKIPPED",
+          "allowed": false
+        },
+        {
+          "test_id": "TM-NODE_EXECUTION-FAILED-TO-PENDING",
+          "from": "FAILED",
+          "to": "PENDING",
+          "allowed": false
+        },
+        {
+          "test_id": "TM-NODE_EXECUTION-FAILED-TO-DISPATCHED",
+          "from": "FAILED",
+          "to": "DISPATCHED",
+          "allowed": false
+        },
+        {
+          "test_id": "TM-NODE_EXECUTION-FAILED-TO-RUNNING",
+          "from": "FAILED",
+          "to": "RUNNING",
+          "allowed": false
+        },
+        {
+          "test_id": "TM-NODE_EXECUTION-FAILED-TO-SUCCEEDED",
+          "from": "FAILED",
+          "to": "SUCCEEDED",
+          "allowed": false
+        },
+        {
+          "test_id": "TM-NODE_EXECUTION-FAILED-TO-FAILED",
+          "from": "FAILED",
+          "to": "FAILED",
+          "allowed": true
+        },
+        {
+          "test_id": "TM-NODE_EXECUTION-FAILED-TO-ABORTED",
+          "from": "FAILED",
+          "to": "ABORTED",
+          "allowed": false
+        },
+        {
+          "test_id": "TM-NODE_EXECUTION-FAILED-TO-SKIPPED",
+          "from": "FAILED",
+          "to": "SKIPPED",
+          "allowed": false
+        },
+        {
+          "test_id": "TM-NODE_EXECUTION-ABORTED-TO-PENDING",
+          "from": "ABORTED",
+          "to": "PENDING",
+          "allowed": false
+        },
+        {
+          "test_id": "TM-NODE_EXECUTION-ABORTED-TO-DISPATCHED",
+          "from": "ABORTED",
+          "to": "DISPATCHED",
+          "allowed": false
+        },
+        {
+          "test_id": "TM-NODE_EXECUTION-ABORTED-TO-RUNNING",
+          "from": "ABORTED",
+          "to": "RUNNING",
+          "allowed": false
+        },
+        {
+          "test_id": "TM-NODE_EXECUTION-ABORTED-TO-SUCCEEDED",
+          "from": "ABORTED",
+          "to": "SUCCEEDED",
+          "allowed": false
+        },
+        {
+          "test_id": "TM-NODE_EXECUTION-ABORTED-TO-FAILED",
+          "from": "ABORTED",
+          "to": "FAILED",
+          "allowed": false
+        },
+        {
+          "test_id": "TM-NODE_EXECUTION-ABORTED-TO-ABORTED",
+          "from": "ABORTED",
+          "to": "ABORTED",
+          "allowed": true
+        },
+        {
+          "test_id": "TM-NODE_EXECUTION-ABORTED-TO-SKIPPED",
+          "from": "ABORTED",
+          "to": "SKIPPED",
+          "allowed": false
+        },
+        {
+          "test_id": "TM-NODE_EXECUTION-SKIPPED-TO-PENDING",
+          "from": "SKIPPED",
+          "to": "PENDING",
+          "allowed": false
+        },
+        {
+          "test_id": "TM-NODE_EXECUTION-SKIPPED-TO-DISPATCHED",
+          "from": "SKIPPED",
+          "to": "DISPATCHED",
+          "allowed": false
+        },
+        {
+          "test_id": "TM-NODE_EXECUTION-SKIPPED-TO-RUNNING",
+          "from": "SKIPPED",
+          "to": "RUNNING",
+          "allowed": false
+        },
+        {
+          "test_id": "TM-NODE_EXECUTION-SKIPPED-TO-SUCCEEDED",
+          "from": "SKIPPED",
+          "to": "SUCCEEDED",
+          "allowed": false
+        },
+        {
+          "test_id": "TM-NODE_EXECUTION-SKIPPED-TO-FAILED",
+          "from": "SKIPPED",
+          "to": "FAILED",
+          "allowed": false
+        },
+        {
+          "test_id": "TM-NODE_EXECUTION-SKIPPED-TO-ABORTED",
+          "from": "SKIPPED",
+          "to": "ABORTED",
+          "allowed": false
+        },
+        {
+          "test_id": "TM-NODE_EXECUTION-SKIPPED-TO-SKIPPED",
+          "from": "SKIPPED",
+          "to": "SKIPPED",
+          "allowed": true
+        }
+      ]
+    },
+    {
+      "name": "checkpoint",
+      "schema_trigger": "checkpoint_transition_guard",
+      "field": "status",
+      "states": [
+        "OPEN",
+        "COMMITTED",
+        "RELEASED"
+      ],
+      "cases": [
+        {
+          "test_id": "TM-CHECKPOINT-OPEN-TO-OPEN",
+          "from": "OPEN",
+          "to": "OPEN",
+          "allowed": true
+        },
+        {
+          "test_id": "TM-CHECKPOINT-OPEN-TO-COMMITTED",
+          "from": "OPEN",
+          "to": "COMMITTED",
+          "allowed": true
+        },
+        {
+          "test_id": "TM-CHECKPOINT-OPEN-TO-RELEASED",
+          "from": "OPEN",
+          "to": "RELEASED",
+          "allowed": true
+        },
+        {
+          "test_id": "TM-CHECKPOINT-COMMITTED-TO-OPEN",
+          "from": "COMMITTED",
+          "to": "OPEN",
+          "allowed": false
+        },
+        {
+          "test_id": "TM-CHECKPOINT-COMMITTED-TO-COMMITTED",
+          "from": "COMMITTED",
+          "to": "COMMITTED",
+          "allowed": true
+        },
+        {
+          "test_id": "TM-CHECKPOINT-COMMITTED-TO-RELEASED",
+          "from": "COMMITTED",
+          "to": "RELEASED",
+          "allowed": true
+        },
+        {
+          "test_id": "TM-CHECKPOINT-RELEASED-TO-OPEN",
+          "from": "RELEASED",
+          "to": "OPEN",
+          "allowed": false
+        },
+        {
+          "test_id": "TM-CHECKPOINT-RELEASED-TO-COMMITTED",
+          "from": "RELEASED",
+          "to": "COMMITTED",
+          "allowed": false
+        },
+        {
+          "test_id": "TM-CHECKPOINT-RELEASED-TO-RELEASED",
+          "from": "RELEASED",
+          "to": "RELEASED",
+          "allowed": true
+        }
+      ]
+    },
+    {
+      "name": "decision",
+      "schema_trigger": "decision_transition_guard",
+      "field": "status",
+      "states": [
+        "PENDING",
+        "RESOLVED",
+        "APPLIED",
+        "EXPIRED",
+        "CANCELLED"
+      ],
+      "cases": [
+        {
+          "test_id": "TM-DECISION-PENDING-TO-PENDING",
+          "from": "PENDING",
+          "to": "PENDING",
+          "allowed": true
+        },
+        {
+          "test_id": "TM-DECISION-PENDING-TO-RESOLVED",
+          "from": "PENDING",
+          "to": "RESOLVED",
+          "allowed": true
+        },
+        {
+          "test_id": "TM-DECISION-PENDING-TO-APPLIED",
+          "from": "PENDING",
+          "to": "APPLIED",
+          "allowed": false
+        },
+        {
+          "test_id": "TM-DECISION-PENDING-TO-EXPIRED",
+          "from": "PENDING",
+          "to": "EXPIRED",
+          "allowed": true
+        },
+        {
+          "test_id": "TM-DECISION-PENDING-TO-CANCELLED",
+          "from": "PENDING",
+          "to": "CANCELLED",
+          "allowed": true
+        },
+        {
+          "test_id": "TM-DECISION-RESOLVED-TO-PENDING",
+          "from": "RESOLVED",
+          "to": "PENDING",
+          "allowed": false
+        },
+        {
+          "test_id": "TM-DECISION-RESOLVED-TO-RESOLVED",
+          "from": "RESOLVED",
+          "to": "RESOLVED",
+          "allowed": true
+        },
+        {
+          "test_id": "TM-DECISION-RESOLVED-TO-APPLIED",
+          "from": "RESOLVED",
+          "to": "APPLIED",
+          "allowed": true
+        },
+        {
+          "test_id": "TM-DECISION-RESOLVED-TO-EXPIRED",
+          "from": "RESOLVED",
+          "to": "EXPIRED",
+          "allowed": false
+        },
+        {
+          "test_id": "TM-DECISION-RESOLVED-TO-CANCELLED",
+          "from": "RESOLVED",
+          "to": "CANCELLED",
+          "allowed": true
+        },
+        {
+          "test_id": "TM-DECISION-APPLIED-TO-PENDING",
+          "from": "APPLIED",
+          "to": "PENDING",
+          "allowed": false
+        },
+        {
+          "test_id": "TM-DECISION-APPLIED-TO-RESOLVED",
+          "from": "APPLIED",
+          "to": "RESOLVED",
+          "allowed": false
+        },
+        {
+          "test_id": "TM-DECISION-APPLIED-TO-APPLIED",
+          "from": "APPLIED",
+          "to": "APPLIED",
+          "allowed": true
+        },
+        {
+          "test_id": "TM-DECISION-APPLIED-TO-EXPIRED",
+          "from": "APPLIED",
+          "to": "EXPIRED",
+          "allowed": false
+        },
+        {
+          "test_id": "TM-DECISION-APPLIED-TO-CANCELLED",
+          "from": "APPLIED",
+          "to": "CANCELLED",
+          "allowed": false
+        },
+        {
+          "test_id": "TM-DECISION-EXPIRED-TO-PENDING",
+          "from": "EXPIRED",
+          "to": "PENDING",
+          "allowed": false
+        },
+        {
+          "test_id": "TM-DECISION-EXPIRED-TO-RESOLVED",
+          "from": "EXPIRED",
+          "to": "RESOLVED",
+          "allowed": false
+        },
+        {
+          "test_id": "TM-DECISION-EXPIRED-TO-APPLIED",
+          "from": "EXPIRED",
+          "to": "APPLIED",
+          "allowed": false
+        },
+        {
+          "test_id": "TM-DECISION-EXPIRED-TO-EXPIRED",
+          "from": "EXPIRED",
+          "to": "EXPIRED",
+          "allowed": true
+        },
+        {
+          "test_id": "TM-DECISION-EXPIRED-TO-CANCELLED",
+          "from": "EXPIRED",
+          "to": "CANCELLED",
+          "allowed": false
+        },
+        {
+          "test_id": "TM-DECISION-CANCELLED-TO-PENDING",
+          "from": "CANCELLED",
+          "to": "PENDING",
+          "allowed": false
+        },
+        {
+          "test_id": "TM-DECISION-CANCELLED-TO-RESOLVED",
+          "from": "CANCELLED",
+          "to": "RESOLVED",
+          "allowed": false
+        },
+        {
+          "test_id": "TM-DECISION-CANCELLED-TO-APPLIED",
+          "from": "CANCELLED",
+          "to": "APPLIED",
+          "allowed": false
+        },
+        {
+          "test_id": "TM-DECISION-CANCELLED-TO-EXPIRED",
+          "from": "CANCELLED",
+          "to": "EXPIRED",
+          "allowed": false
+        },
+        {
+          "test_id": "TM-DECISION-CANCELLED-TO-CANCELLED",
+          "from": "CANCELLED",
+          "to": "CANCELLED",
+          "allowed": true
+        }
+      ]
+    },
+    {
+      "name": "deliverable",
+      "schema_trigger": "deliverable_transition_guard",
+      "field": "status",
+      "states": [
+        "STAGING",
+        "PUBLISHED",
+        "FAILED",
+        "DELETED"
+      ],
+      "cases": [
+        {
+          "test_id": "TM-DELIVERABLE-STAGING-TO-STAGING",
+          "from": "STAGING",
+          "to": "STAGING",
+          "allowed": true
+        },
+        {
+          "test_id": "TM-DELIVERABLE-STAGING-TO-PUBLISHED",
+          "from": "STAGING",
+          "to": "PUBLISHED",
+          "allowed": true
+        },
+        {
+          "test_id": "TM-DELIVERABLE-STAGING-TO-FAILED",
+          "from": "STAGING",
+          "to": "FAILED",
+          "allowed": true
+        },
+        {
+          "test_id": "TM-DELIVERABLE-STAGING-TO-DELETED",
+          "from": "STAGING",
+          "to": "DELETED",
+          "allowed": false
+        },
+        {
+          "test_id": "TM-DELIVERABLE-PUBLISHED-TO-STAGING",
+          "from": "PUBLISHED",
+          "to": "STAGING",
+          "allowed": false
+        },
+        {
+          "test_id": "TM-DELIVERABLE-PUBLISHED-TO-PUBLISHED",
+          "from": "PUBLISHED",
+          "to": "PUBLISHED",
+          "allowed": true
+        },
+        {
+          "test_id": "TM-DELIVERABLE-PUBLISHED-TO-FAILED",
+          "from": "PUBLISHED",
+          "to": "FAILED",
+          "allowed": false
+        },
+        {
+          "test_id": "TM-DELIVERABLE-PUBLISHED-TO-DELETED",
+          "from": "PUBLISHED",
+          "to": "DELETED",
+          "allowed": true
+        },
+        {
+          "test_id": "TM-DELIVERABLE-FAILED-TO-STAGING",
+          "from": "FAILED",
+          "to": "STAGING",
+          "allowed": false
+        },
+        {
+          "test_id": "TM-DELIVERABLE-FAILED-TO-PUBLISHED",
+          "from": "FAILED",
+          "to": "PUBLISHED",
+          "allowed": false
+        },
+        {
+          "test_id": "TM-DELIVERABLE-FAILED-TO-FAILED",
+          "from": "FAILED",
+          "to": "FAILED",
+          "allowed": true
+        },
+        {
+          "test_id": "TM-DELIVERABLE-FAILED-TO-DELETED",
+          "from": "FAILED",
+          "to": "DELETED",
+          "allowed": false
+        },
+        {
+          "test_id": "TM-DELIVERABLE-DELETED-TO-STAGING",
+          "from": "DELETED",
+          "to": "STAGING",
+          "allowed": false
+        },
+        {
+          "test_id": "TM-DELIVERABLE-DELETED-TO-PUBLISHED",
+          "from": "DELETED",
+          "to": "PUBLISHED",
+          "allowed": false
+        },
+        {
+          "test_id": "TM-DELIVERABLE-DELETED-TO-FAILED",
+          "from": "DELETED",
+          "to": "FAILED",
+          "allowed": false
+        },
+        {
+          "test_id": "TM-DELIVERABLE-DELETED-TO-DELETED",
+          "from": "DELETED",
+          "to": "DELETED",
+          "allowed": true
+        }
+      ]
+    },
+    {
+      "name": "blob",
+      "schema_trigger": "blob_gc_transition_guard",
+      "field": "gc_state",
+      "states": [
+        "LIVE",
+        "TOMBSTONED",
+        "PURGING"
+      ],
+      "cases": [
+        {
+          "test_id": "TM-BLOB-LIVE-TO-LIVE",
+          "from": "LIVE",
+          "to": "LIVE",
+          "allowed": true
+        },
+        {
+          "test_id": "TM-BLOB-LIVE-TO-TOMBSTONED",
+          "from": "LIVE",
+          "to": "TOMBSTONED",
+          "allowed": true
+        },
+        {
+          "test_id": "TM-BLOB-LIVE-TO-PURGING",
+          "from": "LIVE",
+          "to": "PURGING",
+          "allowed": false
+        },
+        {
+          "test_id": "TM-BLOB-TOMBSTONED-TO-LIVE",
+          "from": "TOMBSTONED",
+          "to": "LIVE",
+          "allowed": false
+        },
+        {
+          "test_id": "TM-BLOB-TOMBSTONED-TO-TOMBSTONED",
+          "from": "TOMBSTONED",
+          "to": "TOMBSTONED",
+          "allowed": true
+        },
+        {
+          "test_id": "TM-BLOB-TOMBSTONED-TO-PURGING",
+          "from": "TOMBSTONED",
+          "to": "PURGING",
+          "allowed": true
+        },
+        {
+          "test_id": "TM-BLOB-PURGING-TO-LIVE",
+          "from": "PURGING",
+          "to": "LIVE",
+          "allowed": false
+        },
+        {
+          "test_id": "TM-BLOB-PURGING-TO-TOMBSTONED",
+          "from": "PURGING",
+          "to": "TOMBSTONED",
+          "allowed": false
+        },
+        {
+          "test_id": "TM-BLOB-PURGING-TO-PURGING",
+          "from": "PURGING",
+          "to": "PURGING",
+          "allowed": true
+        }
+      ]
+    }
+  ]
+}

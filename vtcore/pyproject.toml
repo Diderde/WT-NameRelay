@@ -1,0 +1,14 @@
+[build-system]
+requires = ["maturin>=1.7,<2.0"]
+build-backend = "maturin"
+
+[project]
+name = "vtcore"
+description = "WT-NameRelay 语音批量规范字节的权威实现（Rust / PyO3）"
+requires-python = ">=3.12"
+license = { text = "GPL-3.0-only" }
+dynamic = ["version"]
+
+[tool.maturin]
+features = ["pyo3/extension-module"]
+module-name = "vtcore"

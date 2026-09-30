@@ -1,7 +1,22 @@
 from __future__ import annotations
 
-from PySide6.QtCore import QEasingCurve, QEvent, Property, QPropertyAnimation, Qt, Signal
-from PySide6.QtGui import QEnterEvent, QFocusEvent, QIcon, QKeyEvent, QMouseEvent, QPaintEvent, QResizeEvent
+from PySide6.QtCore import (
+    Property,
+    QEasingCurve,
+    QEvent,
+    QPropertyAnimation,
+    Qt,
+    Signal,
+)
+from PySide6.QtGui import (
+    QEnterEvent,
+    QFocusEvent,
+    QIcon,
+    QKeyEvent,
+    QMouseEvent,
+    QPaintEvent,
+    QResizeEvent,
+)
 from PySide6.QtWidgets import (
     QAbstractButton,
     QFrame,
@@ -12,6 +27,8 @@ from PySide6.QtWidgets import (
     QVBoxLayout,
     QWidget,
 )
+
+from app.i18n import tr
 
 
 class FeatureCard(QAbstractButton):
@@ -24,8 +41,9 @@ class FeatureCard(QAbstractButton):
         feature_key: str,
         title: str,
         description: str,
-        icon_path: str,
+        icon_path: str = "",
         parent: QWidget | None = None,
+        card_height: int = 240,
     ) -> None:
         super().__init__(parent)
         self.feature_key = feature_key
@@ -33,12 +51,14 @@ class FeatureCard(QAbstractButton):
 
         self.setObjectName(f"{feature_key}Card")
         self.setAccessibleName(title)
-        self.setToolTip(f"进入{title}")
+        self._title = title
+        self._description = description
+        self.setToolTip(tr("card.tooltip", title=title))
         self.setCursor(Qt.CursorShape.PointingHandCursor)
         self.setFocusPolicy(Qt.FocusPolicy.StrongFocus)
         self.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Fixed)
         self.setMinimumWidth(220)
-        self.setFixedHeight(240)
+        self.setFixedHeight(card_height)
 
         self._surface = QFrame(self)
         self._surface.setObjectName("featureCardSurface")
@@ -57,13 +77,14 @@ class FeatureCard(QAbstractButton):
         content.setContentsMargins(24, 22, 24, 20)
         content.setSpacing(0)
 
-        icon_label = QLabel()
-        icon_label.setObjectName("cardIcon")
-        icon_label.setFixedSize(56, 56)
-        icon_label.setPixmap(QIcon(icon_path).pixmap(52, 52))
-        icon_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        content.addWidget(icon_label, 0, Qt.AlignmentFlag.AlignLeft)
-        content.addSpacing(20)
+        if icon_path:
+            icon_label = QLabel()
+            icon_label.setObjectName("cardIcon")
+            icon_label.setFixedSize(56, 56)
+            icon_label.setPixmap(QIcon(icon_path).pixmap(52, 52))
+            icon_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+            content.addWidget(icon_label, 0, Qt.AlignmentFlag.AlignLeft)
+            content.addSpacing(20)
 
         title_label = QLabel(title)
         title_label.setObjectName("cardTitle")
@@ -74,11 +95,14 @@ class FeatureCard(QAbstractButton):
         description_label.setObjectName("cardDescription")
         description_label.setWordWrap(True)
         content.addWidget(description_label)
+        self._title_label = title_label
+        self._description_label = description_label
         content.addStretch(1)
 
         action_row = QHBoxLayout()
         action_row.setContentsMargins(0, 0, 0, 0)
-        action_label = QLabel("进入功能")
+        action_label = QLabel(tr("card.action"))
+        self._action_label = action_label
         action_label.setObjectName("cardAction")
         arrow_label = QLabel("→")
         arrow_label.setObjectName("cardAction")
@@ -94,6 +118,17 @@ class FeatureCard(QAbstractButton):
 
     def _emit_activated(self, _checked: bool = False) -> None:
         self.activated.emit(self.feature_key)
+
+    def retranslate(self) -> None:
+        title = tr(f"home.card.{self.feature_key}.title", fallback=self._title)
+        description = tr(f"home.card.{self.feature_key}.desc", fallback=self._description)
+        self._title = title
+        self._description = description
+        self._title_label.setText(title)
+        self._description_label.setText(description)
+        self._action_label.setText(tr("card.action"))
+        self.setToolTip(tr("card.tooltip", title=title))
+        self.setAccessibleName(title)
 
     def set_transition_active(self, active: bool) -> None:
         """Suspend the card shadow while a parent page opacity effect is active."""

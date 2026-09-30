@@ -1,0 +1,25 @@
+stateDiagram-v2
+    [*] --> DRAFT
+    DRAFT --> SEALED: PlanSealValidator receipt + matching fingerprint
+    SEALED --> SUPERSEDED: before Job start only
+    DRAFT --> DRAFT: edit after deleting validation receipt
+
+    state Job {
+      [*] --> CREATED
+      CREATED --> QUEUED
+      QUEUED --> RUNNING
+      RUNNING --> WAITING_DECISION
+      WAITING_DECISION --> RUNNING
+      RUNNING --> SUCCEEDED
+      RUNNING --> FAILED
+      RUNNING --> STOPPED
+    }
+
+    state Decision {
+      [*] --> PENDING
+      PENDING --> RESOLVED
+      RESOLVED --> APPLIED
+      RESOLVED --> CANCELLED
+      PENDING --> EXPIRED
+      PENDING --> CANCELLED
+    }

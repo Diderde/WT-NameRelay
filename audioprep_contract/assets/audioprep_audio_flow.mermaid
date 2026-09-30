@@ -1,0 +1,16 @@
+flowchart LR
+    Source[SOURCE_MEDIA] --> Decode[Decode / probe]
+    Decode --> Master[QUALITY_MASTER]
+    Master --> Projection[Analysis projection]
+    Projection --> Analysis[ANALYSIS_COPY\nmono 16 kHz typical]
+    Analysis --> VAD[VAD / analysis]
+    VAD --> SegmentPlan[Segment plan]
+    Master --> Render[Final render]
+    SegmentPlan --> Render
+    Render --> Segments[ASR_SEGMENT WAV]
+    Segments --> Manifest[manifest.json + Timeline]
+
+    Master -. audition .-> Review[Local audition / compare\nuser decides]
+    Analysis -. audition .-> Review
+    SegmentPlan -. boundary/context audition .-> Review
+    Segments -. final audition .-> Review

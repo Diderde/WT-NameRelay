@@ -1,0 +1,34 @@
+{
+  "measured": {
+    "FFmpeg": {
+      "version": "N-125829-gfe953596e9",
+      "source": "自建（MSYS2 mingw-w64 gcc 16.2.0）",
+      "evidence": "ffmpeg -version 与内嵌 configure 行"
+    },
+    "libmp3lame (LAME)": {
+      "version": "3.100",
+      "source": "MSYS2 mingw-w64-x86_64-lame",
+      "evidence": "pkg-config --modversion lame"
+    },
+    "libopus": {
+      "version": "1.6.1",
+      "source": "MSYS2 mingw-w64-x86_64-opus",
+      "evidence": "pkg-config --modversion opus"
+    },
+    "zlib": {
+      "version": "1.3.2",
+      "source": "MSYS2 mingw-w64-x86_64-zlib",
+      "evidence": "pkg-config --modversion zlib"
+    },
+    "libgcc_s_seh-1.dll": {
+      "version": "GCC 16.2.0",
+      "source": "MSYS2 mingw-w64-x86_64-gcc-libs",
+      "evidence": "随包 DLL"
+    },
+    "libwinpthread-1.dll": {
+      "version": "mingw-w64 14.0.0",
+      "source": "MSYS2 mingw-w64-x86_64-winpthreads",
+      "evidence": "随包 DLL"
+    }
+  }
+}

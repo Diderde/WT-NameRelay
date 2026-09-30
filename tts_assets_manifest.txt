@@ -1,0 +1,50 @@
+# TTS 资源完整性清单（官方哈希）
+# 由 tools/collect_tts_asset_hashes.py 采集自 HuggingFace tree API，请勿手改。
+# 格式: <算法>|<哈希>|<字节数>|<相对仓库根的路径>
+#   sha256    —— LFS 文件的官方 SHA-256（HF lfs.oid）
+#   git-sha1  —— 普通文件的 git blob SHA-1（HF oid），校验算法同 git
+# 路径前缀与各组基准目录：
+#   TTS model/GPT-SoVITS/GPT_SoVITS/pretrained_models/  <- lj1995/GPT-SoVITS
+#   TTS model/CosyVoice3/                               <- cstr/cosyvoice3-0.5b-2512-GGUF
+#   TTS model/GPT-SoVITS/tools/asr/models/faster-whisper-large-v3/  <- Systran/faster-whisper-large-v3
+git-sha1|0adcd01e7c237205d593b707e66dd5d7bc785d2d|1068114|TTS model/GPT-SoVITS/tools/asr/models/faster-whisper-large-v3/vocabulary.json
+git-sha1|0bb839d4b0cd2ad41cb13c6500fd660800aaefdf|1449|TTS model/GPT-SoVITS/GPT_SoVITS/pretrained_models/chinese-hubert-base/config.json
+git-sha1|25aa9799039982166df831f12e449f24c67f2f7e|1402|TTS model/GPT-SoVITS/GPT_SoVITS/pretrained_models/models--nvidia--bigvgan_v2_24khz_100band_256x/config.json
+git-sha1|3a5e2ba63acdcac9a19ba56cf9bd27f185bfff61|2480617|TTS model/GPT-SoVITS/tools/asr/models/faster-whisper-large-v3/tokenizer.json
+git-sha1|3ae58d7f0734373bb28d3b6b9d6858b34f600b4a|963|TTS model/GPT-SoVITS/GPT_SoVITS/pretrained_models/chinese-roberta-wwm-ext-large/config.json
+git-sha1|409547bbb99588f69a603019a707505610fa38d3|212|TTS model/GPT-SoVITS/GPT_SoVITS/pretrained_models/chinese-hubert-base/preprocessor_config.json
+git-sha1|75336feae814999bae6ccccdecf177639ffc6f9d|2394|TTS model/GPT-SoVITS/tools/asr/models/faster-whisper-large-v3/config.json
+git-sha1|931c77a740890c46365c7ae0c9d350ba3cca908f|340|TTS model/GPT-SoVITS/tools/asr/models/faster-whisper-large-v3/preprocessor_config.json
+git-sha1|9e77beb20869ea3b7850166fbc8cc7734662a017|268962|TTS model/GPT-SoVITS/GPT_SoVITS/pretrained_models/chinese-roberta-wwm-ext-large/tokenizer.json
+git-sha1|bec258edbf47e9c36e03e63aaa4142a7d6a5e1f3|845|TTS model/GPT-SoVITS/GPT_SoVITS/pretrained_models/hifigan_config.json
+sha256|020a014e1e01e550e510f2f61fae5e5f5b6aab40f15c22f1f12f724df507e835|105973721|TTS model/GPT-SoVITS/GPT_SoVITS/pretrained_models/s2G488k.pth
+sha256|0f8ead815234365edf045c6d86370ed6e4f440e8195be77ff0ea72684ad406a5|162303657|TTS model/GPT-SoVITS/GPT_SoVITS/pretrained_models/v2Pro/s2Gv2Pro.pth
+sha256|0fb0b43516487dff1b52623e7fcbe44b5d27b2df68a5a61d7f4f05012d0a36ca|145258240|TTS model/CosyVoice3/cosyvoice3-s3tok-q4_k.gguf
+sha256|12d6b5761e9d2efbc905f8b5ddecc6dc34371c928fbbe30cf52d900c0fb27f7e|484406944|TTS model/CosyVoice3/cosyvoice3-s3tok-f16.gguf
+sha256|24164f129c66499d1346e2aa55f183250c223161ec2770c0da3d3b08cf432d3c|188811417|TTS model/GPT-SoVITS/GPT_SoVITS/pretrained_models/chinese-hubert-base/pytorch_model.bin
+sha256|257a7f36ae49e9ff08790d2cd3d398592530852caba810197f8606e884a52c54|126431971|TTS model/GPT-SoVITS/GPT_SoVITS/pretrained_models/v2Pro/s2Dv2Pro.pth
+sha256|33d899490108bce896c3448bca40ebd994daa125ce0b118e6267f6b84fc09530|383891200|TTS model/CosyVoice3/cosyvoice3-llm-q4_k.gguf
+sha256|41cddf71b72adf154fb973afafed6208bfd74920c9394f44c78bf4c73077bea3|821422096|TTS model/GPT-SoVITS/GPT_SoVITS/pretrained_models/hifigan_do_03357000
+sha256|4d611913df7b12d49e8976c944558d2d096816365edfc6c35a9e85b67dd14ed9|57781109|TTS model/GPT-SoVITS/GPT_SoVITS/pretrained_models/gsv-v4-pretrained/vocoder.pth
+sha256|4f5a0bf73c61eb41b174e1bb54e7ee3c83233892be8e0af1f187024e8e581a35|107528697|TTS model/GPT-SoVITS/GPT_SoVITS/pretrained_models/sv/pretrained_eres2netv2w24s4ep4.ckpt
+sha256|635cd84bf6f7f9b8d41c88c7106f81d782c794c61f931845214ea037b0c5bef2|126432639|TTS model/GPT-SoVITS/GPT_SoVITS/pretrained_models/v2Pro/s2Dv2ProPlus.pth
+sha256|689566f06437567f764bfb50d3c06461c79bab97914ab8889b735e35498bd5f6|665140992|TTS model/CosyVoice3/cosyvoice3-flow-f16.gguf
+sha256|69f74147e3334731bc3a76048724833325d2ec74642fb52620eda87352e3d4f1|3087284237|TTS model/GPT-SoVITS/tools/asr/models/faster-whisper-large-v3/model.bin
+sha256|6df249e52901714f30f9bb163ff47cedfa56f6df3385567b657610eeb8b8cfd3|41601888|TTS model/CosyVoice3/cosyvoice3-hift-f16.gguf
+sha256|6f70770750c3f302a6b1732fc9a02d97f33d86aa77282e46237cff3c55510d60|383891200|TTS model/CosyVoice3/cosyvoice3-llm-rl-q4_k.gguf
+sha256|6f9c5715550c9d0f11159ceb8935638da5aeb19e27d1e63677632df095e376f5|450088331|TTS model/GPT-SoVITS/GPT_SoVITS/pretrained_models/models--nvidia--bigvgan_v2_24khz_100band_256x/bigvgan_generator.pt
+sha256|732f94e63b148066e24c7f9d2637f3374083e637635f07fbdb695dee20ddbe1f|155315150|TTS model/GPT-SoVITS/GPT_SoVITS/pretrained_models/gsv-v2final-pretrained/s1bert25hz-5kh-longer-epoch=12-step=369668.ckpt
+sha256|73b5cac894d8e715d418d0228d2878ad6e836a809ccb85799ff08ae5f63ac6a2|665472|TTS model/CosyVoice3/cosyvoice3-voices.gguf
+sha256|87133414860ea14ff6620c483a3db5ed07b44be42e2c3fcdad65523a729a745a|155284856|TTS model/GPT-SoVITS/GPT_SoVITS/pretrained_models/s1v3.ckpt
+sha256|8ae7fe8dd8c8f2e718de359e00edac88b0c71ab2fd10b07ad4cc45070eb8a836|93534164|TTS model/GPT-SoVITS/GPT_SoVITS/pretrained_models/gsv-v2final-pretrained/s2D2333k.pth
+sha256|906fe22f48c3e037a389df291d4d32a9414e15dbb8f9628643e83aaced109ea4|769025545|TTS model/GPT-SoVITS/GPT_SoVITS/pretrained_models/gsv-v4-pretrained/s2Gv4.pth
+sha256|924fdccaa3c574bf139c25c9759aa1ed3b3f99e19a7c529ee996c2bc17663695|106035259|TTS model/GPT-SoVITS/GPT_SoVITS/pretrained_models/gsv-v2final-pretrained/s2G2333k.pth
+sha256|ab264405ca243baf9aa2f2f26959d213d3e3ca9fb204db2a0b582ed2ca243d86|360751936|TTS model/CosyVoice3/cosyvoice3-flow-q8_0.gguf
+sha256|b1c1e17e9c99547a89388f72048cd6e1b41b5a18b170e86a46dfde0324d63eb1|155093966|TTS model/GPT-SoVITS/GPT_SoVITS/pretrained_models/s1bert25hz-2kh-longer-epoch=68e-step=50232.ckpt
+sha256|d42a22bbbf65fb2bbdd45ad6a66841156977db45c7aabe0a6992ff378d9c7d3b|200125741|TTS model/GPT-SoVITS/GPT_SoVITS/pretrained_models/v2Pro/s2Gv2ProPlus.pth
+sha256|e53a693acc59ace251d143d068096ae0d7b79e4b1b503fa84c9dcf576448c1d8|651225145|TTS model/GPT-SoVITS/GPT_SoVITS/pretrained_models/chinese-roberta-wwm-ext-large/pytorch_model.bin
+sha256|f13149e1f695d79dcc707de45b3df58ccaf2ab7eba1dad4168ae2c778efe4e67|1289653952|TTS model/CosyVoice3/cosyvoice3-llm-f16.gguf
+sha256|f3243551ace3dd0cc73844e2edfd94feea89d2668dad79bcfc9f5800b376c334|14153600|TTS model/CosyVoice3/cosyvoice3-campplus-f16.gguf
+sha256|f33abb1920076d988e1711d5f41b5c9c6d7f92575b4acf0ad4fae6a4ebf0cf19|769035145|TTS model/GPT-SoVITS/GPT_SoVITS/pretrained_models/s2Gv3.pth
+sha256|f7d5ace0dde950dc0f0dd53e347d51e6f4304f8181d6ed657d11288b09ca2497|1289653952|TTS model/CosyVoice3/cosyvoice3-llm-rl-f16.gguf
+sha256|fc579c1db3c1e21b721001cf99d7a584214280df19b002e200b630a34fa06eb8|93533667|TTS model/GPT-SoVITS/GPT_SoVITS/pretrained_models/s2D488k.pth

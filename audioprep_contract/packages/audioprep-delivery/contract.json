@@ -1,0 +1,22 @@
+{
+  "schema": "audioprep.package-contract.v1",
+  "design_revision": "R2.1.5.07",
+  "name": "audioprep-delivery",
+  "layer": 8,
+  "depends_on": [
+    "audioprep-store",
+    "audioprep-artifacts",
+    "audioprep-timeline"
+  ],
+  "responsibility": "Final rendering, Manifest validation, staging and atomic publication.",
+  "public_surface": [
+    "DeliverableBuilder",
+    "ManifestPublisher"
+  ],
+  "must_not": [
+    "choosing enhancement policy",
+    "mutating source identity"
+  ],
+  "maturity": "PLANNING_ONLY",
+  "repository_model": "single-monorepo-unified-version"
+}

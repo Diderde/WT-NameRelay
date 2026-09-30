@@ -7,9 +7,7 @@ from __future__ import annotations
 
 import argparse
 import json
-from collections import defaultdict
 from pathlib import Path
-
 
 AUDIO_SUFFIXES = {".wav", ".flac", ".ogg", ".mp3", ".m4a", ".aac", ".opus"}
 CREW_CATEGORIES = ("artillery", "aviation", "chief_m", "commander", "driver", "gunner", "loader")
@@ -46,7 +44,7 @@ def enrich(path: Path, module: str, index: dict[str, tuple[str, str]]) -> dict[s
     payload = json.loads(path.read_text(encoding="utf-8"))
     groups = payload.get("groups", payload)
     classified = unclassified = conflicts = 0
-    for key, entry in groups.items():
+    for entry in groups.values():
         locations = {index[name] for name in entry["names"] if name in index}
         entry["module"] = module
         if len(locations) == 1:

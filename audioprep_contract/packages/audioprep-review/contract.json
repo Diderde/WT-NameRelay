@@ -1,0 +1,24 @@
+{
+  "schema": "audioprep.package-contract.v1",
+  "design_revision": "R2.1.5.07",
+  "name": "audioprep-review",
+  "layer": 8,
+  "depends_on": [
+    "audioprep-decisions",
+    "audioprep-store"
+  ],
+  "responsibility": "Local audition/review contract, optional loopback adapter, compare-and-set resolution and event streaming.",
+  "public_surface": [
+    "ReviewServer",
+    "resolve_decision",
+    "subscribe_events"
+  ],
+  "must_not": [
+    "blocking scheduler transactions",
+    "persisting authentication secrets",
+    "requiring a standalone network deployment",
+    "automatic subjective-quality winner selection"
+  ],
+  "maturity": "PLANNING_ONLY",
+  "repository_model": "single-monorepo-unified-version"
+}

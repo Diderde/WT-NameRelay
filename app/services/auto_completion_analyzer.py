@@ -1,9 +1,9 @@
 from __future__ import annotations
 
 import os
-import random
 from collections import Counter
 
+from app.contracts import TaskRandomSource
 from app.models import AutoCompletionAnalysis, CompletionGroup, DirectoryScanResult
 
 from .copy_task_builder import CopyTaskBuilder, natural_name_key
@@ -13,7 +13,7 @@ from .crew_name_repository import CrewNameRepository
 class AutoCompletionAnalyzer:
     """Build directory-isolated completion views from one disk scan snapshot."""
 
-    def __init__(self, repository: CrewNameRepository, rng: random.Random | None = None) -> None:
+    def __init__(self, repository: CrewNameRepository, rng: TaskRandomSource | None = None) -> None:
         self._task_builder = CopyTaskBuilder(repository, rng)
 
     def analyze(self, scan_result: DirectoryScanResult) -> AutoCompletionAnalysis:

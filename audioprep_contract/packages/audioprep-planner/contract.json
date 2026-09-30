@@ -1,0 +1,23 @@
+{
+  "schema": "audioprep.package-contract.v1",
+  "design_revision": "R2.1.5.07",
+  "name": "audioprep-planner",
+  "layer": 6,
+  "depends_on": [
+    "audioprep-pipeline",
+    "audioprep-config"
+  ],
+  "responsibility": "Capability/resource snapshots, implementation selection and Plan sealing.",
+  "public_surface": [
+    "CapabilitySnapshot",
+    "ResourceSnapshot",
+    "PlanSealValidator",
+    "seal_plan"
+  ],
+  "must_not": [
+    "executing audio nodes",
+    "writing CAS bytes"
+  ],
+  "maturity": "PLANNING_ONLY",
+  "repository_model": "single-monorepo-unified-version"
+}

@@ -1,1 +1,0 @@
-"""Automated UI smoke tests."""

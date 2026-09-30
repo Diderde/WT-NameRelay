@@ -1,0 +1,21 @@
+{
+  "schema": "audioprep.package-contract.v1",
+  "design_revision": "R2.1.5.07",
+  "name": "audioprep-diarization",
+  "layer": 8,
+  "depends_on": [
+    "audioprep-audio-io",
+    "audioprep-worker"
+  ],
+  "responsibility": "Optional speaker analysis and speaker-attributed facts.",
+  "public_surface": [
+    "DiarizationPlugin",
+    "SpeakerTimeline"
+  ],
+  "must_not": [
+    "mandatory core installation",
+    "control-plane writes"
+  ],
+  "maturity": "PLANNING_ONLY",
+  "repository_model": "single-monorepo-unified-version"
+}

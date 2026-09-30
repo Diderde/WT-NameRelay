@@ -1,0 +1,453 @@
+{
+  "schema": "audioprep.public-api.v1",
+  "design_revision": "R2.1.5.07",
+  "compatibility": {
+    "major": 1,
+    "minor": 1,
+    "policy": "Within major v1, additive optional fields are allowed; operation removal, semantic narrowing and error-code reuse require v2."
+  },
+  "runtime": {
+    "language": "python>=3.11",
+    "call_model": "synchronous command methods plus async event iterator",
+    "thread_safety": "Context methods are thread-safe; callbacks are not invoked while the SQLite write transaction is open.",
+    "process_model": "Exactly one scheduler writer per local data_root. Read-only observers may be separate local processes; this is a SQLite correctness boundary, not a distributed-service topology.",
+    "shutdown": "close(graceful=true) stops dispatch, waits for bounded worker shutdown, marks remaining active attempts ABORTED, and never resumes them automatically.",
+    "scope": "Local/offline, single-machine tool. No remote service, multi-tenant, cluster, or enterprise deployment semantics are implied by this contract.",
+    "quality_policy": "AudioPrep does not declare subjective audio-quality winners. Processing results and optional metrics are review aids; the user decides by audition unless the user explicitly enables an automation policy."
+  },
+  "types": {
+    "PathLike": "str | os.PathLike[str]",
+    "JobId": "str",
+    "BatchId": "str",
+    "DecisionId": "str",
+    "EventCursor": "int",
+    "JSONValue": "str | int | float | bool | None | list[JSONValue] | dict[str, JSONValue]",
+    "JsonObject": "dict[str, JSONValue]",
+    "RFC3339": "str",
+    "AsyncIterator": "AsyncIteratorProtocol"
+  },
+  "enums": {
+    "WorkflowMode": [
+      "TRUSTED",
+      "REVIEW"
+    ],
+    "JobStatus": [
+      "CREATED",
+      "QUEUED",
+      "RUNNING",
+      "WAITING_DECISION",
+      "SUCCEEDED",
+      "FAILED",
+      "STOPPED"
+    ],
+    "DecisionStatus": [
+      "PENDING",
+      "RESOLVED",
+      "APPLIED",
+      "EXPIRED",
+      "CANCELLED"
+    ],
+    "ResolverType": [
+      "POLICY",
+      "HUMAN"
+    ],
+    "ReconcileMode": [
+      "CHECK",
+      "REPAIR_SAFE"
+    ],
+    "ErrorType": [
+      "USER",
+      "SYSTEM",
+      "POLICY",
+      "DATA"
+    ],
+    "ReconcileSeverity": [
+      "INFO",
+      "WARNING",
+      "ERROR"
+    ]
+  },
+  "value_objects": {
+    "Context": {
+      "kind": "opaque-handle",
+      "fields": {},
+      "notes": "Owned by the caller and closed exactly once."
+    },
+    "SourceIdentitySnapshot": {
+      "kind": "immutable-record",
+      "required": {
+        "artifact_id": "str",
+        "content_hash": "str",
+        "size_bytes": "int",
+        "mtime_ns": "int",
+        "frozen_at": "RFC3339"
+      },
+      "optional": {}
+    },
+    "BatchSnapshot": {
+      "kind": "immutable-record",
+      "required": {
+        "batch_id": "BatchId",
+        "workflow_mode": "WorkflowMode",
+        "input_folder": "PathLike",
+        "config_snapshot": "JsonObject",
+        "created_at": "RFC3339"
+      },
+      "optional": {}
+    },
+    "JobError": {
+      "kind": "immutable-record",
+      "required": {
+        "code": "str",
+        "type": "ErrorType"
+      },
+      "optional": {
+        "detail": "str | None"
+      }
+    },
+    "JobSnapshot": {
+      "kind": "immutable-record",
+      "required": {
+        "job_id": "JobId",
+        "batch_id": "BatchId",
+        "source_path": "PathLike",
+        "status": "JobStatus",
+        "dispatch_generation": "int",
+        "created_at": "RFC3339"
+      },
+      "optional": {
+        "source_identity": "SourceIdentitySnapshot | None",
+        "current_plan_id": "str | None",
+        "started_at": "RFC3339 | None",
+        "finished_at": "RFC3339 | None",
+        "error": "JobError | None",
+        "deliverable_id": "str | None"
+      }
+    },
+    "DecisionCandidateSnapshot": {
+      "kind": "immutable-record",
+      "required": {
+        "selector_key": "str",
+        "artifact_id": "str",
+        "metrics": "JsonObject"
+      },
+      "optional": {
+        "score": "float | None"
+      }
+    },
+    "DecisionSnapshot": {
+      "kind": "immutable-record",
+      "required": {
+        "decision_id": "DecisionId",
+        "origin_job_id": "JobId",
+        "status": "DecisionStatus",
+        "decision_type": "str",
+        "candidates": "list[DecisionCandidateSnapshot]",
+        "expires_at": "RFC3339"
+      },
+      "optional": {
+        "selected_selector_key": "str | None",
+        "resolver_type": "ResolverType | None",
+        "confidence": "float | None",
+        "resolved_at": "RFC3339 | None",
+        "applied_at": "RFC3339 | None"
+      }
+    },
+    "Event": {
+      "kind": "immutable-record",
+      "required": {
+        "cursor": "EventCursor",
+        "event_type": "str",
+        "payload": "JsonObject",
+        "created_at": "RFC3339"
+      },
+      "optional": {
+        "job_id": "JobId | None"
+      }
+    },
+    "ReconcileIssue": {
+      "kind": "immutable-record",
+      "required": {
+        "code": "str",
+        "severity": "ReconcileSeverity",
+        "message": "str"
+      },
+      "optional": {
+        "entity_type": "str | None",
+        "entity_id": "str | None"
+      }
+    },
+    "ReconcileReport": {
+      "kind": "immutable-record",
+      "required": {
+        "mode": "ReconcileMode",
+        "issues": "list[ReconcileIssue]",
+        "changes_applied": "int"
+      },
+      "optional": {}
+    },
+    "AsyncIteratorProtocol": {
+      "kind": "opaque-protocol",
+      "required": {},
+      "optional": {},
+      "notes": "Opaque asynchronous event-stream protocol; concrete iterator implementation is internal."
+    }
+  },
+  "error_codes": {
+    "ARGUMENT_INVALID": {
+      "retryable": false,
+      "description": "Argument invalid"
+    },
+    "BACKPRESSURE": {
+      "retryable": true,
+      "description": "Backpressure"
+    },
+    "BATCH_NOT_FOUND": {
+      "retryable": false,
+      "description": "Batch not found"
+    },
+    "CONFIG_INVALID": {
+      "retryable": false,
+      "description": "Config invalid"
+    },
+    "CONFLICT": {
+      "retryable": false,
+      "description": "Conflict"
+    },
+    "CONTEXT_BUSY": {
+      "retryable": true,
+      "description": "Context busy"
+    },
+    "CONTEXT_CLOSED": {
+      "retryable": false,
+      "description": "Context closed"
+    },
+    "CURSOR_EXPIRED": {
+      "retryable": false,
+      "description": "Cursor expired"
+    },
+    "DECISION_NOT_FOUND": {
+      "retryable": false,
+      "description": "Decision not found"
+    },
+    "DECISION_NOT_PENDING": {
+      "retryable": false,
+      "description": "Decision not pending"
+    },
+    "DELIVERABLE_NOT_READY": {
+      "retryable": false,
+      "description": "Deliverable not ready"
+    },
+    "INPUT_FOLDER_INVALID": {
+      "retryable": false,
+      "description": "Input folder invalid"
+    },
+    "INTEGRITY_ERROR": {
+      "retryable": false,
+      "description": "Integrity error"
+    },
+    "JOB_NOT_FOUND": {
+      "retryable": false,
+      "description": "Job not found"
+    },
+    "JOB_TERMINAL": {
+      "retryable": false,
+      "description": "Job terminal"
+    },
+    "LOCKED": {
+      "retryable": true,
+      "description": "Locked"
+    },
+    "MIGRATION_FAILED": {
+      "retryable": false,
+      "description": "Migration failed"
+    },
+    "PERMISSION_DENIED": {
+      "retryable": false,
+      "description": "Permission denied"
+    },
+    "PLAN_INVALID": {
+      "retryable": false,
+      "description": "Plan invalid"
+    },
+    "SELECTOR_INVALID": {
+      "retryable": false,
+      "description": "Selector invalid"
+    },
+    "SHUTDOWN_TIMEOUT": {
+      "retryable": true,
+      "description": "Shutdown timeout"
+    },
+    "SOURCE_CHANGED": {
+      "retryable": false,
+      "description": "Source changed"
+    },
+    "SOURCE_NOT_FOUND": {
+      "retryable": false,
+      "description": "Source not found"
+    },
+    "SOURCE_UNREADABLE": {
+      "retryable": false,
+      "description": "Source unreadable"
+    }
+  },
+  "operations": {
+    "open_context": {
+      "params": {
+        "data_root": "PathLike",
+        "config": "JsonObject | None"
+      },
+      "returns": "Context",
+      "errors": [
+        "CONFIG_INVALID",
+        "LOCKED",
+        "MIGRATION_FAILED",
+        "PERMISSION_DENIED"
+      ]
+    },
+    "close_context": {
+      "params": {
+        "context": "Context",
+        "graceful": "bool",
+        "deadline_s": "float"
+      },
+      "returns": "None",
+      "errors": [
+        "SHUTDOWN_TIMEOUT"
+      ]
+    },
+    "create_batch": {
+      "params": {
+        "context": "Context",
+        "input_folder": "PathLike",
+        "workflow_mode": "WorkflowMode",
+        "config_overrides": "JsonObject | None"
+      },
+      "returns": "BatchSnapshot",
+      "errors": [
+        "INPUT_FOLDER_INVALID",
+        "CONFIG_INVALID"
+      ]
+    },
+    "start": {
+      "params": {
+        "context": "Context",
+        "batch_id": "BatchId",
+        "source_path": "PathLike"
+      },
+      "returns": "JobSnapshot",
+      "semantics": "Every accepted call creates a new Job. Source capture and identity freeze complete before the Job may become RUNNING.",
+      "errors": [
+        "BATCH_NOT_FOUND",
+        "SOURCE_NOT_FOUND",
+        "SOURCE_CHANGED",
+        "SOURCE_UNREADABLE",
+        "PLAN_INVALID"
+      ]
+    },
+    "stop": {
+      "params": {
+        "context": "Context",
+        "job_id": "JobId",
+        "reason": "str | None"
+      },
+      "returns": "JobSnapshot",
+      "semantics": "Idempotent for STOPPED; terminal SUCCEEDED/FAILED Jobs are not rewritten. Active NodeExecution rows become ABORTED.",
+      "errors": [
+        "JOB_NOT_FOUND",
+        "JOB_TERMINAL"
+      ]
+    },
+    "get_job": {
+      "params": {
+        "context": "Context",
+        "job_id": "JobId"
+      },
+      "returns": "JobSnapshot",
+      "errors": [
+        "JOB_NOT_FOUND"
+      ]
+    },
+    "list_jobs": {
+      "params": {
+        "context": "Context",
+        "batch_id": "BatchId | None",
+        "status": "str | None",
+        "after": "str | None",
+        "limit": "int"
+      },
+      "returns": "list[JobSnapshot]",
+      "errors": [
+        "ARGUMENT_INVALID"
+      ]
+    },
+    "list_pending_decisions": {
+      "params": {
+        "context": "Context",
+        "batch_id": "BatchId | None"
+      },
+      "returns": "list[DecisionSnapshot]",
+      "errors": []
+    },
+    "resolve_decision": {
+      "params": {
+        "context": "Context",
+        "decision_id": "DecisionId",
+        "selector_key": "str",
+        "resolver": "ResolverType",
+        "confidence": "float | None"
+      },
+      "returns": "DecisionSnapshot",
+      "semantics": "Resolution is compare-and-set from PENDING to RESOLVED and is immutable after commit.",
+      "errors": [
+        "DECISION_NOT_FOUND",
+        "DECISION_NOT_PENDING",
+        "SELECTOR_INVALID",
+        "CONFLICT"
+      ]
+    },
+    "subscribe_events": {
+      "params": {
+        "context": "Context",
+        "after_cursor": "EventCursor",
+        "job_id": "JobId | None",
+        "queue_capacity": "int"
+      },
+      "returns": "AsyncIterator[Event]",
+      "semantics": "At-least-once delivery from persisted cursor. A slow subscriber is disconnected with BACKPRESSURE rather than blocking scheduler writes.",
+      "errors": [
+        "CURSOR_EXPIRED",
+        "BACKPRESSURE",
+        "CONTEXT_CLOSED"
+      ]
+    },
+    "get_manifest": {
+      "params": {
+        "context": "Context",
+        "job_id": "JobId"
+      },
+      "returns": "PathLike",
+      "errors": [
+        "JOB_NOT_FOUND",
+        "DELIVERABLE_NOT_READY"
+      ]
+    },
+    "reconcile": {
+      "params": {
+        "context": "Context",
+        "mode": "ReconcileMode"
+      },
+      "returns": "ReconcileReport",
+      "semantics": "CHECK is read-only. REPAIR_SAFE may quarantine orphan tmp files and repair counters but never fabricates missing CAS bytes.",
+      "errors": [
+        "CONTEXT_BUSY",
+        "INTEGRITY_ERROR"
+      ]
+    }
+  },
+  "snapshots": {
+    "immutability": "Returned snapshots are immutable values and never expose live ORM entities.",
+    "timestamps": "RFC 3339 UTC strings with Z suffix.",
+    "unknown_fields": "Consumers must ignore unknown additive fields within public API v1."
+  }
+}

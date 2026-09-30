@@ -1,0 +1,12 @@
+erDiagram
+    BATCH ||--o{ JOB : contains
+    JOB ||--o{ PIPELINE_PLAN : revisions
+    PIPELINE_PLAN ||--o{ PIPELINE_PLAN_NODE : contains
+    PIPELINE_PLAN_NODE ||--o{ NODE_EXECUTION : attempts
+    BLOB ||--o{ ARTIFACT : bytes_for
+    ARTIFACT ||--o{ ARTIFACT_REFERENCE : strongly_owned_by
+    JOB ||--o{ DECISION : creates
+    DECISION ||--o{ DECISION_CANDIDATE : offers
+    JOB ||--o{ TIMELINE_MAPPING : has
+    TIMELINE_MAPPING ||--o{ TIMELINE_SPAN : contains
+    JOB ||--o{ DELIVERABLE : publishes

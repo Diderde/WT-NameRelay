@@ -4,8 +4,8 @@ import os
 import random
 import re
 from collections.abc import Iterable, Mapping
-from pathlib import Path
 
+from app.contracts import TaskRandomSource
 from app.models import (
     CopyPlan,
     CopyResult,
@@ -17,7 +17,6 @@ from app.models import (
 )
 
 from .crew_name_repository import CrewNameRepository
-
 
 _VERSION_PATTERN = re.compile(r"_v(?P<major>[1-9]\d*)(?:_(?P<minor>[1-9]\d*))?$")
 
@@ -40,7 +39,7 @@ def natural_name_key(value: str) -> tuple[object, ...]:
 class CopyTaskBuilder:
     """Build stable group views and frozen copy work without creating files."""
 
-    def __init__(self, repository: CrewNameRepository, rng: random.Random | None = None) -> None:
+    def __init__(self, repository: CrewNameRepository, rng: TaskRandomSource | None = None) -> None:
         self._repository = repository
         self._rng = rng or random.SystemRandom()
 

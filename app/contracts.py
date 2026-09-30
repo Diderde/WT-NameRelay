@@ -1,7 +1,21 @@
 from __future__ import annotations
 
+from collections.abc import MutableSequence, Sequence
 from dataclasses import dataclass
 from enum import Enum
+from typing import Any, Protocol
+
+
+class TaskRandomSource(Protocol):
+    """随机源注入点要求的最小接口。
+
+    生产默认使用 ``random.SystemRandom()``；测试可注入确定性实现以获得
+    可复现的分配结果，而不必依赖 ``random`` 模块。
+    """
+
+    def shuffle(self, sequence: MutableSequence[Any]) -> None: ...
+
+    def choice(self, sequence: Sequence[Any]) -> Any: ...
 
 
 class TaskState(str, Enum):

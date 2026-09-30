@@ -1,0 +1,25 @@
+{
+  "schema": "audioprep.artifact-vocabulary.v1",
+  "design_revision": "R2.1.5.07",
+  "artifact_types": [
+    "audio",
+    "timeline",
+    "metrics",
+    "metadata",
+    "candidate"
+  ],
+  "artifact_roles": [
+    "SOURCE_MEDIA",
+    "QUALITY_MASTER",
+    "ANALYSIS_COPY",
+    "PIPELINE_AUDIO",
+    "ASR_SEGMENT",
+    "CANDIDATE",
+    "CHECKPOINT",
+    "CACHE",
+    "TIMELINE",
+    "METRICS",
+    "METADATA",
+    "DELIVERY_SEGMENT"
+  ]
+}

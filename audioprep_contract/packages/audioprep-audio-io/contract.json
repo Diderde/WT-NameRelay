@@ -1,0 +1,23 @@
+{
+  "schema": "audioprep.package-contract.v1",
+  "design_revision": "R2.1.5.07",
+  "name": "audioprep-audio-io",
+  "layer": 7,
+  "depends_on": [
+    "audioprep-worker",
+    "audioprep-artifacts"
+  ],
+  "responsibility": "Probe, decode, resample, QUALITY_MASTER and ANALYSIS_COPY production.",
+  "public_surface": [
+    "probe_media",
+    "decode_master",
+    "build_analysis_copy",
+    "render_slice"
+  ],
+  "must_not": [
+    "scheduler database writes",
+    "review decisions"
+  ],
+  "maturity": "PLANNING_ONLY",
+  "repository_model": "single-monorepo-unified-version"
+}

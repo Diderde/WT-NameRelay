@@ -7,7 +7,7 @@ from uuid import uuid4
 
 
 def seconds_to_ms(value: float) -> int:
-    return max(0, int(round(value * 1000)))
+    return max(0, round(value * 1000))
 
 
 def format_ms(value: int) -> str:
@@ -64,7 +64,7 @@ class AudioClip:
         return self.effective_end_ms / 1000
 
     @classmethod
-    def create(cls, path: Path, duration: float) -> "AudioClip":
+    def create(cls, path: Path, duration: float) -> AudioClip:
         duration_ms = max(1, seconds_to_ms(duration))
         return cls(uuid4().hex, path, duration_ms, 0, duration_ms)
 
@@ -79,7 +79,7 @@ class BlankClip:
         return self.duration_ms / 1000
 
     @classmethod
-    def create(cls, duration: float = 2.0) -> "BlankClip":
+    def create(cls, duration: float = 2.0) -> BlankClip:
         return cls(uuid4().hex, max(1, seconds_to_ms(duration)))
 
 
@@ -152,10 +152,20 @@ class ExportSettings:
     sample_rate: int = 48000
     channels: int = 1
     bit_depth: str = "16-bit PCM"
-    normalize_mode: str | None = None  # peak | loudness | None
+    normalize_mode: str | None = None  # peak | loudness | speech | None
     normalize_target: float = -1.0
     keep_timeline: bool = False
     worker_threads: int = 1
+    output_format: str = "wav"  # wav | mp3 | flac | opus | m4a
+    quality: str = ""  # 有损码率（mp3/opus/m4a）或 flac 压缩级；WAV 忽略
+    fade_ms: int = 0  # 每个音频片段首尾淡入淡出
+    trim_silence: str = "off"  # off | edges（去除拼接后首尾静音）
+    denoise: str = "off"  # off | afftdn | anlmdn
+    denoise_strength: int = 12  # afftdn 的 nr 参数（dB）
+    declick: bool = False
+    deesser: bool = False
+    voice_preset: str = "off"  # off | low_cut | voice | broadcast
+    gain_db: float = 0.0  # 整体音量增益，在归一化之后追加
 
 
 class TimelineModel:
@@ -245,7 +255,7 @@ class TimelineModel:
                 timeline_start += item.duration_ms
                 continue
             if not isinstance(item, AudioClip):
-                raise ValueError("空白片段不能执行音频裁剪")
+                raise ValueError("空白片段不能执行音频裁剪")  # noqa: TRY004  # 片段类型不适用，非参数类型错误
             offset = playhead_time_ms - timeline_start
             if offset < minimum or item.duration_ms - offset < minimum:
                 raise ValueError("裁剪位置距离片段边缘过近")
@@ -271,6 +281,27 @@ class TimelineModel:
             self._items[index:index + 1] = [left, right]
             return result
         raise ValueError("实时指针未位于可裁剪的音频片段中")
+
+    def split_at_silences(self, midpoints_ms: list[int]) -> int:
+        """在静音中点批量切分；整个批次一次提交，一次撤销即可整体回滚。"""
+        points = sorted({int(point) for point in midpoints_ms if int(point) >= 1})
+        if not points:
+            return 0
+        self._commit(TimelineEditKind.SPLIT)
+        completed = 0
+        for point in points:
+            location = self.locate(point)
+            if location is None or location.kind is not TimelineClipKind.AUDIO:
+                continue
+            item = self._items[location.index]
+            offset = location.offset_ms
+            if offset < 1 or item.duration_ms - offset < 1:
+                continue
+            left = replace(item, clip_id=uuid4().hex, trim_end_ms=item.trim_start_ms + offset)
+            right = replace(item, clip_id=uuid4().hex, trim_start_ms=item.trim_start_ms + offset)
+            self._items[location.index:location.index + 1] = [left, right]
+            completed += 1
+        return completed
     def undo(self) -> TimelineUndoResult | None:
         if not self._history:
             return None

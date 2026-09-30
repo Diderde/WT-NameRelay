@@ -1,11 +1,11 @@
 from __future__ import annotations
 
 import logging
-import os
 import sys
 import threading
 from logging.handlers import RotatingFileHandler
-from pathlib import Path
+
+from app.paths import logs_dir
 
 
 def configure_logging() -> logging.Logger:
@@ -14,9 +14,7 @@ def configure_logging() -> logging.Logger:
         return logger
     logger.setLevel(logging.INFO)
     try:
-        log_dir = Path(os.environ.get("LOCALAPPDATA", Path.home() / "AppData" / "Local")) / "WT-NameRelay" / "logs"
-        log_dir.mkdir(parents=True, exist_ok=True)
-        handler = RotatingFileHandler(log_dir / "application.log", maxBytes=1_000_000, backupCount=3, encoding="utf-8")
+        handler = RotatingFileHandler(logs_dir() / "application.log", maxBytes=1_000_000, backupCount=3, encoding="utf-8")
         handler.setFormatter(logging.Formatter("%(asctime)s %(levelname)s %(name)s: %(message)s"))
         logger.addHandler(handler)
     except OSError:

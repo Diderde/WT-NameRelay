@@ -1,0 +1,23 @@
+{
+  "schema": "audioprep.package-contract.v1",
+  "design_revision": "R2.1.5.07",
+  "name": "audioprep-store",
+  "layer": 2,
+  "depends_on": [
+    "audioprep-contracts",
+    "audioprep-config"
+  ],
+  "responsibility": "SQLite schema, transactions, DAOs, reconciliation metadata and migrations.",
+  "public_surface": [
+    "open_database",
+    "UnitOfWork",
+    "MigrationPlan",
+    "ReconcileMetadata"
+  ],
+  "must_not": [
+    "audio algorithms",
+    "host UI"
+  ],
+  "maturity": "PLANNING_ONLY",
+  "repository_model": "single-monorepo-unified-version"
+}

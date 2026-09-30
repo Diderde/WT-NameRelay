@@ -5,10 +5,9 @@ import threading
 from collections.abc import Iterable
 from pathlib import Path
 
-from app.models import DirectoryScanResult, ScannedDirectory, SourceFile
+from app.models import DirectoryScanResult, ScannedDirectory
 
 from .crew_name_parser import CrewNameParser
-
 
 SUPPORTED_AUDIO_SUFFIXES = frozenset({".wav", ".flac", ".ogg", ".mp3", ".m4a", ".aac", ".opus"})
 

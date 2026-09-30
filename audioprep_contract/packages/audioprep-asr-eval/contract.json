@@ -1,0 +1,23 @@
+{
+  "schema": "audioprep.package-contract.v1",
+  "design_revision": "R2.1.5.07",
+  "name": "audioprep-asr-eval",
+  "layer": 8,
+  "depends_on": [
+    "audioprep-audio-io",
+    "audioprep-worker"
+  ],
+  "responsibility": "Optional advisory transcription/metrics for user comparison; never an authoritative audio-quality verdict.",
+  "public_surface": [
+    "AsrEvaluator",
+    "EvaluationMetrics"
+  ],
+  "must_not": [
+    "policy resolution side effects",
+    "control-plane writes",
+    "authoritative subjective-quality verdicts",
+    "implicit Decision resolution"
+  ],
+  "maturity": "PLANNING_ONLY",
+  "repository_model": "single-monorepo-unified-version"
+}
