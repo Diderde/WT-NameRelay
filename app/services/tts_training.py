@@ -34,11 +34,16 @@ from collections.abc import Callable, Mapping, Sequence
 from dataclasses import dataclass, field
 from pathlib import Path
 
-# —— 版本矩阵（与 config.py:12-28、webui.py:507-544/604-606 对齐） ——
-#: 上游 UI 可选版本（v3 在这个 vendored 版本里不可选，故不列入）
-VERSIONS = ("v1", "v2", "v4", "v2Pro", "v2ProPlus")
+# —— 版本矩阵（与 vendored config.py 的 pretrained_*_name、webui.py 训练 Radio
+#    choices 与 v3v4set 对齐；仓库已升级至上游 2026-10 v5 合入版） ——
+#: 训练可选版本。上游 vendored webui 的 Radio choices 不含 v3/v1——作者立场是
+#: v4 为 v3 的平替（修复电音、原生 48k）——但本 vendored 代码的 v1/v3 训练链路
+#: 完整（v3 走 s2_train_v3_lora.py 且只读 pretrained_s2G，不碰 s2D；v3/v5 系
+#: 底模与 s1v3.ckpt 均在盘），故此处恢复提供 v1/v3。
+VERSIONS = ("v1", "v2", "v3", "v4", "v2Pro", "v2ProPlus", "v5dev", "v5turbo")
 PRO_VERSIONS = frozenset({"v2Pro", "v2ProPlus"})
-LORA_VERSIONS = frozenset({"v3", "v4"})
+#: 与上游 webui.py 的 v3v4set 同语义：走 CFM+声码器路径（LoRA 训练、无 s2D 底模）
+LORA_VERSIONS = frozenset({"v3", "v4", "v5dev", "v5turbo"})
 
 PRETRAINED_S2G = {
     "v1": "GPT_SoVITS/pretrained_models/s2G488k.pth",
@@ -47,6 +52,8 @@ PRETRAINED_S2G = {
     "v4": "GPT_SoVITS/pretrained_models/gsv-v4-pretrained/s2Gv4.pth",
     "v2Pro": "GPT_SoVITS/pretrained_models/v2Pro/s2Gv2Pro.pth",
     "v2ProPlus": "GPT_SoVITS/pretrained_models/v2Pro/s2Gv2ProPlus.pth",
+    "v5dev": "GPT_SoVITS/pretrained_models/gsv-v5-pretrained/s2Gv5dev.pth",
+    "v5turbo": "GPT_SoVITS/pretrained_models/gsv-v5-pretrained/s2Gv5turbo.pth",
 }
 PRETRAINED_S1 = {
     "v1": "GPT_SoVITS/pretrained_models/s1bert25hz-2kh-longer-epoch=68e-step=50232.ckpt",
@@ -55,7 +62,31 @@ PRETRAINED_S1 = {
     "v4": "GPT_SoVITS/pretrained_models/s1v3.ckpt",
     "v2Pro": "GPT_SoVITS/pretrained_models/s1v3.ckpt",
     "v2ProPlus": "GPT_SoVITS/pretrained_models/s1v3.ckpt",
+    "v5dev": "GPT_SoVITS/pretrained_models/s1v3.ckpt",
+    "v5turbo": "GPT_SoVITS/pretrained_models/s1v3.ckpt",
 }
+#: 推理侧可选的预训练版本（顺序即界面下拉顺序；v3/v4/v5 系需要 CFM 声码器链路，
+#: 仅上游与 cuda_graph 分支支持）
+PRETRAINED_VERSIONS: tuple[str, ...] = (
+    "v1",
+    "v2",
+    "v2Pro",
+    "v2ProPlus",
+    "v3",
+    "v4",
+    "v5dev",
+    "v5turbo",
+)
+#: 不受 CPUFast 服务端支持的版本（GSV 兼容：方言过滤用；v5 系同属 v3v4set 链路）
+CPUFAST_UNSUPPORTED_VERSIONS = frozenset({"v3", "v4", "v5dev", "v5turbo"})
+
+
+def pretrained_pair(version: str, repo: Path) -> tuple[Path, Path]:
+    """官方预训练权重的 (GPT, SoVITS) 绝对路径（推理热切用）。"""
+
+    return (repo / PRETRAINED_S1[version], repo / PRETRAINED_S2G[version])
+
+
 SOVITS_WEIGHT_DIR = {
     "v1": "SoVITS_weights",
     "v2": "SoVITS_weights_v2",
@@ -63,6 +94,8 @@ SOVITS_WEIGHT_DIR = {
     "v4": "SoVITS_weights_v4",
     "v2Pro": "SoVITS_weights_v2Pro",
     "v2ProPlus": "SoVITS_weights_v2ProPlus",
+    "v5dev": "SoVITS_weights_v5dev",
+    "v5turbo": "SoVITS_weights_v5turbo",
 }
 GPT_WEIGHT_DIR = {version: dirname.replace("SoVITS", "GPT") for version, dirname in SOVITS_WEIGHT_DIR.items()}
 
@@ -101,13 +134,13 @@ def s1_template(version: str) -> str:
 
 
 def s2_train_script(version: str) -> str:
-    """v3/v4 走 LoRA 训练脚本，其余走 s2_train.py（webui.py:541-544）。"""
+    """v3/v4/v5 系走 LoRA 训练脚本，其余走 s2_train.py（上游 webui s2 训练分支）。"""
 
     return "GPT_SoVITS/s2_train_v3_lora.py" if version in LORA_VERSIONS else "GPT_SoVITS/s2_train.py"
 
 
 def s2_checkpoint_dir(config: TrainConfig) -> Path:
-    """s2 权重落点：v3/v4 的 LoRA 训练写 `logs_s2_<version>_lora_<rank>`（webui 预建的
+    """s2 权重落点：v3/v4/v5 系的 LoRA 训练写 `logs_s2_<version>_lora_<rank>`（webui 预建的
     `logs_s2_<version>` 反而是空目录）。"""
 
     if config.version in LORA_VERSIONS:
@@ -365,7 +398,8 @@ def write_s2_config(config: TrainConfig) -> Path:
             "epochs": config.s2_epochs,
             "text_low_lr_rate": config.s2_text_low_lr_rate,
             "pretrained_s2G": PRETRAINED_S2G[config.version],
-            "pretrained_s2D": PRETRAINED_S2G[config.version].replace("s2G", "s2D"),
+            # 上游对 v3v4set（v3/v4/v5 系）不写 s2D 底模（LoRA 训练只读 s2G）
+            "pretrained_s2D": "" if config.version in LORA_VERSIONS else PRETRAINED_S2G[config.version].replace("s2G", "s2D"),
             "if_save_latest": True,
             "if_save_every_weights": True,
             "save_every_epoch": config.s2_save_every_epoch,
@@ -608,15 +642,45 @@ _ROOT_SOVITS_NAME_RE = re.compile(r"^sovits_(.+)_e\d+")
 
 @dataclass(frozen=True, slots=True)
 class FinetunedWeights:
-    """一个实验的最新训练产物（GPT/SoVITS 各取修改时间最新者；可只有其一）。"""
+    """一个实验的最新训练产物（GPT/SoVITS 各取修改时间最新者；可只有其一）。
+
+    ``gpt_version_root``/``sovits_version_root``：产物所在版本目录名
+    （如 ``GPT_weights_v2``/``SoVITS_weights_v3``）；仅**根目录权重**可
+    判定，``logs/`` 产物为空串（路径不含版本信息，GSV 兼容 P3 预检
+    据此判定 CPUFast 版本错配，方案 F7 范围收窄）。
+    """
 
     name: str
     gpt_path: str = ""
     sovits_path: str = ""
+    gpt_version_root: str = ""
+    sovits_version_root: str = ""
 
     @property
     def complete(self) -> bool:
         return bool(self.gpt_path) and bool(self.sovits_path)
+
+
+_WEIGHT_ROOT_PATTERN = re.compile(r"^(?:GPT|SoVITS)_weights")
+
+
+def weight_version_root(path: str | Path) -> str:
+    """从任意权重路径提取版本目录段（``GPT_weights*``/``SoVITS_weights*``）。
+
+    供**手输路径**与下拉路径统一判定；路径里没有版本目录段时返回空串
+    （与 logs/ 产物同等的"不可判定"语义）。
+    """
+
+    for part in Path(path).parts:
+        if _WEIGHT_ROOT_PATTERN.match(part):
+            return part
+    return ""
+
+
+def weight_version_is_v3v4(root: str) -> bool:
+    """版本目录是否为 v3/v4/v5 系（CPUFast 服务端不支持的 CFM 声码器链路）。"""
+
+    return "_v3" in root or "_v4" in root or "_v5" in root
 
 
 def _stat_mtime(path: Path) -> float:
@@ -634,6 +698,28 @@ def _newest(paths: Sequence[Path]) -> str:
     return str(max(paths, key=_stat_mtime))
 
 
+def pretrained_candidates(repo: Path) -> list[FinetunedWeights]:
+    """官方预训练版本对（pretrained_models 内成对在盘者），供权重下拉列出。
+
+    与训练产物并列出现在「应用权重」候选里——用户无需训练即可直选
+    官方版本（成对在盘者，V1~V4/V2Pro/V2ProPlus/V5 系）。
+    """
+
+    candidates: list[FinetunedWeights] = []
+    for version in PRETRAINED_VERSIONS:
+        gpt_path = repo / PRETRAINED_S1[version]
+        sovits_path = repo / PRETRAINED_S2G[version]
+        if gpt_path.is_file() and sovits_path.is_file():
+            candidates.append(FinetunedWeights(
+                name=f"官方预训练 {version}",
+                gpt_path=str(gpt_path),
+                sovits_path=str(sovits_path),
+                gpt_version_root=f"GPT_weights_{version}",
+                sovits_version_root=f"SoVITS_weights_{version}",
+            ))
+    return candidates
+
+
 def discover_finetuned_weights(repo: Path) -> list[FinetunedWeights]:
     """扫描 GPT-SoVITS 仓库里的训练产物，按实验归并成推理热切换候选。
 
@@ -649,34 +735,48 @@ def discover_finetuned_weights(repo: Path) -> list[FinetunedWeights]:
     gpt_pool: dict[str, list[Path]] = {}
     sovits_pool: dict[str, list[Path]] = {}
 
-    def add(pool: dict[str, list[Path]], name: str, path: Path) -> None:
+    def add(pool: dict[str, list[Path]], name: str, path: Path, root: str = "") -> None:
         if path.is_file():
-            pool.setdefault(name, []).append(path)
+            pool.setdefault(name, []).append((path, root))
 
     logs_root = repo / EXP_ROOT
     if logs_root.is_dir():
         for exp_dir in (path for path in logs_root.iterdir() if path.is_dir()):
             for weight in exp_dir.rglob("*.ckpt"):
-                add(gpt_pool, exp_dir.name, weight)
+                add(gpt_pool, exp_dir.name, weight)  # logs/ 产物路径不含版本信息
             for weight in exp_dir.rglob("*.pth"):
                 add(sovits_pool, exp_dir.name, weight)
     for weight_dir in (path for path in repo.glob(GPT_WEIGHT_GLOB) if path.is_dir()):
         for weight in weight_dir.glob("*.ckpt"):
             match = _ROOT_GPT_NAME_RE.match(weight.stem)
-            add(gpt_pool, match.group(1) if match else weight.stem, weight)
+            add(gpt_pool, match.group(1) if match else weight.stem, weight, weight_dir.name)
     for weight_dir in (path for path in repo.glob(SOVITS_WEIGHT_GLOB) if path.is_dir()):
         for weight in weight_dir.glob("*.pth"):
             match = _ROOT_SOVITS_NAME_RE.match(weight.stem)
-            add(sovits_pool, match.group(1) if match else weight.stem, weight)
+            add(sovits_pool, match.group(1) if match else weight.stem, weight, weight_dir.name)
 
-    return [
-        FinetunedWeights(
-            name=name,
-            gpt_path=_newest(gpt_pool.get(name, [])),
-            sovits_path=_newest(sovits_pool.get(name, [])),
+    def newest_entry(name: str, pool: dict[str, list[tuple[Path, str]]]) -> tuple[str, str]:
+        entries = pool.get(name, [])
+        if not entries:
+            return "", ""
+        newest = _newest([path for path, _ in entries])  # str（_newest 的返回约定）
+        root = next(root for path, root in entries if str(path) == newest)
+        return newest, root
+
+    experiments = []
+    for name in sorted(set(gpt_pool) | set(sovits_pool)):
+        gpt_path, gpt_root = newest_entry(name, gpt_pool)
+        sovits_path, sovits_root = newest_entry(name, sovits_pool)
+        experiments.append(
+            FinetunedWeights(
+                name=name,
+                gpt_path=gpt_path,
+                sovits_path=sovits_path,
+                gpt_version_root=gpt_root,
+                sovits_version_root=sovits_root,
+            )
         )
-        for name in sorted(set(gpt_pool) | set(sovits_pool))
-    ]
+    return experiments + pretrained_candidates(repo)
 
 
 @dataclass(slots=True)

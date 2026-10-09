@@ -3,7 +3,7 @@ from __future__ import annotations
 import os
 import sys
 
-from PySide6.QtCore import Qt
+from PySide6.QtCore import Qt, QTimer
 from PySide6.QtWidgets import QApplication, QMessageBox
 
 from app.branding import APP_NAME, FORK_VERSION, WINDOW_TITLE
@@ -49,6 +49,22 @@ def main() -> int:
         collected = gc.collect()
         gc.freeze()
         logger.info("Startup GC: collected=%d frozen=%d", collected, gc.get_freeze_count())
+        # 自动 GC 可由任意线程的分配触发，而视频页运行期
+        # 产生的 Qt 包装垃圾被任何 GC 扫描都会段错误（实测：工作线程 GC 崩、
+        # GUI 线程定时 GC 同样崩——与回收线程无关，垃圾本身有毒）——
+        # 禁用自动回收，只在"视频页退场且工作线程全部安静"的安全点回收
+        gc.disable()
+
+        def _safe_collect() -> None:
+            page = window.video_clip_page
+            if page.isVisible() or page.has_active_workers():
+                return
+            gc.collect()
+
+        collector = QTimer(app)
+        collector.setInterval(10_000)
+        collector.timeout.connect(_safe_collect)
+        collector.start()
         logger.info("Main window displayed (maximized)")
         exit_code = app.exec()
         logger.info("Application exited with code %s", exit_code)

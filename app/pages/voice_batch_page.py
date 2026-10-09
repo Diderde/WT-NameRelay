@@ -10,18 +10,30 @@
 
 from __future__ import annotations
 
+import hashlib
 import queue
+import shutil
 import threading
 from collections.abc import Callable, Sequence
 from pathlib import Path
 
 from PySide6.QtCore import QModelIndex, Qt, QTimer, QUrl, Signal
-from PySide6.QtGui import QAction, QDesktopServices, QKeySequence, QShortcut
+from PySide6.QtGui import (
+    QAction,
+    QColor,
+    QDesktopServices,
+    QKeySequence,
+    QPalette,
+    QShortcut,
+    QShowEvent,
+)
 from PySide6.QtMultimedia import QAudioOutput, QMediaPlayer
 from PySide6.QtWidgets import (
     QAbstractItemView,
     QButtonGroup,
+    QCheckBox,
     QComboBox,
+    QDialog,
     QFileDialog,
     QFrame,
     QHBoxLayout,
@@ -39,6 +51,7 @@ from PySide6.QtWidgets import (
     QWidget,
 )
 
+from app.audio.ffmpeg_service import FfmpegLocator
 from app.i18n import i18n_text, tr
 from app.models.voice_table import (
     HASH_BACKEND,
@@ -48,8 +61,8 @@ from app.models.voice_table import (
     VoiceTable,
 )
 from app.preferences import get_preference, set_preference
+from app.services import gsv_services, tts_spec, vt_key_store, vt_manifest, vt_project
 from app.services import tts_training as training
-from app.services import vt_key_store, vt_manifest, vt_project
 from app.services.save_coordinator import SaveCoordinator
 from app.services.tts_runner import (
     SerialTtsRunner,
@@ -60,11 +73,13 @@ from app.services.tts_runner import (
 )
 from app.services.voice_filename_validator import VoiceFilenameValidator
 from app.services.vt_trust_store import TrustDecision, TrustStore
+from app.styles import theme
 from app.widgets.cosyvoice_info_panel import CosyVoiceInfoPanel
 from app.widgets.flow_layout import FlowLayout
 from app.widgets.hover_card import attach_hover_card
 from app.widgets.tts_params_panel import BACKEND_COSY, BACKEND_GPT, TtsParamsPanel
 from app.widgets.tts_train_panel import TtsTrainPanel, gsv_root
+from app.widgets.voice_audio_process_dialog import KokoroTsurumaki
 from app.widgets.voice_table_model import (
     VoiceColumn,
     VoiceRowDelegate,
@@ -77,6 +92,13 @@ from .base_tool_page import BaseToolPage
 
 #: 输出目录的偏好键（config/settings.ini；未设置时回退项目内 temp/voice-output）
 OUTPUT_DIR_SETTING = "voice/output_dir"
+#: 命名规范名单文件的偏好键（表格规范化：行集合由该名单决定）
+SPEC_PATH_KEY = "voice/spec_path"
+#: 命名规范当前激活路径的偏好键（值 = "/" 连接的路径段，如 tank/UK/high/gunner）
+SPEC_SELECTION_KEY = "voice/spec_selection"
+#: 情绪音频共用的偏好键（"1" = 共用一份音频服务全部情绪；"0" = 每情绪各自生成）
+EMOTION_SHARED_KEY = "voice/emotion_shared"
+#: GSV 模型版本偏好键（先选版本再工作的前置选择；装配成功后自动应用）
 
 
 def _key_store_dir() -> Path:
@@ -117,6 +139,16 @@ class VoiceBatchPage(BaseToolPage):
         self._backend_pending = False
         #: 参考音频的文件选择对话框（可注入替换，测试用）
         self._reference_picker = default_audio_picker
+        #: 命名规范名单文件（路径分节：行集合由它决定；None = 未加载）
+        self._spec_path: Path | None = None
+        #: 已加载规范的路径分节文档（`tts_spec.SpecDocument`；None = 未加载）
+        self._spec_sections: tts_spec.SpecDocument | None = None
+        #: 会话级路径暂存：切路径时把当前表格对象整体存进来（切回时按名继承）
+        self._path_tables: dict[tuple[str, ...], VoiceTable] = {}
+        #: 当前激活路径（如 ("tank","UK","high","gunner")；() = 尚未选择类别）
+        self._active_path: tuple[str, ...] = ()
+        #: 情绪音频共用（勾选 = 一份音频服务该类别全部情绪；偏好持久化）
+        self._emotion_shared = get_preference(EMOTION_SHARED_KEY, "1") != "0"
         #: 两栏标题（按 i18n key 索引，供 retranslate 更新）
         self._pane_titles: dict[str, QLabel] = {}
         #: 当前模型键（MODEL_GPT / MODEL_COSY），供切换按钮去重与选中态同步
@@ -137,6 +169,16 @@ class VoiceBatchPage(BaseToolPage):
         self._pump.timeout.connect(self._drain_events)
         self._pump.start()
         self.retranslate()
+        self._apply_selection_palette()
+        # 监听须可退订：lambda 无法按等值移除，改用绑定方法 + destroyed 摘除（同 nav_rail）
+        theme.on_mode_changed(self._on_theme_mode_changed)
+        self.destroyed.connect(lambda: theme.off_mode_changed(self._on_theme_mode_changed))
+
+    def showEvent(self, event: QShowEvent) -> None:
+        # 首次进入本页发生在全部 reparent/polish 之后：构造期应用的视图级
+        # 选中色覆盖可能被 polish 吞回全局亮蓝，显示时补打一次（幂等）
+        super().showEvent(event)
+        self._apply_selection_palette()
 
     # —— 契约 ——
     @property
@@ -202,14 +244,20 @@ class VoiceBatchPage(BaseToolPage):
         self.cosy_model_button.setObjectName("moduleSwitchButton")
         self.cosy_model_button.setProperty("audioNavigation", True)
         self.cosy_model_button.setCheckable(True)
+        self.cpufast_model_button = QPushButton("GPT-SoVITS CPUFast")
+        self.cpufast_model_button.setObjectName("moduleSwitchButton")
+        self.cpufast_model_button.setProperty("audioNavigation", True)
+        self.cpufast_model_button.setCheckable(True)
         self._model_group = QButtonGroup(self)
         # 组不可独占：独占组会忽略对当前选中按钮的程序化取消选中，
         # 选 API 渠道时两个本地按钮将无法置为未选；选中态由 set_model_kind 全权管理
         self._model_group.setExclusive(False)
         self._model_group.addButton(self.gpt_model_button)
+        self._model_group.addButton(self.cpufast_model_button)
         self._model_group.addButton(self.cosy_model_button)
         self.gpt_model_button.setChecked(True)
         module_bar.addWidget(self.gpt_model_button)
+        module_bar.addWidget(self.cpufast_model_button)
         module_bar.addWidget(self.cosy_model_button)
         # API 渠道（index 0 为占位）：选中即发出 api:<渠道id> 切换请求，经路由侧装配 TTS-Hub 后端
         self.channel_combo = QComboBox()
@@ -239,6 +287,7 @@ class VoiceBatchPage(BaseToolPage):
         self.train_module_button.clicked.connect(lambda: self._show_module(0))
         self.generation_module_button.clicked.connect(lambda: self._show_module(1))
         self.gpt_model_button.clicked.connect(lambda: self._request_model(self.MODEL_GPT))
+        self.cpufast_model_button.clicked.connect(lambda: self._request_model(self.MODEL_GPT_CPUFAST))
         self.cosy_model_button.clicked.connect(lambda: self._request_model(self.MODEL_COSY))
         # 悬停信息卡：说明两种 TTS（GPT-SoVITS / CosyVoice 3）的功能与接口差异
         self._train_module_card = attach_hover_card(
@@ -269,8 +318,9 @@ class VoiceBatchPage(BaseToolPage):
 
         if model_key == self._model_kind:
             # 非独占组下点击已选中按钮会先取消勾选：必须恢复选中态，
-            # 否则界面进入"两按钮全不选"的死态（面板仍是该模型但看不出选的谁）
+            # 否则界面进入"全按钮不选"的死态（面板仍是该模型但看不出选的谁）
             self.gpt_model_button.setChecked(model_key == self.MODEL_GPT)
+            self.cpufast_model_button.setChecked(model_key == self.MODEL_GPT_CPUFAST)
             self.cosy_model_button.setChecked(model_key == self.MODEL_COSY)
             return
         self.model_switch_requested.emit(model_key)
@@ -347,6 +397,9 @@ class VoiceBatchPage(BaseToolPage):
 
     # —— 模型感知 ——
     MODEL_GPT = "tts_gpt_sovits"
+    #: CPUFast 分支（CPU 提速版 GPT-SoVITS，独立克隆 + 原生 CPU torch 环境）：
+    #: 与官方整合包同级的独立入口，面板同 GPT（微调面板），服务档案固定 id=cpufast
+    MODEL_GPT_CPUFAST = "tts_gpt_sovits_cpufast"
     MODEL_COSY = "tts_cosyvoice"
 
     def set_model_kind(self, model_key: str) -> None:
@@ -360,13 +413,15 @@ class VoiceBatchPage(BaseToolPage):
         if model_key.startswith("api:"):
             self._model_panes.setCurrentIndex(2)
             self.gpt_model_button.setChecked(False)
+            self.cpufast_model_button.setChecked(False)
             self.cosy_model_button.setChecked(False)
             self._update_api_pane(model_key.split(":", 1)[1])
             self._sync_channel_combo(model_key.split(":", 1)[1])
             self.cosy_panel.refresh_status()
             return
         self._model_panes.setCurrentIndex(1 if model_key == self.MODEL_COSY else 0)
-        self.gpt_model_button.setChecked(model_key != self.MODEL_COSY)
+        self.gpt_model_button.setChecked(model_key == self.MODEL_GPT)
+        self.cpufast_model_button.setChecked(model_key == self.MODEL_GPT_CPUFAST)
         self.cosy_model_button.setChecked(model_key == self.MODEL_COSY)
         self._sync_channel_combo(None)
         self.cosy_panel.refresh_status()
@@ -432,13 +487,17 @@ class VoiceBatchPage(BaseToolPage):
         layout.addWidget(hint)
 
         # 主要操作：单行流式布局；低频操作收进「更多」下拉，避免按钮行堆叠挤压布局
+        # 表格规范化：行集合由命名规范名单决定（无自由增删行），「加载规范」是入口
         edit_bar = FlowLayout(spacing=10)
-        self.add_button = QPushButton(i18n_text("voice.action.add"))
+        self.spec_button = QPushButton(i18n_text("voice.spec.load"))
+        self.spec_button.clicked.connect(self._load_spec_clicked)
         self.generate_button = QPushButton(i18n_text("voice.action.generate_selected"))
         self.regenerate_all_button = QPushButton(i18n_text("voice.action.generate_stale"))
         self.stop_button = QPushButton(i18n_text("voice.action.stop"))
         self.stop_button.setEnabled(False)
-        for widget in (self.add_button, self.generate_button, self.regenerate_all_button, self.stop_button):
+        self.spec_label = QLabel()
+        self.spec_label.setObjectName("mutedLabel")
+        for widget in (self.spec_button, self.generate_button, self.regenerate_all_button, self.stop_button, self.spec_label):
             edit_bar.addWidget(widget)
         layout.addLayout(edit_bar)
 
@@ -501,8 +560,6 @@ class VoiceBatchPage(BaseToolPage):
             self._more_actions.append((action, key))
             return action
 
-        self.duplicate_action = add_more_action("voice.action.duplicate", self._duplicate_selected)
-        self.remove_action = add_more_action("voice.action.remove", self._remove_selected)
         more_menu.addSeparator()
         self.open_action = add_more_action("voice.action.open_project", self._open_project_clicked)
         self.unlock_action = add_more_action("voice.action.unlock_project", self._unlock_project_clicked)
@@ -562,6 +619,10 @@ class VoiceBatchPage(BaseToolPage):
         layout.addWidget(self.params_toggle)
 
         self.params_panel = TtsParamsPanel()
+        # GSV 多分支兼容 P2：服务下拉（注册表驱动）+ 用户切换 → 重装配
+        self.params_panel.service_change_requested.connect(self._on_gsv_service_changed)
+        self.params_panel.service_manage_requested.connect(self._manage_gsv_services)
+        self.refresh_gsv_services()
         self.params_scroll = QScrollArea()
         self.params_scroll.setObjectName("voiceParamsScroll")
         self.params_scroll.setWidgetResizable(True)
@@ -571,6 +632,49 @@ class VoiceBatchPage(BaseToolPage):
         self.params_scroll.setVisible(False)
         layout.addWidget(self.params_scroll)
 
+        # 五类分节（2026-10-07 v2）：类别按钮行在「推理参数」之下、表格之上；
+        # 互斥选项键（QPushButton checkable + QButtonGroup），点选即换表
+        self.category_bar = QWidget()
+        category_row = FlowLayout(self.category_bar, spacing=8)
+        self.category_buttons: dict[str, QPushButton] = {}
+        self._category_group = QButtonGroup(self)
+        self._category_group.setExclusive(True)
+        for index, category in enumerate(tts_spec.SPEC_CATEGORIES):
+            button = QPushButton(i18n_text(f"voice.spec.category.{category}"))
+            button.setProperty("audioNavigation", True)  # 复用选中态高亮样式
+            button.setCheckable(True)
+            self._category_group.addButton(button, index)
+            self.category_buttons[category] = button
+            category_row.addWidget(button)
+        self._category_group.idClicked.connect(self._on_category_clicked)
+        layout.addWidget(self.category_bar)
+
+        # 国家/语音组、情绪/成员级联行（2026-10-08 v3）：类别之下最多三行动态
+        # 按钮（深度随官方结构自适应：vws/wopl 一行、radio 两行、tank/ship 三行），
+        # 选项来自已加载 txt 的路径段（未加载时国家行用内置常量预览，更深各行
+        # 隐藏并提示先加载）；情绪所在行的尾部挂「多情绪共用一份音频」勾选框。
+        self.level_rows: list[QWidget] = []
+        self.level_groups: list[QButtonGroup] = []
+        self.level_buttons: list[dict[str, QPushButton]] = []
+        self._level_options_cache: list[list[str]] = [[], [], []]
+        self.emotion_shared_checkbox = QCheckBox(i18n_text("voice.spec.emotion_shared"))
+        self.emotion_shared_checkbox.setChecked(self._emotion_shared)
+        self.emotion_shared_checkbox.setToolTip(i18n_text("voice.spec.emotion_shared_tip"))
+        self.emotion_shared_checkbox.toggled.connect(self._on_emotion_shared_toggled)
+        for row_index in range(3):
+            bar = QWidget()
+            bar.setVisible(False)
+            FlowLayout(bar, spacing=8)  # 布局随即创建；按钮由 _sync_level_rows 动态填充
+            group = QButtonGroup(self)
+            group.setExclusive(True)
+            group.idClicked.connect(
+                lambda button_id, row=row_index: self._on_level_clicked(row, button_id)
+            )
+            self.level_rows.append(bar)
+            self.level_groups.append(group)
+            self.level_buttons.append({})
+            layout.addWidget(bar)
+
         self.table = QTableView()
         self.table.setObjectName("voiceTable")
         self.table.setModel(self._model)
@@ -579,14 +683,26 @@ class VoiceBatchPage(BaseToolPage):
         self.table.setSelectionBehavior(QAbstractItemView.SelectionBehavior.SelectRows)
         self.table.setSelectionMode(QAbstractItemView.SelectionMode.SingleSelection)
         self.table.verticalHeader().setVisible(False)
+        # 行高要罩得住状态徽章：徽章上下各缩 6px，再留 4px 余量，
+        # 默认行高对 CJK 字形偏紧，会出现徽章内文字被裁的观感
+        self.table.verticalHeader().setDefaultSectionSize(
+            self.table.fontMetrics().height() + 16)
         header = self.table.horizontalHeader()
         header.setSectionResizeMode(int(VoiceColumn.STATUS), QHeaderView.ResizeMode.ResizeToContents)
         header.setSectionResizeMode(int(VoiceColumn.NAME), QHeaderView.ResizeMode.Interactive)
         header.setSectionResizeMode(int(VoiceColumn.TEXT), QHeaderView.ResizeMode.Stretch)
+        header.setSectionResizeMode(int(VoiceColumn.PROCESS), QHeaderView.ResizeMode.Fixed)
+        header.setSectionResizeMode(int(VoiceColumn.SKIP), QHeaderView.ResizeMode.Fixed)
+        header.setSectionResizeMode(int(VoiceColumn.IMPORT), QHeaderView.ResizeMode.Interactive)
         header.setSectionResizeMode(int(VoiceColumn.VOICE), QHeaderView.ResizeMode.Interactive)
         header.setSectionResizeMode(int(VoiceColumn.DURATION), QHeaderView.ResizeMode.ResizeToContents)
         header.setSectionResizeMode(int(VoiceColumn.ACTIONS), QHeaderView.ResizeMode.Fixed)
-        self.table.setColumnWidth(int(VoiceColumn.NAME), 160)
+        # 官方音频名普遍 30~50 字符（如 voice_message_gunner_armor_breached_v1），
+        # 160px 会截断成省略号；给足初始宽度，仍可拖动微调
+        self.table.setColumnWidth(int(VoiceColumn.NAME), 400)
+        self.table.setColumnWidth(int(VoiceColumn.PROCESS), 96)
+        self.table.setColumnWidth(int(VoiceColumn.SKIP), 84)
+        self.table.setColumnWidth(int(VoiceColumn.IMPORT), 150)
         self.table.setColumnWidth(int(VoiceColumn.VOICE), 150)
         self.table.setColumnWidth(int(VoiceColumn.ACTIONS), 150)
         self.table.setMinimumHeight(180)
@@ -607,12 +723,16 @@ class VoiceBatchPage(BaseToolPage):
         self._audio_out = QAudioOutput(self)
         self._player.setAudioOutput(self._audio_out)
 
-        self.add_button.clicked.connect(lambda: self._add_row())
         self.generate_button.clicked.connect(lambda: self._start_generation(self._selected_row_ids()))
         self.regenerate_all_button.clicked.connect(self._start_regeneration_for_stale)
         self.stop_button.clicked.connect(self._stop_generation)
         self.delegate.preview_requested.connect(self._preview)
         self.delegate.regenerate_requested.connect(lambda row_id: self._start_generation([row_id]))
+        # 委托按钮在鼠标事件栈内抛信号：模态对话框/页面跳转必须出栈后再做
+        self.delegate.import_requested.connect(
+            lambda row_id: QTimer.singleShot(0, lambda: self._import_audio_row(row_id)))
+        self.delegate.process_requested.connect(
+            lambda row_id: QTimer.singleShot(0, lambda: self._process_row(row_id)))
         self._model.rows_changed.connect(self._update_summary)
         self._model.row_edited.connect(lambda _row_id: self._update_summary())
         return panel
@@ -621,6 +741,28 @@ class VoiceBatchPage(BaseToolPage):
     def _on_selection_changed(self, current: QModelIndex, _previous: QModelIndex) -> None:
         row = self._model.row_at(current.row()) if current.isValid() else None
         self.reference_display.setText(row.voice if row is not None else "")
+
+    def _on_theme_mode_changed(self, _mode: str) -> None:
+        self._apply_selection_palette()
+        # 行内按钮与状态徽章按主题取色（委托自绘）：换肤后主动重绘，
+        # 否则要等下一次交互才刷新，看着像"半截没换肤"
+        self.table.viewport().update()
+
+    def _apply_selection_palette(self) -> None:
+        """行选中底色收窄为本表调色板（只动 Highlight/HighlightedText 两角色）。
+
+        委托已对可绘制单元格自铺 selection_bg（voice_table_model.paint）；
+        这里收窄 Highlight 是补编辑器格的底：格内有打开的编辑器时视图跳过
+        委托绘制，行原语（PE_PanelItemViewRow）用 Highlight 铺的整行底会
+        从编辑器四周露出。全局 Highlight 是品牌亮蓝，不适用本表（自绘按钮
+        按深底取色，亮蓝铺底对比度掉到 ~1.1:1，2026-10-04 用户反馈）。
+        应用时机：构造末期 + showEvent + 主题切换监听——应用级 QSS 存在时
+        构造期 polish 会吞掉视图调色板覆盖（实测），多时机幂等补打。
+        """
+        palette = self.table.palette()
+        palette.setColor(QPalette.ColorRole.Highlight, QColor(theme.color("selection_bg")))
+        palette.setColor(QPalette.ColorRole.HighlightedText, QColor(theme.color("selection_text")))
+        self.table.setPalette(palette)
 
     def _apply_reference(self, path: str, row_ids: Sequence[str]) -> int:
         applied = 0
@@ -680,14 +822,7 @@ class VoiceBatchPage(BaseToolPage):
         path.mkdir(parents=True, exist_ok=True)
         QDesktopServices.openUrl(QUrl.fromLocalFile(str(path)))
 
-    # —— 行操作 ——
-    def _add_row(self) -> None:
-        row = self._model.add_row(name="", text="", voice="")
-        self._update_summary()
-        index = self._model.index(self._model.index_of(row.row_id), int(VoiceColumn.NAME))
-        self.table.setCurrentIndex(index)
-        self.table.edit(index)
-
+    # —— 命名规范模式 ——
     def _selected_row_id(self) -> str:
         index = self.table.currentIndex()
         return self._model.row_id_at(index.row()) if index.isValid() else ""
@@ -698,37 +833,305 @@ class VoiceBatchPage(BaseToolPage):
             return [row_id]
         return [row.row_id for row in self._model.rows()]
 
-    def _duplicate_selected(self) -> None:
-        row_id = self._selected_row_id()
-        if not row_id:
-            return
-        clone = self._model.duplicate_row(row_id)
-        if clone is not None:
-            self._update_summary()
+    def _load_spec_clicked(self) -> None:
+        """选择规范名单文件（txt）→ 解析校验路径分节 → 应用默认路径并锁定表格。"""
 
-    def _remove_selected(self) -> None:
-        row_id = self._selected_row_id()
-        if row_id:
-            self._model.remove_row(row_id)
-            self._update_summary()
+        path, _filter = QFileDialog.getOpenFileName(
+            self, tr("voice.spec.load"), "", tr("voice.spec.dialog_filter"),
+            options=QFileDialog.Option.DontUseNativeDialog)
+        if not path:
+            return
+        try:
+            document = tts_spec.parse_spec_file(Path(path))
+            errors = tts_spec.validate_spec_entries(document, self._validator)
+        except tts_spec.SpecError as error:
+            QMessageBox.critical(self, tr("voice.spec.load"), tr("voice.spec.load_failed", error=str(error)))
+            return
+        if errors:
+            shown = "\n".join(errors[:10])
+            if len(errors) > 10:
+                shown += tr("voice.spec.more_errors", count=len(errors) - 10)
+            QMessageBox.critical(self, tr("voice.spec.load"), tr("voice.spec.invalid", errors=shown))
+            return
+        self._spec_path = Path(path)
+        self._spec_sections = document
+        # 换了文件：旧暂存整体作废（各类内容不许跨规范串味）
+        self._path_tables.clear()
+        stored = str(get_preference(SPEC_SELECTION_KEY, ""))
+        preferred = tuple(segment for segment in stored.split("/") if segment)
+        new_path = self._resolve_loaded_path(preferred)
+        names = list(document.names("/".join(new_path)))
+        kept = 0
+        if names:
+            kept = self._model.apply_spec(names, carry=self._model.table())
+        else:  # 防御：校验已保证叶子路径有名单，这里理论上不可达
+            self._model.clear_spec()
+        set_preference(SPEC_PATH_KEY, path)
+        set_preference(SPEC_SELECTION_KEY, "/".join(new_path))
+        self._active_path = new_path
+        self._sync_spec_ui()
+        self._update_summary()
+        self._set_summary(tr(
+            "voice.spec.applied",
+            category=tr(f"voice.spec.category.{new_path[0]}"),
+            count=len(list(self._model.rows())),
+            kept=kept,
+        ))
+
+    def _on_category_clicked(self, index: int) -> None:
+        """类别按钮点击（互斥选项键）：路径切到该类，更深选择作废重选。"""
+
+        categories = tts_spec.SPEC_CATEGORIES
+        if 0 <= index < len(categories):
+            self._select_level(0, categories[index])
+
+    def _on_level_clicked(self, row_index: int, button_id: int) -> None:
+        """子层按钮点击：把路径的第 row_index+1 段切到该选项。"""
+
+        options = (
+            self._level_options_cache[row_index]
+            if row_index < len(self._level_options_cache)
+            else []
+        )
+        if 0 <= button_id < len(options):
+            self._select_level(row_index + 1, options[button_id])
+
+    def _select_level(self, depth: int, segment: str) -> None:
+        """层级选中（depth 0 = 类别，1~3 = 子层）：路径切到对应段并换表。"""
+
+        if not 0 <= depth <= 3:
+            return
+        new_path = self._active_path[:depth] + (segment,)
+        self._switch_spec_path(new_path)
+
+    def _resolve_loaded_path(self, preferred: tuple[str, ...]) -> tuple[str, ...]:
+        """把偏好的路径段对齐到已加载文档：逐段校验存在性，失效层改取第一
+        选项；无偏好时从第一类别自动下探到叶子。"""
+
+        document = self._spec_sections
+        path: tuple[str, ...] = ()
+        while len(path) < tts_spec.MAX_PATH_DEPTH:
+            options = document.sub_options(path)
+            if not options:
+                break
+            take = options[0]
+            if len(preferred) > len(path) and preferred[len(path)] in options:
+                take = preferred[len(path)]
+            path = path + (take,)
+        if not path:
+            path = (tts_spec.SPEC_CATEGORIES[0],)
+        return path
+
+    def _switch_spec_path(self, new_path: tuple[str, ...]) -> None:
+        """切换激活路径：已加载规范 → 按该路径名单换表；未加载 → 只展开已知层级。
+
+        - 已加载：当前表存入会话路径暂存 → 取目标路径名单对账重建表格
+          （暂存命中按名继承内容/会话字段/生成状态/row_id，未命中全新空表）；
+        - 未加载规范：表格保持为空，名单仍需加载路径分节 txt；
+        - 目标路径在 txt 里没有名单（中间层）→ 表格清空，待选到叶子。
+        生成忙碌期间整组按钮已禁用，这里再做一道显式闸（防程序化调用绕过）。
+        """
+
+        if self.is_busy or not new_path:
+            self._sync_level_rows()
+            self._sync_category_buttons()
+            return
+        if new_path == self._active_path:
+            return
+        if self._model.spec_names is not None and self._active_path:
+            # 模型 apply_spec 会用全新 VoiceTable 重建 self._table：旧对象引用安全
+            self._path_tables[self._active_path] = self._model.table()
+        document = self._spec_sections
+        self._active_path = new_path
+        set_preference(SPEC_SELECTION_KEY, "/".join(new_path))
+        names = list(document.names("/".join(new_path))) if document else []
+        if names:
+            kept = self._model.apply_spec(names, carry=self._path_tables.get(new_path))
+            self._sync_spec_ui()
+            self._set_summary(tr(
+                "voice.spec.switched",
+                path=" / ".join(self._display_segments(new_path)),
+                count=len(names),
+                kept=kept,
+            ))
+            return
+        # 未加载规范 / 中间层暂无名单：表格清空解锁，待选到叶子
+        self._model.clear_spec()
+        self._sync_spec_ui()
+        summary_key = (
+            "voice.spec.category_preview" if document is None else "voice.spec.path_preview"
+        )
+        self._set_summary(tr(summary_key, path=" / ".join(self._display_segments(new_path))))
+
+    def _sync_category_buttons(self) -> None:
+        """类别按钮可用性与选中态：生成中 → 整组禁用；其余时候可点。
+
+        换表只动模型与偏好、**不碰后端**，故后端装配中（`_backend_pending`）照样可切
+        ——否则"进页面后想先挑类别"会白等一次装配。按钮上的提示文案随状态更新：
+        禁用时写明原因，可用时说明点选即换表（避免"看着能点、点了没反应"的误解）。
+        """
+
+        loaded = self._spec_sections is not None or self._model.spec_names is not None
+        enabled = not self.is_busy
+        if self.is_busy:
+            hint = tr("voice.spec.category.tip_busy")
+        elif loaded:
+            hint = tr("voice.spec.category.tip")
+        else:
+            hint = tr("voice.spec.category.tip_need_spec")
+        active_category = self._active_path[0] if self._active_path else None
+        for category, button in self.category_buttons.items():
+            button.setEnabled(enabled)
+            button.setChecked(enabled and category == active_category)
+            button.setToolTip(hint)
+
+    def _sync_level_rows(self) -> None:
+        """逐层重建子层按钮行：选项来自已加载 txt 的路径段；未加载 txt 时
+        按 `SUBLEVEL_SCHEMA` 用内置常量预览（国家行 → 情绪/成员行，深度
+        随官方结构自适应）；情绪所在行尾挂「多情绪共用一份音频」勾选框。"""
+
+        document = self._spec_sections
+        category = self._active_path[0] if self._active_path else None
+        schema = tts_spec.SUBLEVEL_SCHEMA.get(category or "", ())
+        emotion_row = next(
+            # 情绪行号 = 情绪在 schema 里的下标（row r 展示
+            # path[r+1] 段的选项）——曾误写 index+1：tank 勾选框挂到成员行、
+            # ship 勾选框随导航顺序时有时无（2026-10-09 复核实验实测）。
+            (index for index, kind in enumerate(schema) if kind == "emotions"), -1
+        )
+        for row_index in range(3):
+            bar = self.level_rows[row_index]
+            group = self.level_groups[row_index]
+            for button in self.level_buttons[row_index].values():
+                group.removeButton(button)
+                bar.layout().removeWidget(button)
+                button.deleteLater()
+            self.level_buttons[row_index] = {}
+            if len(self._active_path) <= row_index:
+                options: tuple[str, ...] = ()
+                visible = False
+            elif document is not None:
+                options = document.sub_options(self._active_path[: row_index + 1])
+                visible = bool(options)
+            else:
+                # 未加载 txt：按官方结构用内置常量逐层预览（更深各行随选择展开）
+                kind = schema[row_index] if row_index < len(schema) else ""
+                if kind == "countries":
+                    options = tts_spec.CATEGORY_COUNTRIES.get(category or "", ())
+                elif kind == "emotions":
+                    options = tts_spec.EMOTION_VALUES.get(category or "", ())
+                elif kind == "members":
+                    options = tts_spec.CATEGORY_MEMBERS.get(category or "", ())
+                else:  # vws 的 groups 在常量里归入 countries 预览
+                    options = tts_spec.CATEGORY_COUNTRIES.get(category or "", ())
+                visible = bool(options)
+            self._level_options_cache[row_index] = list(options)
+            flow = bar.layout()
+            if row_index == emotion_row:
+                flow.addWidget(self.emotion_shared_checkbox)
+            checked = (
+                self._active_path[row_index + 1] if len(self._active_path) > row_index + 1 else None
+            )
+            for option_index, option in enumerate(options):
+                button = QPushButton(option)
+                button.setProperty("audioNavigation", True)  # 复用选中态高亮样式
+                button.setCheckable(True)
+                button.setChecked(option == checked)
+                group.addButton(button, option_index)
+                self.level_buttons[row_index][option] = button
+                flow.addWidget(button)
+            bar.setVisible(visible)
+        if emotion_row < 0 or not self._active_path:
+            # 无情绪层的类别（或尚未选类别）：勾选框随行隐藏
+            self.emotion_shared_checkbox.setParent(None)
+
+    def _on_emotion_shared_toggled(self, checked: bool) -> None:
+        """情绪共用勾选：勾选 = 一份音频服务该类别全部情绪（生成一份，后续
+        推送时覆盖全部情绪目录）；不勾 = 每个情绪各自生成一份。只记录语义
+        与偏好，不改变当前表格。"""
+
+        self._emotion_shared = checked
+        set_preference(EMOTION_SHARED_KEY, "1" if checked else "0")
+
+    def _display_segments(self, path: tuple[str, ...]) -> list[str]:
+        """路径的展示段：类别段用中文名，其余段按 txt 原文。"""
+
+        if not path:
+            return []
+        return [tr(f"voice.spec.category.{path[0]}"), *path[1:]]
+
+    def _spec_label_text(self) -> str:
+        """规范状态文案：类别中文名 · 行数 · 文件名（未加载规范时给提示）。"""
+
+        spec_names = self._model.spec_names
+        if spec_names is None or not self._active_path:
+            return tr("voice.spec.none")
+        name = self._spec_path.name if self._spec_path else "—"
+        return tr(
+            "voice.spec.active",
+            category=tr(f"voice.spec.category.{self._active_path[0]}"),
+            count=len(spec_names),
+            name=name,
+        )
+
+    def _sync_spec_ui(self) -> None:
+        """按规范状态刷新常驻标签、生成按钮、类别与子层按钮可用性。"""
+
+        spec_names = self._model.spec_names
+        self.spec_label.setText(self._spec_label_text())
+        self.generate_button.setEnabled(spec_names is not None and not self.is_busy)
+        self._sync_category_buttons()
+        self._sync_level_rows()
+
+    def _spec_mismatch(self) -> bool:
+        """生成前置对账（防绕过双保险）：行数与名字序列必须与规范一致。"""
+
+        spec_names = self._model.spec_names
+        if spec_names is None:
+            return True
+        current = [row.name for row in self._model.rows()]
+        return current != list(spec_names)
 
     # —— 生成 ——
     def _start_regeneration_for_stale(self) -> None:
-        stale = [row.row_id for row in self._model.rows() if row.needs_regeneration or row.artifact is ArtifactState.MISSING]
+        stale = [
+            row.row_id
+            for row in self._model.rows()
+            if (row.needs_regeneration or row.artifact is ArtifactState.MISSING)
+            and not row.skip_generation
+        ]
         if stale:
             self._start_generation(stale)
 
     def _start_generation(self, row_ids: Sequence[str]) -> None:
         if self.is_busy or not row_ids:
             return
+        if self._model.spec_names is None:
+            self._set_summary(tr("voice.spec.required"))
+            return
+        if self._spec_mismatch():
+            # 防绕过双保险：模型层锁 + 生成前置对账（行数与名字序列必须一致）
+            self._set_summary(tr("voice.spec.mismatch"))
+            return
         requires_reference = bool(
             getattr(getattr(self._runner, "backend", None), "requires_reference_audio", False)
         )
         requests: list[TtsRequest] = []
         rejected = 0
+        skipped = 0
+        adopted = 0
         for row_id in row_ids:
             row = self._model.table().row(row_id)
             if row is None:
+                continue
+            if row.skip_generation:
+                # "不用生成"：批量流程整行跳过，不发 TTS、不改状态
+                skipped += 1
+                continue
+            if row.imported_audio:
+                # 自备音频：拷贝进输出目录并按产物登记，占位即"生成完成"
+                if self._adopt_imported_audio(row):
+                    adopted += 1
                 continue
             result = self._validator.validate(row.name, existing=())
             if not result.ok:
@@ -760,6 +1163,9 @@ class VoiceBatchPage(BaseToolPage):
             self._update_summary()
             if rejected:
                 self._set_summary(tr("voice.preflight.rejected", count=rejected))
+            elif adopted or skipped:
+                self._set_summary(
+                    tr("voice.gen.partitioned", adopted=adopted, skipped=skipped))
             return
         if rejected:
             self._set_summary(tr("voice.preflight.rejected", count=rejected))
@@ -770,6 +1176,8 @@ class VoiceBatchPage(BaseToolPage):
         self._worker.start()
         self.generate_button.setEnabled(False)
         self.stop_button.setEnabled(True)
+        # 生成忙碌期间整组类别按钮禁用：切换会换表，不能发生在生成中
+        self._sync_category_buttons()
 
     def _output_path(self, row: VoiceRow) -> Path:
         root = Path(self._output_dir())
@@ -785,6 +1193,107 @@ class VoiceBatchPage(BaseToolPage):
         from app.paths import temp_dir
 
         return str(temp_dir() / "voice-output")
+
+    # —— 自备音频 / 不用生成 / 进入处理 ——
+
+    def _import_audio_row(self, row_id: str) -> None:
+        """导入列：为该行挑选自备音频；生成时直接采用，不经 TTS。"""
+        row = self._model.table().row(row_id)
+        if row is None or self.is_busy:
+            return
+        start_dir = str(Path(row.imported_audio).parent) if row.imported_audio else ""
+        path, _ = QFileDialog.getOpenFileName(
+            self, tr("voice.import.dialog"), start_dir,
+            "Audio (*.wav *.flac *.mp3 *.ogg *.m4a *.aac *.opus)",
+            options=QFileDialog.Option.DontUseNativeDialog)  # 原生框堆损坏坑，见 default_audio_picker 登记
+        if not path:
+            return
+        row.imported_audio = path
+        try:
+            row.duration_ms = FfmpegLocator.probe_duration_ms(Path(path))
+        except (OSError, RuntimeError, ValueError):
+            pass  # 时长探测失败不拦导入；采用时再探一次
+        self._model.refresh_row(row_id)
+        self._update_summary()
+
+    def _adopt_imported_audio(self, row: VoiceRow) -> bool:
+        """导入音频的"生成"：拷进输出目录并按产物口径登记（与 _apply_result 对齐）。
+
+        音频文件 MB 量级，GUI 线程同步拷贝可接受（与一次试听解码同量级）。"""
+        source = Path(row.imported_audio)
+        if not source.is_file():
+            row.job = JobState.FAILED
+            row.error_code = "import_missing"
+            row.error_message = tr("voice.import.missing")
+            self._model.refresh_row(row.row_id)
+            return False
+        target = self._output_path(row)
+        target.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copy2(source, target)
+        digest = hashlib.sha256()
+        with target.open("rb") as stream:
+            for chunk in iter(lambda: stream.read(1024 * 1024), b""):
+                digest.update(chunk)
+        try:
+            duration_ms = FfmpegLocator.probe_duration_ms(target)
+        except (OSError, RuntimeError, ValueError):
+            duration_ms = row.duration_ms
+        row.job = JobState.IDLE
+        row.artifact = ArtifactState.CURRENT
+        row.spec_hash = row.compute_spec_hash(self._model.table().key_id)
+        row.output_hash = digest.hexdigest()
+        row.audio_path = str(target)
+        row.duration_ms = duration_ms
+        row.error_code = ""
+        row.error_message = ""
+        self._model.refresh_row(row.row_id)
+        return True
+
+    def _process_row(self, row_id: str) -> None:
+        """进行处理：弹出该行音频的编辑小窗，保存后按产物口径回登记。
+
+        音频解析顺序：生成产物优先（audio_path），导入源兜底；保存目标
+        始终是该行产物路径（_output_path），用户的导入源文件不被覆盖。"""
+        row = self._model.table().row(row_id)
+        if row is None:
+            return
+        path = next(
+            (item for item in (row.audio_path, row.imported_audio)
+             if item and Path(item).is_file()), "")
+        if not path:
+            self._set_summary(tr("voice.process.no_audio"))
+            return
+        dialog = KokoroTsurumaki(path, self._output_path(row), self)
+        dialog.saved.connect(
+            lambda target, row_id=row_id: self._register_processed_audio(row_id, Path(target)))
+        dialog.exec()
+        # 小窗以页面为父，exec 返回后 C++ 对象随父存活——不删则
+        # 每次打开累积一份 QMediaPlayer/时间轴等重对象
+        dialog.deleteLater()
+
+    def _register_processed_audio(self, row_id: str, target: Path) -> None:
+        """处理保存的回登记：与 _apply_result / _adopt_imported_audio 同口径。"""
+        row = self._model.table().row(row_id)
+        if row is None or not target.is_file():
+            return
+        digest = hashlib.sha256()
+        with target.open("rb") as stream:
+            for chunk in iter(lambda: stream.read(1024 * 1024), b""):
+                digest.update(chunk)
+        try:
+            duration_ms = FfmpegLocator.probe_duration_ms(target)
+        except (OSError, RuntimeError, ValueError):
+            duration_ms = row.duration_ms
+        row.job = JobState.IDLE
+        row.artifact = ArtifactState.CURRENT
+        row.spec_hash = row.compute_spec_hash(self._model.table().key_id)
+        row.output_hash = digest.hexdigest()
+        row.audio_path = str(target)
+        row.duration_ms = duration_ms
+        row.error_code = ""
+        row.error_message = ""
+        self._model.refresh_row(row_id)
+        self._set_summary(tr("voice.process.saved_summary"))
 
     def _run_requests(self, requests: Sequence[TtsRequest]) -> None:
         def on_started(request: TtsRequest) -> None:
@@ -841,6 +1350,11 @@ class VoiceBatchPage(BaseToolPage):
                 if not isinstance(ok, bool):
                     continue
                 self.apply_weights_button.setEnabled(True)
+                if not ok and "weight failed" in message:
+                    # 上游 400 只说 "change sovits weight failed"：
+                    # 版本错配（CPUFast 不吃 v3/v4）是最常见根因，就地给本地化
+                    # 建议；服务层保持零 Qt 依赖，提示组装放 UI 层（GSV 兼容 P1）
+                    message = f"{message}。{tr('voice.gsv.weight_version_hint')}"
                 self._set_summary(
                     tr("voice.weights.applied") if ok else tr("voice.weights.failed", message=str(message))
                 )
@@ -858,7 +1372,7 @@ class VoiceBatchPage(BaseToolPage):
                 self._set_summary(str(payload))
             elif kind == "done":
                 self._worker = None
-                self.generate_button.setEnabled(True)
+                self._sync_spec_ui()
                 self.stop_button.setEnabled(False)
                 self._update_summary()
 
@@ -881,8 +1395,12 @@ class VoiceBatchPage(BaseToolPage):
         self.params_scroll.setVisible(checked)
 
     def _update_params_toggle_text(self) -> None:
-        arrow = "▾" if self.params_toggle.isChecked() else "▸"
-        self.params_toggle.setText(f"{arrow} {tr('voice.params.toggle')}")
+        # 禁用时摘掉 ▾/▸ 箭头：无箭头 + 灰字，一眼看出"现在展不开"，
+        # 而不是"看着能点却没反应"（2026-10-08 用户反馈同源问题的顺带收口）
+        arrow = ""
+        if self.params_toggle.isEnabled():
+            arrow = "▾ " if self.params_toggle.isChecked() else "▸ "
+        self.params_toggle.setText(f"{arrow}{tr('voice.params.toggle')}")
 
     # —— 微调模型选择（训练产物 → 推理热切换）——
     def refresh_finetuned_models(self) -> int:
@@ -941,6 +1459,38 @@ class VoiceBatchPage(BaseToolPage):
             self.sovits_weights_input.setText(sovits_path)
         self._set_summary(tr("voice.weights.picked", name=self.finetuned_combo.itemText(index)))
 
+    # —— GSV 服务切换（多分支兼容 P2）——
+    def refresh_gsv_services(self) -> None:
+        """把注册表快照刷进参数面板的服务下拉框。"""
+
+        profiles, active_id = gsv_services.registry_snapshot()
+        self.params_panel.set_services(profiles, active_id)
+
+    def _on_gsv_service_changed(self, profile_id: str) -> None:
+        """用户切换 GSV 服务：持久化 active 档并复用模型装配链路重连。"""
+
+        try:
+            gsv_services.set_active(profile_id)
+        except KeyError:
+            self.refresh_gsv_services()  # 幽灵档（注册表已变）：回拉真实状态
+            return
+        self.model_switch_requested.emit(self.MODEL_GPT)
+
+    def _manage_gsv_services(self) -> None:
+        """打开服务管理对话框：确认后落盘注册表并按需重连。"""
+
+        from app.widgets.gsv_service_dialog import MisumiUika
+
+        profiles, active_id = gsv_services.registry_snapshot()
+        dialog = MisumiUika(profiles, active_id, parent=self)
+        if dialog.exec() != QDialog.DialogCode.Accepted:
+            return
+        new_profiles, new_active = dialog.result_profiles()
+        gsv_services.replace_all(new_profiles, new_active)
+        self.refresh_gsv_services()
+        if new_active != active_id:
+            self.model_switch_requested.emit(self.MODEL_GPT)
+
     def _apply_weights_clicked(self) -> None:
         """应用权重：走工作线程。
 
@@ -958,6 +1508,27 @@ class VoiceBatchPage(BaseToolPage):
             return
         gpt_path = self.gpt_weights_input.text().strip()
         sovits_path = self.sovits_weights_input.text().strip()
+        # GSV 兼容 P3/E5：CPUFast 服务 + v3/v4 权重（版本目录段判定，路径
+        # 手输与下拉同权）→ 确认框软拦截，可强行尝试（方言推断可能失准）
+        capabilities = getattr(backend, "capabilities", None)
+        if (
+            capabilities is not None
+            and capabilities.docs_ok
+            and capabilities.dialect_hint == "cpufast"
+            and (
+                training.weight_version_is_v3v4(training.weight_version_root(gpt_path))
+                or training.weight_version_is_v3v4(training.weight_version_root(sovits_path))
+            )
+        ):
+            answer = QMessageBox.question(
+                self,
+                tr("voice.gsv.weight_version_confirm_title"),
+                tr("voice.gsv.weight_version_confirm_body"),
+                QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No,
+                QMessageBox.StandardButton.No,
+            )
+            if answer != QMessageBox.StandardButton.Yes:
+                return
         self.apply_weights_button.setEnabled(False)
         self._set_summary(tr("voice.weights.applying"))
         self._weights_worker = threading.Thread(
@@ -990,9 +1561,11 @@ class VoiceBatchPage(BaseToolPage):
 
         self._backend_pending = True
         self.generate_button.setEnabled(False)
+        self._sync_category_buttons()  # 只刷新按钮提示文案（类别切换不依赖后端）
+        self.params_toggle.setEnabled(False)
+        self._update_params_toggle_text()  # 摘掉箭头：禁用态一眼可辨
         self.weights_holder.setVisible(False)
         self._set_summary(tr("voice.backend.connecting"))
-
     def set_backend(self, backend: TtsBackend) -> None:
         """切换推理后端（路由侧按模型选择装配；切换时重建串行执行器）。
 
@@ -1001,9 +1574,17 @@ class VoiceBatchPage(BaseToolPage):
         """
 
         self._backend_pending = False
+        self.params_toggle.setEnabled(True)  # 装配结束恢复「推理参数」折叠头（并带回箭头）
+        self._update_params_toggle_text()
         self._runner = SerialTtsRunner(backend)
         name = getattr(backend, "name", type(backend).__name__)
         self.params_panel.set_backend_kind(name)
+        # GSV 兼容 P2：能力快照推送面板（高级区可用性 + 方言提示）；
+        # 非 GSV 后端 / 探测失败 → None → 面板回到基线提示
+        capabilities = getattr(backend, "capabilities", None)
+        self.params_panel.set_gsv_capabilities(
+            capabilities if capabilities is not None and capabilities.docs_ok else None
+        )
         if name == "fake":
             if self._model_kind.startswith("api:"):
                 self._model_panes.setCurrentIndex(2)
@@ -1011,21 +1592,30 @@ class VoiceBatchPage(BaseToolPage):
                 self._model_panes.setCurrentIndex(1)
             else:
                 self._model_panes.setCurrentIndex(0)
-            is_gpt_kind = self._model_kind == self.MODEL_GPT
+            is_gpt_kind = self._model_kind in (self.MODEL_GPT, self.MODEL_GPT_CPUFAST)
             self.weights_holder.setVisible(is_gpt_kind)
             if is_gpt_kind:
                 self.refresh_finetuned_models()
-            if not self.is_busy:
-                self.generate_button.setEnabled(True)
+            self._sync_spec_ui()
             self._set_summary(tr("voice.backend.demo"))
             return
-        self.set_model_kind(self.MODEL_COSY if self.params_panel.backend_kind == BACKEND_COSY else self.MODEL_GPT)
+        # 面板往返曾无条件回落 MODEL_GPT：CPUFast 入口装配真实
+        # GSV 后端后按钮会被翻回官方包入口（2026-10-09 第三入口轮修复）
+        gsv_kind = (
+            self._model_kind
+            if self._model_kind in (self.MODEL_GPT, self.MODEL_GPT_CPUFAST)
+            else self.MODEL_GPT
+        )
+        self.set_model_kind(self.MODEL_COSY if self.params_panel.backend_kind == BACKEND_COSY else gsv_kind)
         self.weights_holder.setVisible(self.params_panel.backend_kind == BACKEND_GPT)
         if self.params_panel.backend_kind != BACKEND_COSY:
             self.refresh_finetuned_models()
-        if not self.is_busy:
-            self.generate_button.setEnabled(True)
-        self._set_summary(tr("voice.backend.ready", name=name))
+        self._sync_spec_ui()
+        summary = tr("voice.backend.ready", name=name)
+        if capabilities is not None and capabilities.docs_ok:
+            # 方言提示随连接结果落摘要行（设计 §5.5）
+            summary += " · " + tr(f"voice.gsv.dialect.{capabilities.dialect_hint}")
+        self._set_summary(summary)
 
     # —— 试听 ——
     def _preview(self, row_id: str) -> None:
@@ -1048,10 +1638,23 @@ class VoiceBatchPage(BaseToolPage):
             self._set_summary(tr("voice.backend.connecting"))
             return
         rows = self._model.rows()
-        done = sum(1 for row in rows if row.artifact is ArtifactState.CURRENT)
-        stale = sum(1 for row in rows if row.needs_regeneration)
-        pending = len(rows) - done - stale
+        # 禁行行必须从生成统计三桶（完成/待重生成/未完成）整桶
+        # 退出、单独计入"禁止生成"——曾只追加后缀，pending/stale 的数学仍把
+        # 禁行算进去，勾选后"未完成"纹丝不动，与登记意图相悖
+        done = sum(
+            1 for row in rows
+            if row.artifact is ArtifactState.CURRENT and not row.skip_generation
+        )
+        stale = sum(
+            1 for row in rows
+            if row.needs_regeneration and not row.skip_generation
+        )
+        skipped = sum(1 for row in rows if row.skip_generation)
+        pending = len(rows) - done - stale - skipped
         text = tr("voice.summary.counts", total=len(rows), done=done, stale=stale, pending=max(0, pending))
+        if skipped:
+            # 禁止生成的行不再混进"未完成"计数：汇总必须反映勾选状态
+            text += tr("voice.summary.skipped", skipped=skipped)
         if HASH_BACKEND != "vtcore":
             # 无扩展时 `.vt` 工程读写整体不可用：这条提示必须常驻，不能被统计文案覆盖
             text = f"{tr('voice.project.no_backend')}｜{text}"
@@ -1061,13 +1664,21 @@ class VoiceBatchPage(BaseToolPage):
         super().retranslate()
         self.train_module_button.setText(i18n_text("voice.module.train"))
         self.generation_module_button.setText(i18n_text("voice.module.generation"))
+        self.gpt_model_button.setText(i18n_text("voice.model.gpt"))
+        self.cpufast_model_button.setText(i18n_text("voice.model.cpufast"))
+        self.cosy_model_button.setText(i18n_text("voice.model.cosy"))
         self.model_kind_label.setText(tr("voice.model.kind"))
         self.refresh_api_channels()
         if self._model_kind.startswith("api:"):
             # API 信息面板的动态行前缀也要随语言刷新（值是数据保留）
             self._update_api_pane(self._model_kind.split(":", 1)[1])
         self._update_module_cards_language()
-        self.add_button.setText(tr("voice.action.add"))
+        self.spec_button.setText(tr("voice.spec.load"))
+        for category, button in self.category_buttons.items():
+            button.setText(tr(f"voice.spec.category.{category}"))
+        self.emotion_shared_checkbox.setText(i18n_text("voice.spec.emotion_shared"))
+        self.emotion_shared_checkbox.setToolTip(i18n_text("voice.spec.emotion_shared_tip"))
+        self._sync_spec_ui()
         self.generate_button.setText(tr("voice.action.generate_selected"))
         self.regenerate_all_button.setText(tr("voice.action.generate_stale"))
         self.stop_button.setText(tr("voice.action.stop"))
@@ -1138,7 +1749,12 @@ class VoiceBatchPage(BaseToolPage):
             table, info = vt_project.container_to_table(path)
         except (OSError, ValueError, vt_project.VtProjectError) as error:
             return tr("voice.open.failed", code=str(error).split(":", 1)[0])
-        self._model.set_table(table)
+        if self._model.spec_names is None:
+            # 表格规范化：.vt 的行集合必须服从规范名单，未加载规范一律拒绝
+            # （顺序在容器解析之后：损坏文件无论规范如何都打不开）
+            return tr("voice.spec.vt_requires_spec")
+        kept = self._model.apply_spec(self._model.spec_names or (), carry=table)
+        dropped = len(table.rows) - kept
         if info["applied"]:
             for row in self._model.rows():
                 self._model.refresh_row(row.row_id)
@@ -1149,11 +1765,13 @@ class VoiceBatchPage(BaseToolPage):
             self._project_file = None
             self.unlock_action.setEnabled(True)
             self._update_summary()
-            return tr("voice.open.vt_readonly", name=path.name, count=len(table.rows))
+            detail = tr("voice.spec.vt_open_summary", kept=kept, dropped=dropped) if dropped else ""
+            return (tr("voice.open.vt_readonly", name=path.name, count=len(table.rows)) + (" " + detail if detail else ""))
         self._project_file = path
         self.unlock_action.setEnabled(False)
         self._update_summary()
-        return tr("voice.open.vt_editable", name=path.name, count=len(table.rows))
+        detail = tr("voice.spec.vt_open_summary", kept=kept, dropped=dropped) if dropped else ""
+        return (tr("voice.open.vt_editable", name=path.name, count=len(table.rows)) + (" " + detail if detail else ""))
 
     def _unlock_project_clicked(self) -> None:
         """解锁已签名的 `.vt` 以便原地编辑（解锁后保存会写出未签名容器）。"""
@@ -1398,35 +2016,80 @@ class VoiceBatchPage(BaseToolPage):
         return temp_dir() / "voice-output" / "voice_project.vt"
 
     def _load_existing_project(self) -> None:
-        """启动时载入默认工作文件（`.vt`）。
+        """启动装配：先恢复上次命名规范（含激活类别），再把默认 `.vt` 对账进规范。
 
-        - **未构建 vtcore → 跳过**，只在状态栏说明（应用必须能在没有扩展时照常启动）；
-        - 文件不存在或已损坏 → 静默跳过。
+        - 未加载规范（无偏好/文件丢失/校验失败）→ **空表启动**（表格规范化后
+          不再无条件载旧工程），摘要行说明原因；
+        - 规范在 → 读默认 `.vt` 为旧表（可缺失），按**激活节**名单对账继承内容
+          （`.vt` 仍只承载当前激活类；会话暂存启动时为空）。
         """
 
-        if HASH_BACKEND != "vtcore":
-            # 无扩展：不尝试加载 `.vt`，由汇总文案常驻提示（见 _update_summary）
+        restored = self._restore_spec_from_preference()
+        old_table: VoiceTable | None = None
+        old_state_applied = False
+        if HASH_BACKEND == "vtcore":
+            path = self._project_path()
+            if path.exists():
+                try:
+                    old_table, info = vt_project.container_to_table(path)
+                except (OSError, ValueError, vt_project.VtProjectError):
+                    old_table = None
+                else:
+                    old_state_applied = bool(info["applied"])
+                    self._project_view = path
+                    self.set_lock_state(path)
+                    if info["locked"]:
+                        self._project_file = None
+                        self.unlock_action.setEnabled(True)
+                    else:
+                        self._project_file = path
+        if restored is None or not restored:
+            self._sync_spec_ui()
             self._update_summary()
             return
-        path = self._project_path()
-        if not path.exists():
-            return
-        try:
-            table, info = vt_project.container_to_table(path)
-        except (OSError, ValueError, vt_project.VtProjectError):
-            return
-        self._model.set_table(table)
-        if info["applied"]:
+        self._active_path = restored
+        names = list(self._spec_sections.names("/".join(restored)))
+        if names:
+            self._model.apply_spec(names, carry=old_table)
+        else:  # 防御：校验保证叶子路径有名单，这里理论上不可达
+            self._model.clear_spec()
+        if old_table is not None and old_state_applied:
             for row in self._model.rows():
                 self._model.refresh_row(row.row_id)
-        self._project_view = path
-        self.set_lock_state(path)
+        self._sync_spec_ui()
         self._update_summary()
+
+    def _restore_spec_from_preference(self) -> tuple[str, ...]:
+        """从偏好恢复上次规范与路径选择；不可用（缺失/损坏）时摘要说明并返回空路径。"""
+
+        stored = get_preference(SPEC_PATH_KEY, "")
+        if not stored:
+            return ()
+        path = Path(str(stored))
+        if not path.is_file():
+            self._set_summary(tr("voice.spec.autoload_missing", name=path.name))
+            return ()
+        try:
+            document = tts_spec.parse_spec_file(path)
+            errors = tts_spec.validate_spec_entries(document, self._validator)
+        except tts_spec.SpecError as error:
+            self._set_summary(tr("voice.spec.autoload_failed", error=str(error)))
+            return ()
+        if errors:
+            self._set_summary(tr("voice.spec.autoload_failed", error=errors[0]))
+            return ()
+        self._spec_path = path
+        self._spec_sections = document
+        stored_selection = str(get_preference(SPEC_SELECTION_KEY, ""))
+        preferred = tuple(segment for segment in stored_selection.split("/") if segment)
+        return self._resolve_loaded_path(preferred)
 
     def _on_save_failed(self, message: str) -> None:
         """自动保存失败（工程被锁定 / 缺扩展 / 磁盘错误）→ 状态栏显示可读文案。"""
 
         self._set_summary(tr("voice.project.save_failed", code=str(message).split(":", 1)[0]))
+
+
 def choose_output_directory(page: VoiceBatchPage, parent: QWidget) -> str:
     """工具栏外的目录选择小工具（保留给后续接入；当前由偏好决定输出目录）。"""
 

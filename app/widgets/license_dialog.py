@@ -35,6 +35,16 @@ _PAGES = (
     ("NumPy 1.26.4 — BSD-3-Clause", ":/licenses/NumPy-BSD-3-Clause.txt", False),
     ("OpenSSL 3.0.10 — Apache-2.0", ":/licenses/OpenSSL-Apache-2.0.txt", False),
     ("PyInstaller 6.11.1 — GPL-2.0 with exception", ":/licenses/PyInstaller-GPL-2.0-with-exception.txt", False),
+    ("CPython 3.12.10 发行包捆绑组件声明", ":/licenses/CPython-Bundled-Components.txt", False),
+    ("Bootstrap Icons 1.11.3 (navigation icons) — MIT", ":/licenses/Bootstrap-Icons-MIT.txt", False),
+    ("PyQtGraph bundled colour maps — CC-BY-4.0", ":/licenses/pyqtgraph-CET-CC-BY-4.0.txt", False),
+    ("certifi (TTS-Hub dependency) — MPL-2.0", ":/licenses/certifi-MPL-2.0.txt", False),
+    ("python-multipart — Apache-2.0", ":/licenses/OpenSSL-Apache-2.0.txt", False),
+    ("Mesa (software OpenGL) — MIT", ":/licenses/Mesa-MIT.txt", False),
+    ("Chromium (Qt WebEngine) — BSD-3-Clause", ":/licenses/Chromium-BSD-3-Clause.txt", False),
+    ("Chromium 捆绑第三方组件声明索引", ":/licenses/Chromium-Third-Party-Notices-Index.md", True),
+    ("Microsoft VC++ Runtime / UCRT 随包分发声明", ":/licenses/Microsoft-VC-Runtime-Redistributable.txt", False),
+    ("vtcore Rust 依赖（45 个 crate）— 许可正文汇编", ":/licenses/RustDependencies.txt", False),
     ("openpyxl 3.1.5 — MIT", ":/licenses/openpyxl-MIT.txt", False),
 )
 

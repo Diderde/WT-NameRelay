@@ -52,7 +52,7 @@
 （`manifest.json` / `measured-versions.json` / `MANIFEST.md`），属**第三方材料**，
 不作为本修改版的 GPL-3.0-only 新增代码；其许可归属见 `THIRD_PARTY_LICENSES.md`。
 
--  —— 编辑器忽略规则（上半部同步自 `.gitignore`）
+-  —— 编辑器忽略规则（上半部同步自 ）
 - `MODIFICATION_NOTICE.md` —— 本文件：修改版声明、许可分层与完整文件清单（会内嵌进程序展示）
 - `app/audio/analysis_service.py` —— Per-clip loudness analysis (EBU R128) and spectrum image rendering.
 - `app/audio/silence_service.py` —— Silence detection for the audio timeline (background worker over ffmpeg).
@@ -131,7 +131,7 @@
 > 仅**修改部分**按 GPL-3.0-only 授权，未改动的部分仍遵循原 Source-Available 许可。
 
 - `.gitattributes` —— 新增 `vtcore/Cargo.lock text eol=lf`；确立整体 CRLF 行尾策略
-- `.gitignore` —— 补模型/音频通配符（含 `*.gguf`）与仓库根临时目录规则
+-  —— 补模型/音频通配符（含 `*.gguf`）与仓库根临时目录规则
 - `FFMPEG_BUILD_INFO.md` —— 随包 FFmpeg 的来源、许可实测结论、可复现构建与验收闸门
 - `README.md` —— fork 名称、可选组件 vtcore 一节、来源与许可声明
 - `THIRD_PARTY_LICENSES.md` —— 第三方组件与许可证清单（FFmpeg 自建构建、Rust crate、Python 依赖）

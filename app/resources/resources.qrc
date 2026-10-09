@@ -4,6 +4,22 @@
     <file alias="radio_name_groups.json">data/radio_name_groups.json</file>
     <file alias="bank_name_groups.json">data/bank_name_groups.json</file>
   </qresource>
+  <qresource prefix="/icons">
+    <!-- 导航栏图标：Bootstrap Icons 1.11.3（MIT，见 THIRD_PARTY_LICENSES.md 的图标一节）。
+         NavRail 优先从 `:/icons/<name>` 读，磁盘 app/resources/icons/ 只是回退；
+         同目录的 bootstrap-icons-LICENSE.txt 一并嵌入，使 MIT「随副本保留版权与许可声明」
+         的义务在打包版（resources_rc.py 内嵌资源）路径上也成立。 -->
+    <file alias="nav-video.svg">icons/nav-video.svg</file>
+    <file alias="nav-separate.svg">icons/nav-separate.svg</file>
+    <file alias="nav-tts.svg">icons/nav-tts.svg</file>
+    <file alias="nav-api.svg">icons/nav-api.svg</file>
+    <file alias="nav-copy.svg">icons/nav-copy.svg</file>
+    <file alias="nav-audio.svg">icons/nav-audio.svg</file>
+    <file alias="nav-fmod.svg">icons/nav-fmod.svg</file>
+    <file alias="nav-experimental.svg">icons/nav-experimental.svg</file>
+    <file alias="nav-settings.svg">icons/nav-settings.svg</file>
+    <file alias="bootstrap-icons-LICENSE.txt">icons/bootstrap-icons-LICENSE.txt</file>
+  </qresource>
   <qresource prefix="/licenses">
     <file alias="ModificationNotice.md">../../MODIFICATION_NOTICE.md</file>
     <file alias="WT-NameRelay-Source-Available.txt">../../LICENSE</file>
@@ -17,5 +33,14 @@
     <file alias="PyQtGraph-MIT.txt">../../licenses/PyQtGraph-MIT.txt</file>
     <file alias="NumPy-BSD-3-Clause.txt">../../licenses/NumPy-BSD-3-Clause.txt</file>
     <file alias="OpenSSL-Apache-2.0.txt">../../licenses/OpenSSL-Apache-2.0.txt</file>
+    <file alias="Bootstrap-Icons-MIT.txt">../../licenses/Bootstrap-Icons-MIT.txt</file>
+    <file alias="pyqtgraph-CET-CC-BY-4.0.txt">../../licenses/pyqtgraph-CET-CC-BY-4.0.txt</file>
+    <file alias="certifi-MPL-2.0.txt">../../licenses/certifi-MPL-2.0.txt</file>
+    <file alias="Mesa-MIT.txt">../../licenses/Mesa-MIT.txt</file>
+    <file alias="CPython-Bundled-Components.txt">../../licenses/CPython-Bundled-Components.txt</file>
+    <file alias="Chromium-BSD-3-Clause.txt">../../licenses/Chromium-BSD-3-Clause.txt</file>
+    <file alias="Chromium-Third-Party-Notices-Index.md">../../licenses/Chromium-Third-Party-Notices-Index.md</file>
+    <file alias="Microsoft-VC-Runtime-Redistributable.txt">../../licenses/Microsoft-VC-Runtime-Redistributable.txt</file>
+    <file alias="RustDependencies.txt">../../licenses/rust-aggregated.txt</file>
   </qresource>
 </RCC>

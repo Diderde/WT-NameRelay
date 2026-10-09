@@ -5,8 +5,10 @@ from .audio_processing_page import AudioProcessingPage
 from .bank_page import BankPage
 from .crew_page import CrewPage
 from .file_copy_page import FileCopyPage
+from .fmod_page import FmodConsolePage
 from .home_page import HomePage
 from .radio_page import RadioPage
+from .separation_page import SeparationPage
 from .tts_model_page import TtsModelPage
 from .video_clip_page import VideoClipPage
 from .voice_batch_page import VoiceBatchPage
@@ -17,8 +19,10 @@ __all__ = [
     "BankPage",
     "CrewPage",
     "FileCopyPage",
+    "FmodConsolePage",
     "HomePage",
     "RadioPage",
+    "SeparationPage",
     "TtsModelPage",
     "VideoClipPage",
     "VoiceBatchPage",

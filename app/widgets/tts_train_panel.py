@@ -77,6 +77,22 @@ class TtsTrainPanel(QWidget):
         root.setContentsMargins(0, 0, 0, 0)
         root.setSpacing(8)
 
+        # 模型版本（更上级前置选择）：先选版本，再进行数据集/训练工作。
+        # 该字段曾埋在数据集表单里（像数据集属性）——它实际
+        # 决定训练底模/配置/产物版本，是整个微调流程的第一选择
+        self.version_row = QWidget()
+        version_layout = QHBoxLayout(self.version_row)
+        version_layout.setContentsMargins(0, 0, 0, 0)
+        version_layout.setSpacing(8)
+        self.version_label = QLabel(i18n_text("train.field.version"))
+        self.version_label.setObjectName("mutedLabel")
+        version_layout.addWidget(self.version_label, 0)
+        self.version_input = QComboBox()
+        self.version_input.addItems(training.VERSIONS)
+        self.version_input.setCurrentText("v2ProPlus")
+        version_layout.addWidget(self.version_input, 1)
+        root.addWidget(self.version_row)
+
         # 子页结构（照官方 webui 工作流）：数据集工具(0b 切片 / 0c ASR) → 微调训练(一键三连 / s2 / s1)
         self.tabs = QTabWidget()
         self.tabs.setObjectName("trainToolTabs")
@@ -89,6 +105,9 @@ class TtsTrainPanel(QWidget):
         self.slice_group = QGroupBox(i18n_text("train.tools.slice"))
         self.slice_group.setObjectName("trainToolGroup")
         slice_form = QFormLayout(self.slice_group)
+        # 窄面板下路径放不下（字段全宽也只有 772px@1080 面板）：标签移到字段上方，
+        # 让输入框独占整行宽（+标签列宽），滚动容器兜住增量高度
+        slice_form.setRowWrapPolicy(QFormLayout.RowWrapPolicy.WrapAllRows)
         self.slice_inp_input = QLineEdit()
         self.slice_opt_input = QLineEdit(str(gsv_root() / "output" / "slicer_opt"))
         self.slice_threshold_input = QLineEdit("-34")
@@ -112,6 +131,7 @@ class TtsTrainPanel(QWidget):
         self.asr_group = QGroupBox(i18n_text("train.tools.asr"))
         self.asr_group.setObjectName("trainToolGroup")
         asr_form = QFormLayout(self.asr_group)
+        asr_form.setRowWrapPolicy(QFormLayout.RowWrapPolicy.WrapAllRows)
         self.asr_inp_input = QLineEdit()
         self.asr_opt_input = QLineEdit(str(gsv_root() / "output" / "asr_opt"))
         self.asr_backend_input = QComboBox()
@@ -143,8 +163,14 @@ class TtsTrainPanel(QWidget):
         tool_actions.addStretch(1)
         tools_layout.addLayout(tool_actions)
         tools_layout.addStretch(1)
-        self.tabs.addTab(tools_tab, i18n_text("train.tab.tools"))
-        self._tools_tab_index = self.tabs.indexOf(tools_tab)
+        # 换行式表单增高：与微调页同款滚动容器兜底
+        tools_scroll = QScrollArea()
+        tools_scroll.setObjectName("trainFormScroll")
+        tools_scroll.setWidgetResizable(True)
+        tools_scroll.setFrameShape(QFrame.Shape.NoFrame)
+        tools_scroll.setWidget(tools_tab)
+        self.tabs.addTab(tools_scroll, i18n_text("train.tab.tools"))
+        self._tools_tab_index = self.tabs.indexOf(tools_scroll)
 
         train_tab = QWidget()
         train_layout = QVBoxLayout(train_tab)
@@ -169,6 +195,8 @@ class TtsTrainPanel(QWidget):
         self.dataset_group = QGroupBox(i18n_text("train.group.dataset"))
         self.dataset_group.setObjectName("trainToolGroup")
         form = QFormLayout(self.dataset_group)
+        # 与数据集工具页同款：标签在上、字段独占整行（路径字段需要整行宽）
+        form.setRowWrapPolicy(QFormLayout.RowWrapPolicy.WrapAllRows)
         self.repo_label = QLabel(str(gsv_root()))
         self.repo_label.setObjectName("mutedLabel")
         self.repo_label.setWordWrap(True)
@@ -180,20 +208,18 @@ class TtsTrainPanel(QWidget):
         self.exp_input = QLineEdit()
         self.exp_input.setPlaceholderText(i18n_text("train.field.exp_hint"))
         form.addRow(mark(QLabel(i18n_text("train.field.exp_name")), "text", "train.field.exp_name"), self.exp_input)
-        self.version_input = QComboBox()
-        self.version_input.addItems(training.VERSIONS)
-        self.version_input.setCurrentText("v2ProPlus")
-        form.addRow(mark(QLabel(i18n_text("train.field.version")), "text", "train.field.version"), self.version_input)
         self.gpu_input = QLineEdit("0")
         form.addRow(mark(QLabel(i18n_text("train.field.gpu")), "text", "train.field.gpu"), self.gpu_input)
         self.half_input = QCheckBox(i18n_text("train.field.half"))
         self.half_input.setChecked(True)
-        form.addRow(QLabel(""), self.half_input)
+        # 单控件行（横跨整行）：换行式布局下避免「空标签占一行」的空档
+        form.addRow(self.half_input)
         train_layout.addWidget(self.dataset_group)
 
         self.hyper_group = QGroupBox(i18n_text("train.group.hyper"))
         self.hyper_group.setObjectName("trainToolGroup")
         hyper = QFormLayout(self.hyper_group)
+        hyper.setRowWrapPolicy(QFormLayout.RowWrapPolicy.WrapAllRows)
         self.s2_epochs_input = _spin(hyper, "train.field.s2_epochs", 1, 1000, 8)
         self.s2_batch_input = _spin(hyper, "train.field.s2_batch", 1, 128, 6)
         self.s2_save_input = _spin(hyper, "train.field.s2_save_every", 1, 100, 4)
@@ -232,9 +258,6 @@ class TtsTrainPanel(QWidget):
             stages_layout.addWidget(label)
         train_layout.addWidget(stages)
         train_layout.addStretch(1)
-        train_scroll.setWidget(train_tab)
-        self.tabs.addTab(train_scroll, i18n_text("train.tab.train"))
-        root.addWidget(self.tabs, 1)
 
         self.log_view = QPlainTextEdit()
         self.log_view.setReadOnly(True)

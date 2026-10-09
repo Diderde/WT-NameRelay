@@ -8,7 +8,7 @@ from typing import ClassVar
 
 from PySide6.QtCore import QObject, Signal, Slot
 
-from .ffmpeg_service import _FLAGS, FfmpegLocator
+from .ffmpeg_service import BACKGROUND_FLAGS, FfmpegLocator
 from .models import WaveformEnvelope
 
 
@@ -64,10 +64,17 @@ class WaveformWorker(QObject):
 
     finished = Signal(str, int, object, str)
 
-    def __init__(self, clip_id: str, path: Path) -> None:
+    def __init__(self, clip_id: str, path: Path,
+                 duration_ms: int | None = None) -> None:
+        """`duration_ms` 由调用方带来时可省掉内部那次 ffprobe。
+
+        视频页在导入时已经探过时长，再探一次就是白跑一个进程；音频页不传，
+        行为与原先完全一致。
+        """
         super().__init__()
         self.clip_id = clip_id
         self.path = path
+        self.duration_ms = duration_ms
 
     @Slot()
     def run(self) -> None:
@@ -77,7 +84,11 @@ class WaveformWorker(QObject):
                 duration_ms, envelope = cached
                 self.finished.emit(self.clip_id, duration_ms, envelope, "")
                 return
-            duration_ms = FfmpegLocator.probe_duration_ms(self.path)
+            # 调用方已知时长时不再拉起一次 ffprobe：每个素材
+            # 少一个进程启动，导入批量素材时这段是纯省下来的
+            known = self.duration_ms or 0
+            duration_ms = (known if known > 0
+                           else FfmpegLocator.probe_duration_ms(self.path))
             sample_rate = 8_000
             result = subprocess.run(
                 [
@@ -95,12 +106,15 @@ class WaveformWorker(QObject):
                     "-",
                 ],
                 capture_output=True,
-                creationflags=_FLAGS,
+                creationflags=BACKGROUND_FLAGS,
                 check=True,
                 timeout=300,
             )
             values = array.array("h")
             values.frombytes(result.stdout)
+            # PCM bytes 与 array 双份常驻放大内存峰值，
+            # 转换完成即释放原始字节
+            del result
             if not values:
                 raise ValueError("音频未解码出 PCM 数据")
             # Level zero is bounded but preserves enough detail for 1 px/ms.
@@ -119,5 +133,5 @@ class WaveformWorker(QObject):
             envelope = WaveformEnvelope(tuple(levels), sample_rate, len(values))
             WaveformCache.put(self.path, duration_ms, envelope)
             self.finished.emit(self.clip_id, duration_ms, envelope, "")
-        except Exception as error:  # noqa: BLE001  # 工作线程边界：统一转为失败信号  # 工作线程边界：统一转为失败信号
+        except Exception as error:  # noqa: BLE001  # 工作线程边界：统一转为失败信号
             self.finished.emit(self.clip_id, 0, None, str(error))

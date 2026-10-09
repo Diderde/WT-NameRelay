@@ -1,6 +1,6 @@
 # Copyright (C) 2026 Diderde
 # SPDX-License-Identifier: GPL-3.0-only
-"""二级页：TTS 模型选择（GPT-SoVITS / CosyVoice 3 GGUF）。
+"""二级页：TTS 模型选择（GPT-SoVITS / GPT-SoVITS CPUFast / CosyVoice 3 GGUF）。
 
 文案按用户原文一字不改；专名一律官方称呼 GPT-SoVITS（禁用缩写）。
 安装状态角标复用 start.bat / download_tts_verify.bat 的既有判断口径（权重代表文件/集合）。
@@ -41,8 +41,19 @@ def cosyvoice_ready(root: Path = MODEL_ROOT) -> bool:
     return len(list(model_dir.glob("*.gguf"))) >= COSY_MIN_FILES
 
 
+def cpufast_ready(root: Path = MODEL_ROOT) -> bool:
+    """CPUFast 就绪判断：克隆仓入口 + 原生 venv + G2PW torch 权重齐备。"""
+
+    clone = root / "GPT-SoVITS-CPUFast"
+    if not (clone / "api_v2.py").is_file():
+        return False
+    if not (clone / ".venv" / "Scripts" / "python.exe").is_file():
+        return False
+    return (clone / "GPT_SoVITS" / "text" / "G2PWModel" / "g2pw.pth").is_file()
+
+
 class TtsModelPage(BaseToolPage):
-    """两张模型卡：点击进入三级工作台（后端由路由侧装配）。"""
+    """三张模型卡：点击进入三级工作台（后端由路由侧装配）。"""
 
     navigate_requested = Signal(str)
 
@@ -62,7 +73,13 @@ class TtsModelPage(BaseToolPage):
             i18n_text("tts.card.cosy.desc"),
             card_height=150,
         )
-        self.cards = (self.gpt_card, self.cosy_card)
+        self.cpufast_card = FeatureCard(
+            "tts_gpt_sovits_cpufast",
+            i18n_text("tts.card.cpufast.title"),
+            i18n_text("tts.card.cpufast.desc"),
+            card_height=150,
+        )
+        self.cards = (self.gpt_card, self.cpufast_card, self.cosy_card)
         for card in self.cards:
             card.activated.connect(self.navigate_requested.emit)
 
@@ -80,10 +97,15 @@ class TtsModelPage(BaseToolPage):
         layout.setSpacing(12)
         self.gpt_badge = QLabel(i18n_text("tts.badge.ready" if gpt_sovits_ready() else "tts.badge.missing"))
         self.gpt_badge.setObjectName("mutedLabel")
+        self.cpufast_badge = QLabel(i18n_text("tts.badge.ready" if cpufast_ready() else "tts.badge.missing"))
+        self.cpufast_badge.setObjectName("mutedLabel")
         self.cosy_badge = QLabel(i18n_text("tts.badge.ready" if cosyvoice_ready() else "tts.badge.missing"))
         self.cosy_badge.setObjectName("mutedLabel")
         layout.addWidget(self.gpt_card)
         layout.addWidget(self.gpt_badge)
+        layout.addSpacing(6)
+        layout.addWidget(self.cpufast_card)
+        layout.addWidget(self.cpufast_badge)
         layout.addSpacing(6)
         layout.addWidget(self.cosy_card)
         layout.addWidget(self.cosy_badge)
@@ -104,4 +126,5 @@ class TtsModelPage(BaseToolPage):
         for card in self.cards:
             card.retranslate()
         self.gpt_badge.setText(i18n_text("tts.badge.ready" if gpt_sovits_ready() else "tts.badge.missing"))
+        self.cpufast_badge.setText(i18n_text("tts.badge.ready" if cpufast_ready() else "tts.badge.missing"))
         self.cosy_badge.setText(i18n_text("tts.badge.ready" if cosyvoice_ready() else "tts.badge.missing"))

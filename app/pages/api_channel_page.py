@@ -130,11 +130,16 @@ class ApiChannelPage(BaseToolPage):
         from PySide6.QtWebEngineCore import QWebEngineProfile
 
         cls = HubSchemeHandler
-        if getattr(cls, "_installed", False):
-            return
-        self._hub_handler = cls(default_asgi_provider, self)
-        QWebEngineProfile.defaultProfile().installUrlSchemeHandler(SCHEME_NAME, self._hub_handler)
-        cls._installed = True
+        handler = getattr(cls, "_installed", None)
+        if handler is None:
+            # 
+            # 处理器不能挂在页面父子树上：首建页面销毁会把子对象一并带走，之后再建的
+            # 实例便拿不到可用处理器；改为无父对象、由类属性强引用全程持有，且每个
+            # 实例都要拿到引用（旧逻辑只给首建实例赋值，第二个实例 AttributeError）
+            handler = cls(default_asgi_provider)
+            QWebEngineProfile.defaultProfile().installUrlSchemeHandler(SCHEME_NAME, handler)
+            cls._installed = handler
+        self._hub_handler = handler
 
     def _build_channel_editor(self) -> QWidget:
         """右区：渠道连接编辑（列表压缩为下拉）。"""

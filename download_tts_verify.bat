@@ -1,12 +1,18 @@
 @echo off
 setlocal EnableExtensions
+rem 936：本文件是 GBK，65001 终端下中文会乱码
+chcp 936 >nul 2>&1
 
 REM ================================================================
-REM  TTS 资源下载脚本 v3（GBK 编码 / CRLF；并行下载；本地资产检测）
+REM  TTS 资源下载脚本 v4（GBK 编码 / CRLF；并行下载；本地资产检测）
 REM  [1] GPT-SoVITS 代码        GitHub: RVC-Boss/GPT-SoVITS（浅克隆/更新）
 REM  [2] CosyVoice3 GGUF  HF: cstr/cosyvoice3-0.5b-2512-GGUF
 REM  [3] GPT-SoVITS 预训练权重    HF: lj1995/GPT-SoVITS（25 文件 4.93GB）
+REM  [4] GSV v5 推理服务运行时   HF: lj1995/GPT-SoVITS-windows-package（整合包 10.83 GB）
 REM  本地检测：动态扫描脚本所在目录，不写死任何绝对路径
+REM  v3: 并行下载 + 本地资产盘点 + ASR 阶段（Faster Whisper large-v3）
+REM  v4: 权重阶段恢复可达（阶段顺序改为 ASR 后接权重）；开关注入改 if not defined；失败路径补退出码
+REM      v4 追加：三处裸 find 一律路径限定（Git 的 GNU find 遮蔽时 /c /I 会被当路径）
 REM ================================================================
 
 rem ---------- 配置区 ----------
@@ -21,14 +27,17 @@ set "HF_ENDPOINT=https://hf-mirror.com"
 set "HF_RAW=%HF_ENDPOINT%/lj1995/GPT-SoVITS/resolve/main"
 rem 并发下载数（1-6，越大越快但可能被服务端限速）
 set "PARALLEL=3"
-rem 开关: 1=执行 0=跳过
-set "GPT_SOVITS_CODE=1"
-set "WEIGHTS=1"
+rem 开关: 1=执行 0=跳过；调用方（start.bat）已注入时保留其意图，不覆盖
+if not defined GPT_SOVITS_CODE set "GPT_SOVITS_CODE=1"
+if not defined WEIGHTS set "WEIGHTS=1"
 rem GGUF_SET: q4(约0.9GB) full(约2.3GB) all(约3.7GB) none(跳过)
-set "GGUF_SET=q4"
+if not defined GGUF_SET set "GGUF_SET=q4"
 set "MAX_RETRY=3"
+rem 失败汇总标记：任一阶段有未完成项时置 1，:done 据此返回退出码 1
+set "DL_FAIL="
 rem ASR 识别模型（Faster Whisper large-v3；语音识别 0c 用）
 if not defined ASR_SET set "ASR_SET=1"
+if not defined GSV_RUNTIME set "GSV_RUNTIME=1"
 set "FW_DIR=TTS model\GPT-SoVITS\tools\asr\models\faster-whisper-large-v3"
 set "FW_REPO=Systran/faster-whisper-large-v3"
 set "FW_HF_FALLBACK=https://huggingface.co"
@@ -51,7 +60,7 @@ set "CURL_PROXY="
 call :detect_proxy
 if defined CURL_PROXY (echo   [proxy] %CURL_PROXY%) else (echo   [proxy] none, direct connection)
 
-echo [0/5] 前置工具与本地资产检测...
+echo [0/7] 前置工具与本地资产检测...
 where git >nul 2>&1
 if errorlevel 1 (
     echo [错误] 未找到 git，请安装 Git for Windows 并加入 PATH。
@@ -77,7 +86,8 @@ if exist "%GPT_SOVITS_DIR%\.git" (
 )
 if exist "%GGUF_DIR%" for %%F in ("%GGUF_DIR%\*.gguf") do set /a LOCAL_GGUF+=1
 if %LOCAL_GGUF% GTR 0 echo   [检测] 发现已有 GGUF 文件 %LOCAL_GGUF% 个（已完成的部分将自动跳过）
-if exist "%PM_DIR%" for /f %%C in ('dir /s /b /a-d "%PM_DIR%" 2^>nul ^| find /c /v ""') do echo   [检测] 发现已有权重文件 %%C 个（不足的将自动断点续传）
+rem 裸 find 会被 PATH 里 Git 的 GNU find 遮蔽（/c /v 当路径扫盘：2026-10-03 与 10-07 两次实锤）
+if exist "%PM_DIR%" for /f %%C in ('dir /s /b /a-d "%PM_DIR%" 2^>nul ^| %SystemRoot%\System32\find.exe /c /v ""') do echo   [检测] 发现已有权重文件 %%C 个（不足的将自动断点续传）
 
 if "%GPT_SOVITS_CODE%"=="1" goto :stage_github
 echo.
@@ -86,7 +96,7 @@ goto :stage_hf
 
 :stage_github
 echo.
-echo [1/5] 检测 GitHub 连接: %GPT_SOVITS_REPO_URL%
+echo [1/7] 检测 GitHub 连接: %GPT_SOVITS_REPO_URL%
 set /a TRY=0
 :probe_github
 set /a TRY+=1
@@ -120,7 +130,7 @@ goto :stage_hf
 echo   GitHub 连接正常。
 
 echo.
-echo [2/5] GPT-SoVITS 代码: 浅克隆 / 更新
+echo [2/7] GPT-SoVITS 代码: 浅克隆 / 更新
 if exist "%GPT_SOVITS_DIR%\.git" (
     echo   检测到已有仓库，正在拉取更新...
     if defined GIT_PROXY_ARG (
@@ -143,7 +153,7 @@ if errorlevel 1 (
 
 :stage_hf
 echo.
-echo [3/5] 检测 HF 端点: %HF_ENDPOINT%
+echo [3/7] 检测 HF 端点: %HF_ENDPOINT%
 set "CODE=000"
 for /f %%C in ('curl -s -o nul -L %CURL_PROXY% --retry 3 --retry-all-errors --ssl-no-revoke --max-time 20 -w "%%{http_code}" "%HF_ENDPOINT%/%GGUF_REPO%/resolve/main/README.md" 2^>nul') do set "CODE=%%C"
 echo   HTTP 状态码: %CODE%
@@ -166,7 +176,7 @@ goto :stage_asr
 
 :gguf_pick
 echo.
-echo [4/5] CosyVoice3 GGUF（集合: %GGUF_SET%，并行 %PARALLEL% 路）
+echo [4/7] CosyVoice3 GGUF（集合: %GGUF_SET%，并行 %PARALLEL% 路）
 if not exist "%GGUF_DIR%" mkdir "%GGUF_DIR%"
 set "FAILED="
 set /a OKCNT=0
@@ -190,9 +200,10 @@ goto :verify_gguf
 
 :verify_gguf
 rem 弱校验：每个文件须存在且 >=100KB（完整校验依赖重跑续传补齐）
+rem 注意：for 体内 %VAR% 在整行解析时展开，累加必须走 call（否则只留最后一项）
 set "FAILED_G="
-for %%F in (%GGUF_LIST%) do if not exist "%GGUF_DIR%\%%F" set "FAILED_G=%FAILED_G% %%F"
-for %%F in (%GGUF_LIST%) do if exist "%GGUF_DIR%\%%F" for %%Z in ("%GGUF_DIR%\%%F") do if %%~zZ LSS 100000 set "FAILED_G=%FAILED_G% %%F"
+for %%F in (%GGUF_LIST%) do if not exist "%GGUF_DIR%\%%F" call :note_gguf_bad %%F
+for %%F in (%GGUF_LIST%) do if exist "%GGUF_DIR%\%%F" for %%Z in ("%GGUF_DIR%\%%F") do if %%~zZ LSS 100000 call :note_gguf_bad %%F
 if defined FAILED_G (
     echo   [警告] 以下 GGUF 不完整:%FAILED_G%
     echo   重跑本脚本将自动断点续传补齐。
@@ -213,9 +224,9 @@ start "" /b cmd /c curl -s -S -L %CURL_PROXY% -C - --retry 10 --retry-delay 3 --
 exit /b 0
 
 :stage_weights
-if not "%WEIGHTS%"=="1" goto :stage_asr
+if not "%WEIGHTS%"=="1" goto :stage_gsv5
 echo.
-echo [6/6] GPT-SoVITS 预训练权重（25 文件 / 4.93 GB，v1+v2+v3+v4+v2Pro 全版本，并行 %PARALLEL% 路）
+echo [6/7] GPT-SoVITS 预训练权重（25 文件 / 4.93 GB，v1+v2+v3+v4+v2Pro 全版本，并行 %PARALLEL% 路）
 if not exist "%PM_DIR%" mkdir "%PM_DIR%"
 if not exist "%PM_DIR%\chinese-hubert-base" mkdir "%PM_DIR%\chinese-hubert-base"
 if not exist "%PM_DIR%\chinese-roberta-wwm-ext-large" mkdir "%PM_DIR%\chinese-roberta-wwm-ext-large"
@@ -231,7 +242,7 @@ set "FAILED_W="
 echo   逐文件校验已完成项（不足的自动断点续传）...
 for /f "usebackq tokens=1,2 delims=|" %%S in ("%WLIST%") do call :check_weight %%S "%%T"
 echo   已完成 %W_SKIP% 项，需下载 %W_FAIL_N% 项
-if %W_FAIL_N% EQU 0 goto :done
+if %W_FAIL_N% EQU 0 goto :stage_gsv5
 echo   开始并行下载...
 for /f "usebackq tokens=1,2 delims=|" %%S in ("%WLIST%") do call :queue_weight %%S "%%T"
 call :show_progress_weights
@@ -239,11 +250,64 @@ call :wait_jobs
 set "FAILED_W="
 for /f "usebackq tokens=1,2 delims=|" %%S in ("%WLIST%") do call :verify_weight %%S "%%T"
 if defined FAILED_W (
+    set "DL_FAIL=1"
     echo   权重失败清单:%FAILED_W%
     echo   下次运行将自动从断点继续。
-    exit /b 1
+)
+goto :stage_gsv5
+
+
+:stage_gsv5
+if not "%GSV_RUNTIME%"=="1" goto :done
+echo.
+echo [7/7] GSV v5 推理服务运行时（整合包 10.83 GB，解压后约 18.5 GB）
+set "GSV5_DIR=%~dp0TTS model\GPT-SoVITS-v5-20261006"
+if exist "%GSV5_DIR%\api_v2.py" if exist "%GSV5_DIR%\runtime\python.exe" (
+    echo   [跳过] 已存在（%GSV5_DIR%）
+    goto :done
+)
+set "GSV5_PKG_DIR=%~dp0TTS model\GSV-package"
+set "GSV5_7Z=%GSV5_PKG_DIR%\GPT-SoVITS-v5-20261005.7z"
+set "GSV5_SEVENZIP=%GSV5_PKG_DIR%\7zr.exe"
+if not exist "%GSV5_SEVENZIP%" (
+    echo   下载 7zr 解压工具（约 0.6 MB）...
+    curl -s -S -L --retry 3 --retry-all-errors --ssl-no-revoke -o "%GSV5_SEVENZIP%" https://www.7-zip.org/a/7zr.exe
+)
+if not exist "%GSV5_SEVENZIP%" (
+    echo   [失败] 7zr.exe 下载失败
+    set "DL_FAIL=1"
+    goto :done
+)
+if not exist "%GSV5_7Z%" (
+    echo   下载 GSV v5 整合包（10.83 GB，断点续传，耗时视网络而定）...
+    curl -s -S -L -C - --retry 10 --retry-delay 3 --retry-all-errors --ssl-no-revoke --connect-timeout 20 -o "%GSV5_7Z%" "https://hf-mirror.com/lj1995/GPT-SoVITS-windows-package/resolve/main/GPT-SoVITS-v5-20261005.7z"
+)
+if not exist "%GSV5_7Z%" (
+    echo   [失败] 整合包下载失败
+    set "DL_FAIL=1"
+    goto :done
+)
+echo   解压中（解压后约 18.5 GB，数分钟）...
+"%GSV5_SEVENZIP%" x -y -o"%~dp0TTS model" "%GSV5_7Z%" >nul
+if errorlevel 1 (
+    echo   [失败] 解压失败
+    set "DL_FAIL=1"
+    goto :done
+)
+set "GSV5_OK=1"
+if not exist "%GSV5_DIR%\api_v2.py" set "GSV5_OK=0"
+if not exist "%GSV5_DIR%\runtime\python.exe" set "GSV5_OK=0"
+if "%GSV5_OK%"=="0" (
+    echo   [失败] 解压后缺少 api_v2.py 或 runtime\python.exe
+    set "DL_FAIL=1"
 )
 goto :done
+
+:note_gguf_bad
+rem arg1=文件名；记入 GGUF 失败清单并置阶段失败标记
+set "FAILED_G=%FAILED_G% %~1"
+set "DL_FAIL=1"
+exit /b 0
 
 :check_weight
 rem 跳过清单里的非数据行（说明注释的"大小"字段不是数字）
@@ -279,14 +343,14 @@ exit /b 0
 rem 计数式并发闸门：仅统计 curl 进程数，降至并发上限以下才继续排队
 :wait_one_loop
 set /a RUNNING=0
-for /f %%N in ('tasklist /FI "IMAGENAME eq curl.exe" 2^>nul ^| find /c /i "curl.exe"') do set /a RUNNING=%%N
+for /f %%N in ('tasklist /FI "IMAGENAME eq curl.exe" 2^>nul ^| %SystemRoot%\System32\find.exe /c /i "curl.exe"') do set /a RUNNING=%%N
 if %RUNNING% LSS %PARALLEL% exit /b 0
 timeout /t 2 /nobreak >nul
 goto :wait_one_loop
 
 :wait_jobs
 :wait_jobs_loop
-tasklist /FI "IMAGENAME eq curl.exe" 2>nul | find /I "curl.exe" >nul
+tasklist /FI "IMAGENAME eq curl.exe" 2>nul | %SystemRoot%\System32\find.exe /I "curl.exe" >nul
 if errorlevel 1 exit /b 0
 timeout /t 2 /nobreak >nul
 goto :wait_jobs_loop
@@ -332,9 +396,9 @@ del "%PROG_MANIFEST%" >nul 2>&1
 exit /b 0
 
 :stage_asr
-if not "%ASR_SET%"=="1" goto :done
+if not "%ASR_SET%"=="1" goto :stage_weights
 echo.
-echo [5/6] ASR 识别模型（Faster Whisper large-v3，6 文件 / 约 3 GB）
+echo [5/7] ASR 识别模型（Faster Whisper large-v3，6 文件 / 约 3 GB）
 if not exist "%FW_DIR%" mkdir "%FW_DIR%"
 rem 注意：large-v3 仓库没有 vocabulary.txt（上游 fasterwhisper_asr.py 对 large-v3 亦主动移除）
 set "FW_LIST=config.json model.bin tokenizer.json preprocessor_config.json vocabulary.json"
@@ -350,14 +414,16 @@ if defined PY_EXE if exist "%~dp0tools\verify_tts_assets.py" if exist "%~dp0tts_
     for %%Z in ("%FW_DIR%\model.bin") do if not "%%~zZ"=="3087284237" set "ASR_BAD=1"
 )
 if defined FAILED_A2 (
+    set "DL_FAIL=1"
     echo   [警告] 以下 ASR 文件缺失或不完整:%FAILED_A2%
     echo   残件已保留，重跑本脚本会从断点续传。
 ) else if defined ASR_BAD (
+    set "DL_FAIL=1"
     echo   [警告] ASR 文件体积与清单不符（残件）；重跑本脚本会从断点续传。
 ) else (
     echo   ASR 模型全部就绪（体积已与清单核对）。
 )
-goto :done
+goto :stage_weights
 
 :done
 echo.
@@ -366,6 +432,10 @@ echo   ASR 识别模型:   %FW_DIR%
 echo   GPT-SoVITS 代码:  %GPT_SOVITS_DIR%\
 echo   GGUF:      %GGUF_DIR%\（集合 %GGUF_SET%）
 echo   GPT-SoVITS 权重:  %PM_DIR%\
+if defined DL_FAIL (
+    echo 存在未完成项（见上方警告）；重跑本脚本可断点续传补齐。
+    exit /b 1
+)
 echo 全部完成。
 exit /b 0
 rem ================= ASR subroutines =================

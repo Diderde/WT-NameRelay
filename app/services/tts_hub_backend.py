@@ -73,6 +73,9 @@ def transcode_bytes_to_wav(audio: bytes) -> bytes:
             ],
             capture_output=True,
             text=True,
+            # 子进程文本输出按本机默认编码解码会炸/乱码：
+            # ffmpeg 的报错里可能带中文路径，显式 UTF-8 + 替换兜底
+            encoding="utf-8",
             errors="replace",
             check=False,
             timeout=120.0,

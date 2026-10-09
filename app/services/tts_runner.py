@@ -28,12 +28,22 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import ClassVar, Protocol, runtime_checkable
 
+from app.services.gsv_probe import TomoriTakamatsu
+
 DEFAULT_TIMEOUT_S = 300.0
 WAV_MAGIC = b"RIFF"
 #: 响应体分块读取的块长（整读会让大 WAV 常驻内存，也让取消无法插入）
 READ_CHUNK_SIZE = 64 * 1024
 #: 取消监视线程的轮询间隔：取消到强制断连的最坏延迟
 CANCEL_WATCH_INTERVAL_S = 0.05
+
+#: GSV 分支特有高级字段（GSV 多分支兼容 P1）：仅当能力探测确认服务端
+#: TTS_Request 拥有该字段时才并入 payload——基线超集原则，不依赖服务端
+#: pydantic 对未知字段的宽容（docs/gsv-fork-compat-plan.md §5.3）
+GSV_ADVANCED_FIELDS = frozenset({"use_cuda_graph", "cfg_rate", "vits_parallel_infer"})
+#: 永不发送的字段：CPUFast 两分支已删除（发过去也无害但语义含混），
+#: 上游默认值即够用（方案 N4）
+GSV_NEVER_SEND_FIELDS = frozenset({"sample_steps", "super_sampling"})
 
 
 # 本地推理服务必须直连：显式禁用代理链路（系统代理会拦截 127.0.0.1 并返回 404）。
@@ -406,8 +416,16 @@ class GptSovitsBackend(HttpWavBackend):
     #: 界面侧据此在发送前预检，给出可读失败而不是一句"HTTP 400"。
     requires_reference_audio = True
 
-    def __init__(self, base_url: str, *, timeout_s: float = DEFAULT_TIMEOUT_S) -> None:
+    def __init__(
+        self,
+        base_url: str,
+        *,
+        timeout_s: float = DEFAULT_TIMEOUT_S,
+        capabilities: TomoriTakamatsu | None = None,
+    ) -> None:
         super().__init__(base_url, endpoint="/tts", probe_endpoint="/control", timeout_s=timeout_s)
+        #: 服务端能力快照（None = 未探测 → 基线行为；探测失败也降级为基线）
+        self.capabilities = capabilities
 
     def build_payload(self, request: TtsRequest) -> dict[str, object]:
         params = dict(request.params)
@@ -420,6 +438,18 @@ class GptSovitsBackend(HttpWavBackend):
             "media_type": "wav",
             "streaming_mode": False,
         }
+        # N4：CPUFast 已删除的字段永不外发（上游默认值即够用）
+        for key in GSV_NEVER_SEND_FIELDS:
+            params.pop(key, None)
+        # E3 门控：高级字段仅在能力确认后并入；未探测/探测失败 → 基线
+        capabilities = self.capabilities
+        if capabilities is None or not capabilities.fields:
+            for key in GSV_ADVANCED_FIELDS:
+                params.pop(key, None)
+        else:
+            for key in GSV_ADVANCED_FIELDS & params.keys():
+                if not capabilities.supports(key):
+                    params.pop(key)
         payload.update(params)
         return payload
 
@@ -446,6 +476,16 @@ class GptSovitsBackend(HttpWavBackend):
             try:
                 with _NO_PROXY_OPENER.open(url, timeout=self.timeout_s) as response:
                     messages.append(str(json.loads(response.read().decode("utf-8")).get("message", "")))
+            except urllib.error.HTTPError as error:
+                # 既有实现只报 "HTTP Error 400"，上游 JSON 里
+                # 可读的失败原因（如 "change sovits weight failed"）全部丢失；
+                # GSV 兼容 P1 顺带修复：提取上游 message 供展示（版本错配的
+                # 本地化建议由 UI 层按 "weight failed" 子串追加，服务层保持
+                # 零 Qt 依赖）
+                detail = f"{label} 权重切换失败：{error}{_extract_http_error_detail(error)}"
+                if applied:
+                    detail += f"（{'、'.join(applied)} 已生效，当前为混合权重状态，请重试或重启推理服务）"
+                return False, detail
             except (OSError, ValueError) as error:
                 detail = f"{label} 权重切换失败：{error}"
                 if applied:

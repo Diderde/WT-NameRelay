@@ -8,9 +8,9 @@ FORK_AUTHOR = "Dider"
 FORK_AUTHOR_HANDLE = "@Diderde"
 WINDOW_TITLE = APP_NAME
 
-# 本修改版自己的版本号：维护者手工指定的发布版本 `rc-0.1.19`（2026-09-30 起）。
+# 本修改版自己的版本号：维护者手工指定的发布版本 `rc-0.1.33`（每笔本地提交同步，2026-10-07 定调，见 development-notes §2.5）。
 # 此前"按提交数 − 30 推导 rc-0.2.x"的规则已作废，版本号不再随提交数变化。
-FORK_VERSION = "rc-0.1.19"
+FORK_VERSION = "rc-0.1.33"
 
 # 原项目（fork 来源）：作者、仓库与许可均为事实性署名，固定原文呈现。
 BASE_PROJECT = "WT-NameRelay"

@@ -2,8 +2,10 @@
 
 from .about_dialog import AboutDialog
 from .animated_stack import AnimatedStack, TransitionDirection
+from .audio_editor_core import EveWakamiya
 from .audio_page_scroll_router import AudioPageScrollRouter
 from .auto_scan_result_panel import AutoScanResultPanel
+from .clip_timeline import ClipTimeline
 from .completion_group_widget import CompletionGroupWidget
 from .confirmation_group import ConfirmationGroup
 from .copy_mode_switch import CopyModeSwitch
@@ -18,19 +20,23 @@ from .scroll_position_guard import ScrollPositionGuard
 from .source_file_list import SourceFileList
 from .task_status_panel import TaskStatusPanel
 from .timeline_editor import TimelineEditor
+from .voice_audio_process_dialog import KokoroTsurumaki
 
 __all__ = [
     "AboutDialog",
     "AnimatedStack",
     "AudioPageScrollRouter",
     "AutoScanResultPanel",
+    "ClipTimeline",
     "CompletionGroupWidget",
     "ConfirmationGroup",
     "CopyModeSwitch",
     "DirectorySelector",
     "DisclaimerDialog",
+    "EveWakamiya",
     "FeatureCard",
     "FileDropArea",
+    "KokoroTsurumaki",
     "LicenseDialog",
     "PyQtGraphTimeline",
     "RadioManualConfirmationGroup",

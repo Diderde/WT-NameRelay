@@ -14,7 +14,7 @@
 
 ## 环境与启动
 
-项目验证环境：Windows、Python 3.11.5、PySide6 6.7.3、Qt 6.7.3、PyQtGraph 0.13.7、NumPy 1.26.4。
+项目验证环境：Windows、Python 3.12.10、PySide6 6.7.3、Qt 6.7.3、PyQtGraph 0.13.7、NumPy 1.26.4。
 
 ```powershell
 cd "<项目目录>"
@@ -26,7 +26,7 @@ python -m venv .venv
 
 也可以直接运行 `start.bat`（自动创建虚拟环境并安装依赖）。`start.bat` 启动前会执行三段式检查：
 
-1. **环境与文件检查**：git / curl 工具、Python 虚拟环境、`TTS model\` 下的 GPT-SoVITS 代码、CosyVoice3 GGUF 与 GPT-SoVITS 预训练权重；
+1. **环境与文件检查**：git / curl 工具、Python 3.12 版本闸、随包 FFmpeg/ffprobe（Git LFS 件）、`requirements.txt` 漂移比对、Python 虚拟环境、`TTS model\` 下的 GPT-SoVITS 代码、CosyVoice3 GGUF 与 GPT-SoVITS 预训练权重；
 2. **按需补齐**：虚拟环境缺失时自动创建；TTS 模型资源缺失时弹出 Y/N 询问，确认后调用同目录 `download_tts_verify.bat` 下载（GitHub 浅克隆 GPT-SoVITS 代码、hf-mirror 下载 CosyVoice3 GGUF 与 25 个 GPT-SoVITS 预训练权重，支持断点续传与已完成跳过，自动适配系统代理）；
 3. **启动**：全部就绪后运行主程序。
 

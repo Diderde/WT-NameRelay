@@ -1,0 +1,77 @@
+# Microsoft Visual C++ Runtime / UCRT 随包分发声明
+
+**本文件不是许可正文（NOT A LICENSE TEXT）。** 它是 WT-NameRelay 发布物中实际出现的
+Microsoft Visual C++ 运行时（MSVC / VC++ Redistributable）文件的**来源与范围登记**，
+便于许可审计与合规核对。微软的可再发行条款**不是**一份可以自由再分发的许可正文，
+因此本文件**不转载**其条款全文，只登记涉及的文件清单与官方条款入口 URL。
+若需要条款正文，请从第 2 节的官方入口获取当前有效版本。
+
+## 1. 本文件覆盖的实际文件（10 个，合计 2,277,872 字节 ≈ 2.28 MB）
+
+| # | 文件名 | 字节数 | 安装后相对路径 |
+|---|--------|-------:|----------------|
+| 1 | `msvcp140.dll` | 565,400 | `.venv\Lib\site-packages\PySide6\msvcp140.dll` |
+| 2 | `msvcp140_1.dll` | 27,800 | `.venv\Lib\site-packages\PySide6\msvcp140_1.dll` |
+| 3 | `msvcp140_2.dll` | 260,248 | `.venv\Lib\site-packages\PySide6\msvcp140_2.dll` |
+| 4 | `msvcp140_codecvt_ids.dll` | 23,704 | `.venv\Lib\site-packages\PySide6\msvcp140_codecvt_ids.dll` |
+| 5 | `vcruntime140.dll` | 111,256 | `.venv\Lib\site-packages\PySide6\vcruntime140.dll` |
+| 6 | `vcruntime140_1.dll` | 41,624 | `.venv\Lib\site-packages\PySide6\vcruntime140_1.dll` |
+| 7 | `concrt140.dll` | 314,008 | `.venv\Lib\site-packages\PySide6\concrt140.dll` |
+| 8 | `vccorlib140.dll` | 340,632 | `.venv\Lib\site-packages\PySide6\vccorlib140.dll` |
+| 9 | `vcamp140.dll` | 404,632 | `.venv\Lib\site-packages\PySide6\vcamp140.dll` |
+| 10 | `vcomp140.dll` | 188,568 | `.venv\Lib\site-packages\PySide6\vcomp140.dll` |
+| | **合计** | **2,277,872** | |
+
+**来源**：这些文件由 PySide6 官方 wheel 自带（本机 PySide6 6.7.3 = `PySide6-Essentials` +
+`PySide6-Addons` 两个 wheel）；上述 10 个文件均登记在 `PySide6-Essentials` 的 RECORD 中，
+不是本机 Visual Studio 安装的拷贝。
+
+**证据**：`.venv\Lib\site-packages\PySide6_Essentials-6.7.3.dist-info\RECORD`
+第 171、316–319、1439–1443 行逐条登记了上述 10 个文件（含 sha256 与字节数），
+与上表完全一致。核对日期 2026-10-08。
+
+## 2. 适用的再发行条款入口（官方 URL）
+
+- <https://learn.microsoft.com/cpp/windows/latest-supported-vc-redist>
+  —— 最新支持的 Visual C++ Redistributable 下载与说明页。该页原文要点：
+  “Redistribution is permitted only for licensed Visual Studio users, as described in the
+  Visual Studio license terms.”（再分发仅对拥有 Visual Studio 许可的用户开放，具体以其许可条款为准。）
+- <https://visualstudio.microsoft.com/license-terms/>
+  —— Visual Studio 许可条款总入口（分产品/版本的入口页）。具体版本条款内的 “Distributable Code”
+  一节规定可再发行组件范围，需在页内选择对应产品版本后查看。
+- <https://learn.microsoft.com/visualstudio/releases/2022/redistribution>
+  —— Visual Studio 2022 可分发代码清单（REDIST list，“Distributable Code Files for Visual Studio 2022”）。
+  其 “Visual C++ Runtime Files” 一节的原文要点：对 `[VisualStudioFolder]\VC\redist` 文件夹及其子目录内的
+  文件，可在**不修改**的前提下随程序复制分发；同时明确**不得**分发
+  `...\VC\Redist\MSVC\[version]\debug_nonredist` 与 `...\onecore\debug_nonredist` 下的内容。
+  本文件第 1 节列出的 10 个文件属于 VC++ Redistributable 运行时文件集（官方 `[VisualStudioFolder]\VC\redist`
+  目录树及其子目录内；本机未安装 Visual Studio，未逐目录实测其位置），由 PySide6 wheel 携带。
+
+以上三个 URL 均于 2026-10-08 实际抓取核对（HTTP 200；其中 `visualstudio.microsoft.com/license-terms/`
+是动态入口页，条款正文不在 HTML 中直接呈现，需在页内按产品版本展开）。
+本文件仅登记入口，不复制、不改写、不解释微软条款文本。
+
+## 3. UCRT（Universal C Runtime）
+
+本发布物的上述 10 个文件中**不含** UCRT 本体（`ucrtbase.dll` / `api-ms-win-crt-*.dll`）。
+微软官方说明：UCRT 是 Windows 操作系统组件，Windows 10 / Windows Server 2016 及以上随操作系统提供。
+出处：<https://learn.microsoft.com/cpp/windows/universal-crt-deployment>（2026-10-08 抓取，HTTP 200）。
+
+本机核对：`.venv\Lib\site-packages\PySide6` 目录下未发现 `ucrtbase.dll` 或 `api-ms-win-crt*.dll`。
+
+## 4. 适用范围与前提
+
+- 本登记覆盖的是「发布物一旦包含这些 DLL」时应当遵守的条款来源；**是否实际随包分发取决于打包方式**。
+  本仓库 `WT-NameRelay-onedir.spec` 未把 PySide6 列入 `excludes`（仅排除 `pyqtgraph.opengl`、`OpenGL`），
+  PyInstaller 打包时可能把这些 DLL 一并带入 onedir / EXE 产物，最终应以发布目录实测为准。
+- 与之相关的另一条上游声明在 CPython 发行许可文件中：见
+  `licenses/CPython-Bundled-Components.txt` 的 “Additional Conditions for this Windows binary build”
+  （CPython 自身对 Microsoft Distributable Code 的分发限制说明）。
+- 若本项目未来改为自行分发 VC++ Redistributable 安装包（VCRedist），需要另行核对
+  “limited to licensed Visual Studio users” 这一前提，本文件不覆盖该场景。
+
+## 5. 明确声明
+
+- 本文件**不是**许可正文，**不是**微软许可条款的替代品，也**不构成**法律意见。
+- 本文件不声称微软对本项目作出任何授权；授权关系以第 2 节官方条款为准。
+- 本文件中列出的文件名、路径与字节数来自本机安装目录的清点结果，可用第 1 节的 RECORD 复核。

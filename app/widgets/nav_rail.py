@@ -7,7 +7,7 @@ from __future__ import annotations
 from collections.abc import Callable
 from pathlib import Path
 
-from PySide6.QtCore import QSize, Qt, Signal
+from PySide6.QtCore import QByteArray, QFile, QIODevice, QSize, Qt, Signal
 from PySide6.QtGui import QColor, QIcon, QPainter, QPixmap
 from PySide6.QtSvg import QSvgRenderer
 from PySide6.QtWidgets import QButtonGroup, QToolButton, QVBoxLayout, QWidget
@@ -22,12 +22,43 @@ _ICON_SIZE = 26
 _RAIL_WIDTH = 68
 
 
-def _tinted_icon(svg_path: Path, color: str) -> QIcon:
-    """读取 SVG（Bootstrap Icons 为 currentColor 填充）并以指定颜色着色为图标。"""
+def _read_icon(name: str, icons_dir: Path | None = None) -> bytes | None:
+    """读取一个导航图标 SVG 的字节：**优先 Qt 资源** `:/icons/<name>`，磁盘目录仅作回退。
 
-    renderer = QSvgRenderer(str(svg_path))
+    资源优先的理由：打包版（PyInstaller onefile 解包目录 / onedir）里必然存在的是
+    `resources_rc.py` 内嵌的那一份，磁盘 `app/resources/icons/` 的落点随构建方式变化；
+    源码树里两条路等价（qrc 由 `app.resources` 的副作用导入注册）。
+    保留磁盘回退，是为了「改了 qrc 还没用 rcc 重编译」或 `NavRail` 被单独构造
+    （未经 `app.resources` 注册资源）时导航栏不至于整栏空白。
+
+    统一返回 `bytes` 而不是路径：`QSvgRenderer` 吃 `QByteArray`，资源与磁盘两种来源
+    因此共用同一条着色路径，调用方不必再区分自己拿到的是哪一种。
+    """
+
+    resource = QFile(f":/icons/{name}")
+    if resource.open(QIODevice.OpenModeFlag.ReadOnly):
+        try:
+            embedded = bytes(resource.readAll())
+        finally:
+            resource.close()
+        if embedded:
+            return embedded
+    if icons_dir is None:
+        return None
+    try:
+        return (icons_dir / name).read_bytes() or None
+    except OSError:
+        return None
+
+
+def _tinted_pixmap(svg_data: bytes, color: str) -> QPixmap:
+    """把 SVG 字节（Bootstrap Icons 为 currentColor 填充）以指定颜色着色为位图。"""
+
+    renderer = QSvgRenderer(QByteArray(svg_data))
     source = QPixmap(_ICON_SIZE * 2, _ICON_SIZE * 2)
     source.fill(Qt.GlobalColor.transparent)
+    if not renderer.isValid():
+        return source
     painter = QPainter(source)
     renderer.render(painter)
     painter.end()
@@ -39,7 +70,20 @@ def _tinted_icon(svg_path: Path, color: str) -> QIcon:
     painter.setCompositionMode(QPainter.CompositionMode.CompositionMode_SourceIn)
     painter.fillRect(tinted.rect(), QColor(color))
     painter.end()
-    return QIcon(tinted)
+    return tinted
+
+
+def _stateful_icon(svg_data: bytes, idle_color: str, active_color: str,
+                   disabled_color: str) -> QIcon:
+    """双态图标：未选中用柔和色、选中用 accent（QIcon 的 On/Off 态自动切换），
+    禁用态给更暗的颜色。当前页由此获得比"边框加粗"强得多的辨识度。"""
+
+    icon = QIcon()
+    icon.addPixmap(_tinted_pixmap(svg_data, idle_color), QIcon.Mode.Normal, QIcon.State.Off)
+    icon.addPixmap(_tinted_pixmap(svg_data, active_color), QIcon.Mode.Normal, QIcon.State.On)
+    icon.addPixmap(_tinted_pixmap(svg_data, disabled_color), QIcon.Mode.Disabled, QIcon.State.Off)
+    icon.addPixmap(_tinted_pixmap(svg_data, disabled_color), QIcon.Mode.Disabled, QIcon.State.On)
+    return icon
 
 
 class NavRail(QWidget):
@@ -47,17 +91,28 @@ class NavRail(QWidget):
 
     navigate_requested = Signal(str)
 
-    #: 路由键 → (图标文件名, 悬停卡标题键, 悬停卡正文键)
+    #: 路由键 → (图标文件名, 悬停卡标题键, 悬停卡正文键)。
+    # 可见顺序（2026-10-05 用户指定）：视频裁剪 → 人声分离 → 语音批量生成
+    # → API 渠道 → 文件复制；audio 隐藏、fmod/experimental/settings 依次垫后
     ROUTES: tuple[tuple[str, str, str, str], ...] = (
         ("video", "nav-video.svg", "nav.rail.video", "nav.rail.video.tip"),
+        ("separate", "nav-separate.svg", "nav.rail.separate", "nav.rail.separate.tip"),
         ("tts", "nav-tts.svg", "nav.rail.tts", "nav.rail.tts.tip"),
+        ("api", "nav-api.svg", "nav.rail.api", "nav.rail.api.tip"),
         ("copy", "nav-copy.svg", "nav.rail.copy", "nav.rail.copy.tip"),
         ("audio", "nav-audio.svg", "nav.rail.audio", "nav.rail.audio.tip"),
-        ("api", "nav-api.svg", "nav.rail.api", "nav.rail.api.tip"),
+        ("fmod", "nav-fmod.svg", "nav.rail.fmod", "nav.rail.fmod.tip"),
+        ("experimental", "nav-experimental.svg", "nav.rail.experimental", "nav.rail.experimental.tip"),
         ("settings", "nav-settings.svg", "nav.rail.settings", "nav.rail.settings.tip"),
     )
 
-    def __init__(self, icons_dir: Path, parent: QWidget | None = None) -> None:
+    #: 图标栏暂不展示的路由（页面保留在栈内，程序内跳转仍可达）：
+    # "audio" 的处理入口改由语音工作台"进入处理"按钮承担（2026-10-02 验收决定）
+    HIDDEN_ROUTES = frozenset({"audio"})
+
+    def __init__(self, icons_dir: Path | None, parent: QWidget | None = None) -> None:
+        """`icons_dir` 是**回退**图标目录：图标优先取 Qt 资源 `:/icons/<name>`。
+        传 None 表示只用资源（`_read_icon` 见模块级说明）。"""
         super().__init__(parent)
         self.setObjectName("navRail")
         self.setFixedWidth(_RAIL_WIDTH)
@@ -82,6 +137,7 @@ class NavRail(QWidget):
             button.clicked.connect(lambda _checked=False, route=route: self.navigate_requested.emit(route))
             self._group.addButton(button)
             self._buttons[route] = button
+            button.setVisible(route not in self.HIDDEN_ROUTES)
             layout.addWidget(button, 0, Qt.AlignmentFlag.AlignHCenter)
         layout.addStretch(1)
 
@@ -140,29 +196,53 @@ class NavRail(QWidget):
         colors = theme.PALETTES[theme.current_mode()]
         svg_by_route = {route: svg_name for route, svg_name, _, _ in self.ROUTES}
         for route, button in self._buttons.items():  # 键为 route 字符串，图标名须经 ROUTES 查表
-            button.setIcon(_tinted_icon(self._icons_dir / svg_by_route[route], colors["accent"]))
+            svg_data = _read_icon(svg_by_route[route], self._icons_dir)
+            if svg_data is None:  # 图标缺失时留空按钮，不让整栏构造失败
+                continue
+            button.setIcon(_stateful_icon(
+                svg_data,
+                idle_color=colors["text_muted"],
+                active_color=colors["accent"],
+                disabled_color=colors["text_disabled"],
+            ))
         self.setStyleSheet(f"""
             QWidget#navRail {{
                 background-color: {colors['background_alt']};
                 border-right: 1px solid {colors['border']};
             }}
             QToolButton#navRailButton {{
-                border: 1px solid {colors['border']};
+                border: 1px solid transparent;
                 border-radius: 10px;
-                background-color: {colors['surface']};
+                background-color: transparent;
+            }}
+            QToolButton#navRailButton:hover {{
+                background-color: {colors['surface_hover']};
+                border-color: {colors['border']};
             }}
             QToolButton#navRailButton:checked {{
-                border: 2px solid {colors['border_hover']};
+                border: 1px solid {colors['border_hover']};
                 background-color: {colors['drag_active_bg']};
             }}
+            /* 底部文字入口：与上方图标入口同一视觉语言（等宽圆角块 + 悬停浮底），
+               保留文字是刻意的——主题/语言按钮的文案即"点击后的目标"，
+               图标化反而要再猜一次，且回归测试按 text() 断言。 */
             QToolButton#navRailTextButton {{
-                border: none;
+                border: 1px solid transparent;
+                border-radius: 8px;
                 color: {colors['text_muted']};
+                background-color: transparent;
                 font-size: 11px;
-                padding: 2px;
+                min-width: 46px;
+                min-height: 26px;
+                padding: 2px 4px;
             }}
             QToolButton#navRailTextButton:hover {{
                 color: {colors['accent']};
+                background-color: {colors['surface_hover']};
+                border-color: {colors['border']};
+            }}
+            QToolButton#navRailTextButton:pressed {{
+                background-color: {colors['surface_pressed']};
             }}
         """)
         # 模式切换后按钮文案（目标模式）随新板刷新

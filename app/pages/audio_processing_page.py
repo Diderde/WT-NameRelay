@@ -99,7 +99,6 @@ from app.widgets import (
     ScrollPositionGuard,
     TaskStatusPanel,
 )
-from app.widgets.hover_card import attach_hover_card
 from app.widgets.pyqtgraph_timeline import PyQtGraphTimeline
 
 from .base_tool_page import BaseToolPage
@@ -231,11 +230,12 @@ class AudioProcessingPage(BaseToolPage):
         getattr(getattr(self, 'copy_status', None), 'retranslate', None) and self.copy_status.retranslate()
         self._build_categories()
         self._update_loudness_status()
-        for label, key in getattr(self, '_experimental_labels', []):
-            label.setText(i18n_text(key))
-        card = getattr(self, '_experimental_card', None)
-        if card is not None:
-            card.set_text(i18n_text('audio.experimental.title'), i18n_text('audio.experimental.tip'))
+        title = getattr(self, '_contract_title', None)
+        if title is not None:
+            title.setText(i18n_text('audio.experimental.contract.title'))
+        hint = getattr(self, '_contract_hint', None)
+        if hint is not None:
+            hint.setText(i18n_text('audio.experimental.contract.hint'))
         for _btn_id, _btn in getattr(self, '_module_button_by_id', {}).items():
             _btn.setText(i18n_live('ui.134' if _btn_id == 'crew' else 'ui.135'))
         for btn, key in getattr(self, '_contract_buttons', []):
@@ -278,7 +278,12 @@ class AudioProcessingPage(BaseToolPage):
         return panel
 
     def _build_module_host(self) -> QWidget:
-        """顶层模块切换（对齐 TTS 工作台形态）：现有音频处理 + 实验功能（未完成）。"""
+        """顶层模块切换（对齐 TTS 工作台形态）：现有音频处理 + 契约控制台。
+
+        2026-10-02：原"实验功能"外壳（占位视图 + 完成度警示）按验收决定
+        移除；其中已交付的 R2_1_5_07 契约控制台（Tier 1）升格为独立模块，
+        功能与按钮语义不变，仅不再挂着"未完成、不推荐"的告示牌。
+        """
 
         host = QWidget()
         root = QVBoxLayout(host)
@@ -292,65 +297,45 @@ class AudioProcessingPage(BaseToolPage):
         self.main_module_button.setObjectName('moduleSwitchButton')
         self.main_module_button.setProperty('audioNavigation', True)
         self.main_module_button.setCheckable(True)
-        self.experimental_module_button = QPushButton(i18n_text('audio.module.experimental'))
-        self.experimental_module_button.setObjectName('moduleSwitchButton')
-        self.experimental_module_button.setProperty('audioNavigation', True)
-        self.experimental_module_button.setCheckable(True)
+        self.contract_module_button = QPushButton(
+            i18n_text('audio.module.contract'))
+        self.contract_module_button.setObjectName('moduleSwitchButton')
+        self.contract_module_button.setProperty('audioNavigation', True)
+        self.contract_module_button.setCheckable(True)
         self._top_module_group = QButtonGroup(self)
         self._top_module_group.setExclusive(True)
         self._top_module_group.addButton(self.main_module_button)
-        self._top_module_group.addButton(self.experimental_module_button)
+        self._top_module_group.addButton(self.contract_module_button)
         self.main_module_button.setChecked(True)
         bar.addWidget(self.main_module_button)
-        bar.addWidget(self.experimental_module_button)
+        bar.addWidget(self.contract_module_button)
         bar.addStretch(1)
         root.addLayout(bar)
 
         self._module_panes = QStackedWidget()
         self._module_panes.addWidget(self._build())  # index 0：现有音频处理
-        self._module_panes.addWidget(self._build_experimental())  # index 1：实验功能
+        self._module_panes.addWidget(self._build_contract_console())  # 1：契约
         root.addWidget(self._module_panes, 1)
 
         self.main_module_button.clicked.connect(lambda: self._show_top_module(0))
-        self.experimental_module_button.clicked.connect(lambda: self._show_top_module(1))
-        # 悬停卡：实验功能入口的完成度声明（与微调训练模块的悬停卡同形态）
-        self._experimental_card = attach_hover_card(
-            self.experimental_module_button,
-            i18n_text('audio.experimental.title'),
-            i18n_text('audio.experimental.tip'),
-        )
+        self.contract_module_button.clicked.connect(lambda: self._show_top_module(1))
         return host
 
-    def _build_experimental(self) -> QWidget:
-        """实验功能面板：占位视图 + 完成度警示（未完成、未测试、不推荐）。"""
+    def _build_contract_console(self) -> QWidget:
+        """契约控制台（Tier 1）：只读展示冻结件加载态 + 本机重跑验证。"""
 
         panel = self._panel()
         layout = QVBoxLayout(panel)
         layout.setContentsMargins(15, 14, 15, 14)
         layout.setSpacing(10)
-        title = QLabel(i18n_text('audio.experimental.title'))
-        title.setObjectName('crewPanelTitle')
-        self._experimental_labels: list[tuple[QLabel, str]] = [(title, 'audio.experimental.title')]
-        layout.addWidget(title)
-        notice = QLabel(i18n_text('audio.experimental.notice'))
-        notice.setObjectName('mutedLabel')
-        notice.setWordWrap(True)
-        layout.addWidget(notice)
-        placeholder = QLabel(i18n_text('audio.experimental.placeholder'))
-        placeholder.setObjectName('mutedLabel')
-        placeholder.setWordWrap(True)
-        self._experimental_labels.append((placeholder, 'audio.experimental.placeholder'))
-        layout.addWidget(placeholder)
-
-        # 契约控制台（Tier 1）：只读展示冻结件加载态 + 本机重跑验证
         contract_title = QLabel(i18n_text('audio.experimental.contract.title'))
         contract_title.setObjectName('crewPanelTitle')
-        self._experimental_labels.append((contract_title, 'audio.experimental.contract.title'))
+        self._contract_title = contract_title
         layout.addWidget(contract_title)
         contract_hint = QLabel(i18n_text('audio.experimental.contract.hint'))
         contract_hint.setObjectName('mutedLabel')
         contract_hint.setWordWrap(True)
-        self._experimental_labels.append((contract_hint, 'audio.experimental.contract.hint'))
+        self._contract_hint = contract_hint
         layout.addWidget(contract_hint)
         contract_row = QHBoxLayout()
         self._contract_buttons: list[tuple[QPushButton, str]] = []
@@ -386,7 +371,7 @@ class AudioProcessingPage(BaseToolPage):
     def _show_top_module(self, index: int) -> None:
         self._module_panes.setCurrentIndex(index)
         self.main_module_button.setChecked(index == 0)
-        self.experimental_module_button.setChecked(index == 1)
+        self.contract_module_button.setChecked(index == 1)
 
     def _contract_bundle(self) -> Path:
         return Path(__file__).resolve().parents[2] / 'audioprep_contract'
@@ -1615,8 +1600,13 @@ class AudioProcessingPage(BaseToolPage):
         if self.is_busy or not items:
             self.target_info.setText(i18n_text('ui.202'))
             return
+        # LoudnessScanWorker 吃 5 元组，_audio_scan_items 是
+        # 6 元组——直传会在 worker 里 ValueError 且 finished 永不发出，整页
+        # 卡忙（静音检测那边本就有映射，分析这边漏了；存量缺陷，2026-10-02
+        # caveman 复核抓出，核心 widget 同步修复）
+        mapped = tuple((c[0], c[2], c[3], c[4], c[5]) for c in items)
         self._analysis_cancel = threading.Event()
-        worker = LoudnessScanWorker(items, self._analysis_cancel)
+        worker = LoudnessScanWorker(mapped, self._analysis_cancel)
         thread = QThread(self)
         worker.moveToThread(thread)
         thread.started.connect(worker.run)

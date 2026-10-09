@@ -28,6 +28,10 @@ from .models import (
 
 _FLAGS = getattr(subprocess, "CREATE_NO_WINDOW", 0)
 
+#: 后台子进程（波形解码、抽帧、探测）的创建参数：无控制台 + 低于正常优先级。
+#: 单一出处，避免同一个位组合在各服务里各写一遍。
+BACKGROUND_FLAGS = _FLAGS | getattr(subprocess, "BELOW_NORMAL_PRIORITY_CLASS", 0)
+
 # 输出格式档案：编码参数（含质量项）、封装器与扩展名。
 # 全部为随包 LGPL 构建内已启用的编码器，见 FFMPEG_BUILD_INFO.md。
 _FORMAT_PROFILES: dict[str, tuple[str, str, str]] = {
@@ -524,7 +528,7 @@ class AudioExportService(QObject):
             temporary = None
             self.progress.emit("已完成", 100, self.target.name)
             self.finished.emit(True, "导出成功", self.target)
-        except Exception as error:  # noqa: BLE001  # 工作线程边界：统一转为失败信号  # 工作线程边界：统一转为失败信号
+        except Exception as error:  # noqa: BLE001  # 工作线程边界：统一转为失败信号
             self.finished.emit(False, str(error), None)
         finally:
             self._terminate_process()
@@ -616,7 +620,7 @@ class AudioMatrixExportService(AudioExportService):
                 self.finished.emit(False, f"平均分配导出部分失败：{details}", tuple(results))
             else:
                 self.finished.emit(True, "平均分配导出成功：一次渲染，三个目标已写入", tuple(results))
-        except Exception as error:  # noqa: BLE001  # 工作线程边界：统一转为失败信号  # 工作线程边界：统一转为失败信号
+        except Exception as error:  # noqa: BLE001  # 工作线程边界：统一转为失败信号
             self.finished.emit(False, str(error), tuple(results))
         finally:
             self._terminate_process()

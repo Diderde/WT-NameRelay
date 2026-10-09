@@ -14,11 +14,23 @@ ffmpeg_datas.extend(
     for path in sorted((FFMPEG / 'bin').glob('*.dll'))
 )
 
+ICONS = ROOT / 'app' / 'resources' / 'icons'
+# 导航图标（Bootstrap Icons 1.11.3, MIT）与随附的上游许可正文。NavRail 运行期优先读 Qt
+# 资源 `:/icons/`，这里随包收一份磁盘副本作回退，同时让 MIT「随副本保留版权与许可声明」
+# 的义务随 EXE/onedir 一起成立（release 暂存的 licenses/ 另有一份 Bootstrap-Icons-MIT.txt）。
+icons_datas = [
+    (str(ICONS / 'bootstrap-icons-LICENSE.txt'), 'app/resources/icons'),
+]
+icons_datas.extend(
+    (str(path), 'app/resources/icons')
+    for path in sorted(ICONS.glob('nav-*.svg'))
+)
+
 a = Analysis(
     [str(ROOT / 'main.py')],
     pathex=[],
     binaries=[],
-    datas=ffmpeg_datas,
+    datas=ffmpeg_datas + icons_datas,
     hiddenimports=['pyqtgraph', 'numpy'],
     hookspath=[str(ROOT / 'packaging' / 'hooks')],
     hooksconfig={},

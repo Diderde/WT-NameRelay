@@ -3,3 +3,4 @@ openpyxl==3.1.5
 PyInstaller==6.11.1
 maturin==1.15.0
 jsonschema==4.26.0
+ruff==0.16.8

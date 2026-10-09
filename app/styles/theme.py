@@ -48,6 +48,10 @@ PALETTES: dict[str, dict[str, str]] = {
         "group_bg": "#0f1626",
         "cancel_border": "#6e3f49",
         "triple_bg": "#101828",
+        # 自绘委托表格的选中行取色：亮蓝 Highlight 会洗掉按深底设计的
+        # 灰/橙描边按钮，选中底色必须保持与单元格底相近的亮度
+        "selection_bg": "#1d3357",
+        "selection_text": "#e6edf7",
         "checkbox_border": "#44506b",
         "checkbox_bg": "#0b1020",
         "header_bg": "#1a2438",
@@ -77,6 +81,42 @@ PALETTES: dict[str, dict[str, str]] = {
         "timeline_playhead": "#60a5fa",
         "timeline_playhead_label": "#93c5fd",
         "timeline_split_flash": "#60a5fa",
+        # 视频裁剪页自绘时间轴取色：剪辑台舞台、轨道、片段、波形、播放头。
+        # 两套色板都必须齐全——白天模式贴深色底会出现"半截没套主题"的观感
+        "clip_canvas": "#15181f",
+        "clip_empty": "#191d26",
+        "clip_ruler": "#1b1f28",
+        "clip_ruler_text": "#9aa4b2",
+        "clip_ruler_major": "#c3cee0",
+        "clip_ruler_minor": "#3a4353",
+        "clip_header": "#1b1f28",
+        "clip_header_text": "#c3cee0",
+        "clip_grid": "#2a3242",
+        "clip_video": "#2f7a5c",
+        "clip_video_top": "#3d9a73",
+        "clip_video_bottom": "#255f48",
+        "clip_video_text": "#eaf6f0",
+        "clip_audio": "#4b4470",
+        "clip_audio_top": "#5c5487",
+        "clip_audio_bottom": "#3a3459",
+        "clip_wave": "#c7c2ea",
+        "clip_selected": "#60a5fa",
+        "clip_selected_glow": "#93c5fd",
+        "clip_hover": "#3b82f6",
+        "clip_playhead": "#ff6b6b",
+        "clip_playhead_text": "#ffffff",
+        "clip_scrim": "#0b0e13",
+        "clip_badge": "#0f1218",
+        "clip_handle": "#f8fafc",
+        "clip_muted": "#8f9bb0",
+        # 语音工作台表格自绘取色（状态徽章 / 行内按钮描边）。原先硬编码在
+        # voice_table_model 里，昼夜切换不跟着变——浅色底上深灰描边发闷。
+        # 暗色沿用原硬编码值（观感零变化），亮色另配更深一档保证对比度。
+        "state_pending": "#7A8794",
+        "state_running": "#D09A5B",
+        "state_done": "#65A77A",
+        "row_action": "#8A96A2",
+        "row_action_accent": "#D09A5B",
     },
     "light": {
         "background": "#f8f9fc",
@@ -110,6 +150,8 @@ PALETTES: dict[str, dict[str, str]] = {
         "group_bg": "#f4f6fa",
         "cancel_border": "#d8aeb0",
         "triple_bg": "#f1f5f9",
+        "selection_bg": "#dbeafe",
+        "selection_text": "#1a1a2e",
         "checkbox_border": "#98a6b4",
         "checkbox_bg": "#ffffff",
         "header_bg": "#eef1f6",
@@ -139,6 +181,38 @@ PALETTES: dict[str, dict[str, str]] = {
         "timeline_playhead": "#2563eb",
         "timeline_playhead_label": "#1d4ed8",
         "timeline_split_flash": "#2563eb",
+        "clip_canvas": "#e9edf4",
+        "clip_empty": "#dce3ee",
+        "clip_ruler": "#e4eaf3",
+        "clip_ruler_text": "#5b6472",
+        "clip_ruler_major": "#1a1a2e",
+        "clip_ruler_minor": "#c4cfdd",
+        "clip_header": "#e4eaf3",
+        "clip_header_text": "#33404f",
+        "clip_grid": "#c8d3e2",
+        "clip_video": "#d4e8dc",
+        "clip_video_top": "#e4f3ea",
+        "clip_video_bottom": "#c3dcd0",
+        "clip_video_text": "#14532d",
+        "clip_audio": "#ded9f2",
+        "clip_audio_top": "#ebe7fa",
+        "clip_audio_bottom": "#cfc9ea",
+        "clip_wave": "#4c3f86",
+        "clip_selected": "#2563eb",
+        "clip_selected_glow": "#60a5fa",
+        "clip_hover": "#93c5fd",
+        "clip_playhead": "#dc2626",
+        "clip_playhead_text": "#ffffff",
+        "clip_scrim": "#ffffff",
+        "clip_badge": "#ffffff",
+        "clip_handle": "#ffffff",
+        "clip_muted": "#6b6b7a",
+        # 见暗色板同名键注释：亮色底上徽章/描边需更深一档才立得住
+        "state_pending": "#5B6672",
+        "state_running": "#966322",
+        "state_done": "#2F7A4E",
+        "row_action": "#5A6673",
+        "row_action_accent": "#966322",
     },
 }
 
@@ -396,14 +470,14 @@ def _build_stylesheet(colors: dict[str, str]) -> str:
         border-color: {colors['cancel_border']};
     }}
     QProgressBar {{
-        min-height: 14px;
-        max-height: 14px;
+        min-height: 16px;
+        max-height: 16px;
         color: {colors['text']};
         background-color: {colors['progress_bg']};
         border: 1px solid {colors['progress_border']};
-        border-radius: 7px;
+        border-radius: 8px;
         text-align: center;
-        font-size: 10px;
+        font-size: 11px;
         font-weight: 600;
     }}
     QProgressBar::chunk {{
@@ -596,8 +670,15 @@ def _build_stylesheet(colors: dict[str, str]) -> str:
         color: {colors['text_muted']};
         border: none;
         border-bottom: 1px solid {colors['border']};
-        padding: 6px;
+        padding: 8px 10px;
+        font-size: 12px;
         font-weight: 600;
+    }}
+    QHeaderView::section:first {{
+        border-top-left-radius: 8px;
+    }}
+    QHeaderView::section:last {{
+        border-top-right-radius: 8px;
     }}
     QListWidget#licenseList {{
         background-color: {colors['background_alt']};
@@ -629,6 +710,182 @@ def _build_stylesheet(colors: dict[str, str]) -> str:
     QScrollBar::handle:vertical:pressed {{ background: {colors['accent']}; }}
     QScrollBar::add-line:vertical,
     QScrollBar::sub-line:vertical {{ height: 0; }}
+    /* ── 通用控件兜底：此前未样式化的标准控件走 Fusion 默认外观，
+       与自绘面板并存时观感割裂（下拉框/菜单/提示/输入框风格不统一）。
+       以下规则只兜底，objectName 特化规则（#directoryPathEdit 等）按
+       QSS 特异性优先，不受影响。注意：刻意不给 QAbstractItemView 设置
+       selection-background-color——voice 表格等视图用 palette 收窄选中色，
+       QSS 优先级高于 palette，一旦写死会破坏该方案。 ── */
+    QComboBox {{
+        min-height: 32px;
+        padding: 0 28px 0 12px;
+        color: {colors['text']};
+        background-color: {colors['background_alt']};
+        border: 1px solid {colors['border']};
+        border-radius: 7px;
+    }}
+    QComboBox:hover {{ border-color: {colors['border_hover']}; }}
+    QComboBox:focus {{ border-color: {colors['accent']}; }}
+    QComboBox:disabled {{
+        color: {colors['text_disabled']};
+        background-color: {colors['disabled_bg']};
+        border-color: {colors['disabled_border']};
+    }}
+    QComboBox::drop-down {{ border: none; width: 24px; }}
+    QComboBox QAbstractItemView {{
+        color: {colors['text']};
+        background-color: {colors['surface']};
+        border: 1px solid {colors['border']};
+        border-radius: 6px;
+        padding: 4px;
+        outline: none;
+    }}
+    QComboBox QAbstractItemView::item {{
+        min-height: 28px;
+        padding: 2px 8px;
+        border-radius: 4px;
+    }}
+    QComboBox QAbstractItemView::item:selected {{
+        background-color: {colors['surface_hover']};
+        color: {colors['text']};
+    }}
+    QLineEdit, QTextEdit, QPlainTextEdit {{
+        color: {colors['text']};
+        background-color: {colors['background_alt']};
+        border: 1px solid {colors['border']};
+        border-radius: 7px;
+        padding: 4px 8px;
+        selection-background-color: {colors['selection_bg']};
+        selection-color: {colors['selection_text']};
+    }}
+    QLineEdit:hover, QTextEdit:hover, QPlainTextEdit:hover {{ border-color: {colors['border_hover']}; }}
+    QLineEdit:focus, QTextEdit:focus, QPlainTextEdit:focus {{ border-color: {colors['accent']}; }}
+    QLineEdit:disabled, QTextEdit:disabled, QPlainTextEdit:disabled {{
+        color: {colors['text_disabled']};
+        background-color: {colors['disabled_bg']};
+        border-color: {colors['disabled_border']};
+    }}
+    QLineEdit[readOnly="true"] {{ background-color: {colors['surface']}; }}
+    QSpinBox, QDoubleSpinBox {{
+        min-height: 28px;
+        padding: 0 8px;
+        color: {colors['text']};
+        background-color: {colors['background_alt']};
+        border: 1px solid {colors['border']};
+        border-radius: 7px;
+    }}
+    QSpinBox:hover, QDoubleSpinBox:hover {{ border-color: {colors['border_hover']}; }}
+    QSpinBox:focus, QDoubleSpinBox:focus {{ border-color: {colors['accent']}; }}
+    QSpinBox::up-button, QSpinBox::down-button,
+    QDoubleSpinBox::up-button, QDoubleSpinBox::down-button {{
+        width: 18px;
+        border: none;
+        background: transparent;
+    }}
+    QSpinBox::up-button:hover, QSpinBox::down-button:hover,
+    QDoubleSpinBox::up-button:hover, QDoubleSpinBox::down-button:hover {{
+        background-color: {colors['surface_hover']};
+        border-radius: 4px;
+    }}
+    QMenu {{
+        color: {colors['text']};
+        background-color: {colors['surface']};
+        border: 1px solid {colors['border']};
+        border-radius: 8px;
+        padding: 6px;
+    }}
+    QMenu::item {{
+        min-height: 28px;
+        padding: 4px 24px 4px 12px;
+        border-radius: 5px;
+    }}
+    QMenu::item:selected {{
+        background-color: {colors['surface_hover']};
+        color: {colors['text']};
+    }}
+    QMenu::item:disabled {{ color: {colors['text_disabled']}; }}
+    QMenu::separator {{
+        height: 1px;
+        margin: 5px 6px;
+        background: {colors['border']};
+    }}
+    QToolTip {{
+        color: {colors['text']};
+        background-color: {colors['surface']};
+        border: 1px solid {colors['border_hover']};
+        border-radius: 6px;
+        padding: 6px 8px;
+        font-size: 12px;
+    }}
+    QRadioButton {{ spacing: 7px; }}
+    QRadioButton::indicator {{
+        width: 15px;
+        height: 15px;
+        border: 1px solid {colors['checkbox_border']};
+        border-radius: 8px;
+        background: {colors['checkbox_bg']};
+    }}
+    QRadioButton::indicator:checked {{
+        border: 4px solid {colors['accent']};
+        background: {colors['checkbox_bg']};
+    }}
+    QCheckBox:hover::indicator, QRadioButton:hover::indicator {{ border-color: {colors['accent']}; }}
+    QCheckBox:disabled, QRadioButton:disabled {{ color: {colors['text_disabled']}; }}
+    QGroupBox {{
+        color: {colors['text']};
+        background-color: {colors['group_bg']};
+        border: 1px solid {colors['border']};
+        border-radius: 10px;
+        margin-top: 10px;
+        padding: 8px 6px 6px 6px;
+        font-weight: 600;
+    }}
+    QGroupBox::title {{
+        subcontrol-origin: border;
+        left: 10px;
+        padding: 0 4px;
+        color: {colors['accent']};
+    }}
+    QDialog, QMessageBox {{ background-color: {colors['background']}; }}
+    QSplitter::handle {{ background: transparent; }}
+    QAbstractItemView {{
+        color: {colors['text']};
+        background-color: {colors['background_alt']};
+        border: 1px solid {colors['border']};
+        border-radius: 8px;
+        alternate-background-color: {colors['group_bg']};
+        outline: none;
+    }}
+    QAbstractItemView::item {{ padding: 4px; }}
+    QAbstractScrollArea::corner {{ background: transparent; }}
+    QScrollBar:horizontal {{
+        height: 12px;
+        background: transparent;
+        margin: 2px;
+    }}
+    QScrollBar::handle:horizontal {{
+        min-width: 28px;
+        background: {colors['scrollbar_handle']};
+        border-radius: 4px;
+    }}
+    QScrollBar::handle:horizontal:hover {{ background: {colors['scrollbar_hover']}; }}
+    QScrollBar::handle:horizontal:pressed {{ background: {colors['accent']}; }}
+    QScrollBar::add-line:horizontal,
+    QScrollBar::sub-line:horizontal {{ width: 0; }}
+    QToolButton {{
+        color: {colors['text']};
+        background-color: transparent;
+        border: 1px solid transparent;
+        border-radius: 6px;
+        padding: 3px;
+    }}
+    QToolButton:hover {{
+        background-color: {colors['surface_hover']};
+        border-color: {colors['border']};
+    }}
+    QToolButton:pressed {{ background-color: {colors['surface_pressed']}; }}
+    QToolButton:disabled {{ color: {colors['text_disabled']}; }}
+    QPushButton:focus {{ border-color: {colors['accent']}; }}
     """
 
 

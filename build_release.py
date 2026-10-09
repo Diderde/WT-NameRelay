@@ -35,6 +35,31 @@ def prepare_ffmpeg_payload() -> Path:
     return payload
 
 
+def prepare_icons_payload() -> Path:
+    """Stage the navigation icons and the upstream licence text they ship under.
+
+    图标已进 Qt 资源（`app/resources/resources.qrc` 的 `/icons` 段，随 `resources_rc.py`
+    打进产物），这里仍单独收一份磁盘副本，原因有二：
+
+    1. `NavRail` 保留磁盘回退（资源缺失时按路径读 `app/resources/icons/`）；
+    2. Bootstrap Icons 是 MIT ——「随副本保留版权与许可声明」要求许可正文随分发走。
+       `stage_release()` 整拷的 `licenses/Bootstrap-Icons-MIT.txt` 与这里的
+       `app/resources/icons/bootstrap-icons-LICENSE.txt` 是两份不同落点，互不替代。
+    """
+    source = ROOT / "app" / "resources" / "icons"
+    payload = ROOT / "build" / "package-assets" / "icons"
+    resolved = payload.resolve()
+    if ROOT.resolve() not in resolved.parents:
+        raise RuntimeError(f"拒绝清理工作区外路径：{resolved}")
+    if payload.exists():
+        shutil.rmtree(payload)
+    payload.mkdir(parents=True)
+    shutil.copy2(source / "bootstrap-icons-LICENSE.txt", payload / "bootstrap-icons-LICENSE.txt")
+    for icon in sorted(source.glob("nav-*.svg")):
+        shutil.copy2(icon, payload / icon.name)
+    return payload
+
+
 def verify_ffmpeg_license() -> None:
     """确认内置 FFmpeg 可以合法地按 LGPL-3.0-or-later 分发。
 
@@ -87,6 +112,7 @@ def build(
     console: bool,
     dist: Path,
     ffmpeg_payload: Path,
+    icons_payload: Path,
 ) -> None:
     command = [
         *PYINSTALLER,
@@ -116,7 +142,14 @@ def build(
     command.extend(
         ["--add-data", f"{ffmpeg_payload};app/resources/ffmpeg"]
     )
+    command.extend(
+        ["--add-data", f"{icons_payload};app/resources/icons"]
+    )
     command.append(str(ROOT / "main.py"))
+    # 注意：onefile 产物**不含** `licenses/` 与 `THIRD_PARTY_LICENSES.md` ——
+    # 那两样只由 stage_release() 拷进 onedir release 目录。因此 onefile 只是
+    # 本机便携试跑件，**不得单独对外分发**：FFmpeg/LGPL、Rust crate、Bootstrap Icons
+    # 等许可正文都不在里面。要分发就用 release/ 下的 onedir 包。 say no to perv.
     subprocess.run(command, cwd=ROOT, check=True)
 
 
@@ -141,12 +174,14 @@ def stage_release() -> Path:
 if __name__ == "__main__":
     verify_ffmpeg_license()
     ffmpeg_payload = prepare_ffmpeg_payload()
+    icons_payload = prepare_icons_payload()
     build(
         "WT-NameRelay-debug",
         onefile=False,
         console=True,
         dist=ROOT / "dist" / "debug",
         ffmpeg_payload=ffmpeg_payload,
+        icons_payload=icons_payload,
     )
     build(
         "WT-NameRelay",
@@ -154,6 +189,7 @@ if __name__ == "__main__":
         console=False,
         dist=ROOT / "dist" / "onedir",
         ffmpeg_payload=ffmpeg_payload,
+        icons_payload=icons_payload,
     )
     build(
         "WT-NameRelay",
@@ -161,5 +197,6 @@ if __name__ == "__main__":
         console=False,
         dist=ROOT / "dist" / "onefile",
         ffmpeg_payload=ffmpeg_payload,
+        icons_payload=icons_payload,
     )
     print(f"Release staged at {stage_release()}")

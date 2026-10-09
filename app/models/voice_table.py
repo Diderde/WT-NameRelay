@@ -184,6 +184,11 @@ class VoiceRow:
     duration_ms: int = 0
     error_code: str = ""
     error_message: str = ""
+    #: 会话级工作流开关（不入 content_fields/spec_hash，也不进 .vt 规范字节）：
+    #: 勾选"不用生成"的行在批量生成时整体跳过
+    skip_generation: bool = False
+    #: 自备音频路径：设置后该行"生成"= 直接采用该文件（不经 TTS）
+    imported_audio: str = ""
 
     def content_fields(self) -> dict[str, str]:
         """按 §2 收集内容字段；可选字段等于默认值时不写该记录。"""
@@ -297,6 +302,8 @@ class VoiceTable:
             volume=source.volume,
             seed=source.seed,
             extra=dict(source.extra),
+            skip_generation=source.skip_generation,
+            imported_audio=source.imported_audio,
         )
         self.rows.insert(self.index_of(row_id) + 1, clone)
         return clone

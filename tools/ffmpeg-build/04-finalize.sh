@@ -120,9 +120,87 @@ find "$DEST" -maxdepth 1 -type f -delete
 for f in $BINARIES; do
   cp -f "$f" "$DEST/"; echo "  换入 $(basename "$f")"
 done
-for n in libgcc_s_seh-1.dll libwinpthread-1.dll libmp3lame-0.dll libopus-0.dll; do
+# zlib1.dll 必须在列：`--enable-zlib` 在本工具链下链接的是**共享** libz-1.dll，
+# 因此 avcodec-63.dll / avformat-63.dll / ffmpeg.exe 的 PE 导入表里都有 zlib1.dll。
+# 漏掉它 = 干净用户机上 FFmpeg 全线以 0xC0000135 (STATUS_DLL_NOT_FOUND) 失败，
+# 而开发机上会被 PATH 里别的同名 DLL（Tcl / KeePassXC …）掩盖，症状隐蔽。
+# 2026 修复：见 FFMPEG_BUILD_INFO.md「随包 DLL 集合」。 say no to perv.
+for n in libgcc_s_seh-1.dll libwinpthread-1.dll libmp3lame-0.dll libopus-0.dll zlib1.dll; do
   [ -f "$EXTRA/$n" ] && { cp -f "$EXTRA/$n" "$DEST/"; echo "  随附 $n"; } || echo "  *** 缺 $n ***"
 done
+
+echo
+echo "=== 5b. 导入表闭包核对（每个导入的 DLL 都必须在 $DEST 里）==="
+# 只信 PE 导入表，不信任何自报。缺一个即 FAIL：Windows 解析导入表是加载期的，
+# 缺 DLL 不会降级而是整个二进制加载失败。
+if [ -x "$REPO/.venv/Scripts/python.exe" ]; then PYCHK="$REPO/.venv/Scripts/python.exe"; else PYCHK=python; fi
+"$PYCHK" - "$DEST" <<'PYEOF'
+import struct, sys
+from pathlib import Path
+
+dest = Path(sys.argv[1])
+present = {p.name.lower() for p in dest.iterdir() if p.is_file()}
+OURLIBS = {"avcodec-63.dll", "avformat-63.dll", "avutil-61.dll", "avfilter-12.dll",
+           "avdevice-63.dll", "swresample-7.dll", "swscale-10.dll"}
+
+
+def imports(path):
+    data = path.read_bytes()
+    e = struct.unpack_from("<I", data, 0x3C)[0]
+    coff = e + 4
+    nsec, _, _, _, _, optsize, _ = struct.unpack_from("<HHIIIHH", data, coff)
+    opt = coff + 20
+    dd = opt + (112 if struct.unpack_from("<H", data, opt)[0] == 0x20B else 96)
+    rva = struct.unpack_from("<I", data, dd + 8)[0]
+    if not rva:
+        return []
+    secs = []
+    sh = opt + optsize
+    for i in range(nsec):
+        b = sh + i * 40
+        vsz, va, rsz, rp = struct.unpack_from("<IIII", data, b + 8)
+        secs.append((va, max(vsz, rsz), rp))
+    def off(r):
+        for va, sz, rp in secs:
+            if va <= r < va + sz:
+                return rp + (r - va)
+        return None
+    names, o = [], off(rva)
+    while o is not None:
+        ent = data[o:o + 20]
+        if len(ent) < 20 or ent == b"\x00" * 20:
+            break
+        nr = struct.unpack_from("<I", ent, 12)[0]
+        if not nr:
+            break
+        no = off(nr)
+        if no is None:
+            break
+        names.append(data[no:data.index(b"\x00", no)].decode("ascii", "replace"))
+        o += 20
+    return names
+
+missing = 0
+for p in sorted(dest.iterdir()):
+    if p.suffix.lower() not in (".dll", ".exe"):
+        continue
+    for name in imports(p):
+        low = name.lower()
+        if low in present or not low.endswith(".dll"):
+            continue
+        if low.startswith(("kernel32", "user32", "shell32", "ole32", "advapi32", "gdi32",
+                           "ws2_32", "msvcrt", "bcrypt", "crypt32", "secur32", "shlwapi",
+                           "version", "winmm", "oleaut32", "comdlg32", "psapi", "dbghelp",
+                           "userenv", "ntdll", "api-ms-", "ucrtbase", "vcruntime")):
+            continue
+        if low in OURLIBS:
+            continue
+        print(f"  *** {p.name} 需要 {name}，但它不在随包目录里 ***")
+        missing += 1
+print(f"  导入表闭包：{'OK' if missing == 0 else str(missing) + ' 项缺失'}")
+raise SystemExit(1 if missing else 0)
+PYEOF
+[ $? -eq 0 ] || { echo "RESULT: FAIL（随包 DLL 集合不完整）"; exit 1; }
 
 echo
 echo "=== 6. 终检 ==="
