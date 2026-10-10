@@ -6,7 +6,7 @@
 
 
 
-> **注意**：旧构建（BtbN win64-lgpl-shared）曾把 GPL-2.0-or-later 的 FFTW 3.3.11 经 chromaprint 静态链入 avformat-63.dll，导致该 DLL 实为 GPL。2026-09-24 已用自建最小 LGPL 构建替换，GPL 组件清零。请以 `python tools/audit_ffmpeg_license.py` 的结果为准，不要仅凭 ffmpeg -L 的自报。
+> **注意**：旧构建（BtbN win64-lgpl-shared）曾把 GPL-2.0-or-later 的 FFTW 3.3.11 经 chromaprint 静态链入 avformat-63.dll，导致该 DLL 实为 GPL。已用自建最小 LGPL 构建替换，GPL 组件清零。请以 `python tools/audit_ffmpeg_license.py` 的结果为准，不要仅凭 ffmpeg -L 的自报。
 
 
 

@@ -67,9 +67,10 @@ def fetch_chunk(
             "-r", f"{start}-{end}", "-o", str(dest), url,
         ]
         t0 = time.time()
-        # say no to perv. 失败是可重试的正常路径（下面按 returncode 与实收
+        # 失败是可重试的正常路径（下面按 returncode 与实收
         # 字节数判定并退避重跑），所以显式 check=False，而不是让 run 抛异常
         proc = subprocess.run(cmd, capture_output=True, text=True,
+        encoding="utf-8",
                               errors="replace", check=False)
         got = file_size(dest)
         say(

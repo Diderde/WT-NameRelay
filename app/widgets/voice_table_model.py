@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: GPL-3.0-only
 """语音批量表格模型与行委托（W3）。
 
-- 行身份 = ``row_id``（见 docs/voice-batch-spec.md §1）：编辑内容、重排都不改变身份；
+- 行身份 = ``row_id``：编辑内容、重排都不改变身份；
 - 模型的编辑面只覆盖**内容字段**（name / text / voice），状态列由双轴合成只读展示；
 - 动作列由委托绘制"试听 / 重新生成"两枚按钮，点击以信号形式抛出（页面决定行为）。
 """
@@ -74,7 +74,7 @@ _COLUMN_TITLE_KEYS: dict[VoiceColumn, str] = {
 }
 
 #: 状态 → (文案键, 颜色)。颜色**随主题刷新**（见 _ensure_status_style）：
-# 绘制与 tests.test_voice_batch 的渲染级像素回归都读本表的 [1]，
+# 绘制与渲染级像素回归都读本表的 [1]，
 # 两边必须共用同一份值，否则像素对不上。
 _STATUS_STYLE: dict[UiRowState, tuple[str, str]] = {
     UiRowState.PENDING: ("voice.status.pending", "#7A8794"),
@@ -400,7 +400,7 @@ class VoiceTableModel(QAbstractTableModel):
 def default_audio_picker(parent: QWidget) -> str:
     """参考音频的文件选择对话框（模块级函数，测试可整体注入替换）。
 
-    强制 Qt 非原生对话框：2026-10-02 实机崩溃（logs/video_clip_crash.log
+    强制 Qt 非原生对话框：实机崩溃（logs/video_clip_crash.log
     Windows fatal exception 0xc0000374 堆损坏，栈顶即本函数）定位为原生
     文件对话框与 Shell 扩展/COM 的原生层 bug——与 Python 代码无关，
     界内无法防御，只能绕开原生对话框。"""
@@ -514,7 +514,7 @@ class VoiceRowDelegate(QStyledItemDelegate):
         if option.state & QStyle.StateFlag.State_Selected:
             # 视图先用调色板 Highlight 铺整行选中底（Qt6
             # PE_PanelItemViewRow），品牌亮蓝落在按深底取色的自绘按钮上，
-            # 文字对比度掉到 ~1.1:1（2026-10-04 用户反馈）。委托自铺
+            # 文字对比度掉到 ~1.1:1（用户反馈）。委托自铺
             # selection_bg 并摘掉 Selected 态：正文列以常规字色落在深底上，
             # 自绘按钮回到与未选中行一致的可读区间。不走视图级调色板覆盖：
             # 应用级 QSS 存在时它会在构造期 polish 被吞，时机不可控。
@@ -586,7 +586,7 @@ class VoiceRowDelegate(QStyledItemDelegate):
         # boundingRect 给的是 ascent+descent 的排版盒，CJK 字形只占中间一段
         # ——实测 Microsoft YaHei UI 14px：盒 18px、墨迹仅 12px，按盒取高
         # 做出 26px 的色块（2.17 倍字高），字上下各空 7px，看着就是"色块
-        # 没盖住字"（2026-10-04 用户反馈）。改由 tightBoundingRect 取真实
+        # 没盖住字"（用户反馈）。改由 tightBoundingRect 取真实
         # 墨迹高（实测多数字号比真实墨迹偏大 1~2px，个别字号偏小 1px，
         # 由 BADGE_PAD_Y 留白兜住：多缩放 × 12~24px 字号实测余量均 >= 2px），
         # 色块以墨迹中心为心、上下留白对称。

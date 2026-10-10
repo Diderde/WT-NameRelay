@@ -37,7 +37,7 @@
 > 后者会把上表里标「是」的组件**二进制**一并打包，因此这些组件的许可正文必须随发布物可获取 —— 见
 > 「随包许可证文件」与「已知许可注意事项」。
 
-内置 FFmpeg 由**本仓库自建**（2026-09-24 起），参数为
+内置 FFmpeg 由**本仓库自建**，参数为
 `--enable-version3 --enable-shared --disable-static --disable-autodetect --disable-network`，
 **未启用** `--enable-gpl`、`--enable-nonfree`、`--enable-chromaprint`。
 发布包只携带应用实际调用的 `ffmpeg.exe`、`ffprobe.exe` 与所需共享 DLL，**不携带 `ffplay.exe`**。
@@ -62,7 +62,7 @@ FLAC 与 AAC(m4a) 使用 FFmpeg **自带**编码器；`ebur128`、`loudnorm`、`
 `licenses/ffmpeg/manifest.json`，用 `python tools/verify_ffmpeg_licenses.py` 可逐文件复算内容哈希。
 各组件的**实际版本**见 `licenses/ffmpeg/measured-versions.json`。
 
-> **历史（2026-09-24 之前）**：当时的随包构建来自 BtbN FFmpeg-Builds 的 `win64-lgpl-shared`，
+> **历史**：当时的随包构建来自 BtbN FFmpeg-Builds 的 `win64-lgpl-shared`，
 > 启用了 **57 个外部组件**，并且把 GPL-2.0-or-later 的 **FFTW 3.3.11** 经 chromaprint
 > 静态链入了 `avformat-63.dll` —— 名义 LGPL、实为 GPL。换成自建最小构建后，
 > 该问题连同 54 个本程序用不到的组件一并消除，随包二进制约 **145 MB → 31 MB**。
@@ -70,7 +70,7 @@ FLAC 与 AAC(m4a) 使用 FFmpeg **自带**编码器；`ebur128`、`loudnorm`、`
 
 #### 必须处理的许可问题
 
-1. ~~**`avformat-63.dll` 含 GPL 组件，不能标注为 LGPL。**~~ —— **已于 2026-09-24 解决。**
+1. ~~**`avformat-63.dll` 含 GPL 组件，不能标注为 LGPL。**~~ —— **已解决。**
    原构建把 GPL-2.0-or-later 的 FFTW 3.3.11 经 chromaprint（`-DFFT_LIB=fftw3`）静态链入
    `avformat-63.dll`（二进制内实测到版本串、wisdom 格式串与 948 个 `fftw_codelet_*` 符号），
    根因是 BtbN 的 `25-fftw3.sh` / `50-chromaprint.sh` **缺少 lgpl 闸门**
@@ -78,7 +78,7 @@ FLAC 与 AAC(m4a) 使用 FFmpeg **自带**编码器；`ebur128`、`loudnorm`、`
    违反其 README 明示的 *"`lgpl` Lacking libraries that are GPL-only"*。
    处置：改为自建最小构建，**不启用 chromaprint**，GPL 组件随之清零。
    现状由两道闸门守住 —— `python tools/audit_ffmpeg_license.py`（二进制审计）
-   与 `tests/test_ffmpeg_license.py` 的换件绊线。
+   与随附许可审计的换件绊线。
 2. **弱著佐权项的可替换性**：`libmp3lame` 是 LGPL-2.0-or-later，且随包以**独立 DLL**
    （`libmp3lame-0.dll`）分发，FFmpeg 各库本身也是共享 DLL —— 用户可自行替换为修改版，
    满足 LGPL 对"可替换/可重链"的要求。`zlib`（Zlib 许可）为宽松许可，无此要求。
@@ -234,14 +234,14 @@ GPT-SoVITS 仓库自身包含若干第三方子组件（`GPT_SoVITS/BigVGAN`、`
 校验命令 `python tools/verify_ffmpeg_licenses.py`（当前 7/7 哈希一致），二进制侧另有
 `python tools/audit_ffmpeg_license.py`（结论：所有二进制仅含 LGPL/宽松许可组件）。
 旧 BtbN 构建时代的 91 份许可（含 FFTW 的 GPL-2.0-or-later 正文与各类专利文本）已随
-2026-09-24 换建清零，历史取证见 [`FFMPEG_BUILD_INFO.md`](FFMPEG_BUILD_INFO.md) §2。
+换建清零，历史取证见 [`FFMPEG_BUILD_INFO.md`](FFMPEG_BUILD_INFO.md) §2。
 
 `licenses/rust/`（子目录，45 个 crate 目录 + `manifest.json` / `MANIFEST.md`）收录随预编译扩展
 分发的 Rust 依赖许可正文；校验命令 `python tools/collect_rust_binary_licenses.py`。
 
 **一致性由脚本与测试守住**：`python tools/verify_license_catalog.py` 核对「本节点名的文件 ↔ `licenses/` 实际内容 ↔
 `license_dialog.py` 的页列表 ↔ `resources.qrc` 的嵌入条目」四者互相覆盖，
-对应测试 `tests/test_license_catalog.py`。**不要手工改本节点名的清单而不改对应文件** —— 校验会失败。
+对应随附的许可目录校验。**不要手工改本节点名的清单而不改对应文件** —— 校验会失败。
 
 NumPy 的许可证文件应原样保留，因为其中包含其发行包捆绑组件的版权和许可证声明。
 Qt/PySide6、Qt WebEngine 与 FFmpeg 使用动态共享库形式分发；用户可在不修改 WT-NameRelay 原创代码的

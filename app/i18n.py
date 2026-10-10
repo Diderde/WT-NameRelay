@@ -1070,8 +1070,8 @@ _STRINGS: dict[str, dict[str, str]] = {
     },
     "nav.rail.fmod": {"zh": "FMOD控制台", "en": "FMOD console"},
     "nav.rail.fmod.tip": {
-        "zh": "FMOD 控制台：TTS 产物的 bank 构建与推送（规划中，详见 docs/fmod-pipeline-plan.md）。",
-        "en": "FMOD console: bank build & push for TTS output (planned, see docs/fmod-pipeline-plan.md).",
+        "zh": "FMOD 控制台：TTS 产物的 bank 构建与推送（规划中）。",
+        "en": "FMOD console: bank build & push for TTS output (planned).",
     },
     "nav.rail.experimental": {"zh": "实验功能", "en": "Experimental"},
     "nav.rail.experimental.tip": {

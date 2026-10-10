@@ -4,7 +4,7 @@
 
 目标场景：**动漫/影视片段**的对白与背景音（BGM + 效果音）分离，其次音乐素材。
 
-引擎与模型策略（许可证均逐仓核实，2026-10-01）：
+引擎与模型策略（许可证均逐仓核实）：
 - 推理引擎 = 上游 `ZFTurbo/Music-Source-Separation-Training`（MIT，独立检出
   `TTS model/MSST`，subprocess 调用，参照 GPT-SoVITS 的隔离先例）；
   MSST-WebUI（SUC-DriverOld）为 AGPL-3.0，其代码一律不引用、不拷贝；
@@ -206,7 +206,7 @@ def build_inference_args(spec: ModelSpec, input_folder: Path,
                          ) -> list[str]:
     """组装 MSST `inference.py` 的命令行。
 
-    2026-10-02 对照上游 `utils/settings.py::parse_args_inference` 逐参核实：
+    对照上游 `utils/settings.py::parse_args_inference` 逐参核实：
     权重参数是 `--start_check_point`（此前误传 `--checkpoint_path`，argparse
     直接拒绝）；批量输入只收 `--input_folder`（不存在 `--input_audio`），
     因此多素材合并为一次进程时须先把它们汇聚进同一个暂存目录。

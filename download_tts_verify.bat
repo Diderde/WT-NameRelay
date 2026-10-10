@@ -1,41 +1,41 @@
 @echo off
 setlocal EnableExtensions
-rem 936：本文件是 GBK，65001 终端下中文会乱码
+rem chcp 936: this file is GBK; Chinese text garbles under codepage 65001
 chcp 936 >nul 2>&1
 
 REM ================================================================
-REM  TTS 资源下载脚本 v4（GBK 编码 / CRLF；并行下载；本地资产检测）
-REM  [1] GPT-SoVITS 代码        GitHub: RVC-Boss/GPT-SoVITS（浅克隆/更新）
+REM  TTS asset downloader v4 (GBK encoding / CRLF; parallel downloads; local asset detection)
+REM  [1] GPT-SoVITS code             GitHub: RVC-Boss/GPT-SoVITS (shallow clone/update)
 REM  [2] CosyVoice3 GGUF  HF: cstr/cosyvoice3-0.5b-2512-GGUF
-REM  [3] GPT-SoVITS 预训练权重    HF: lj1995/GPT-SoVITS（25 文件 4.93GB）
-REM  [4] GSV v5 推理服务运行时   HF: lj1995/GPT-SoVITS-windows-package（整合包 10.83 GB）
-REM  本地检测：动态扫描脚本所在目录，不写死任何绝对路径
-REM  v3: 并行下载 + 本地资产盘点 + ASR 阶段（Faster Whisper large-v3）
-REM  v4: 权重阶段恢复可达（阶段顺序改为 ASR 后接权重）；开关注入改 if not defined；失败路径补退出码
-REM      v4 追加：三处裸 find 一律路径限定（Git 的 GNU find 遮蔽时 /c /I 会被当路径）
+REM  [3] GPT-SoVITS pretrained weights  HF: lj1995/GPT-SoVITS (25 files, 4.93GB)
+REM  [4] GSV v5 inference runtime    HF: lj1995/GPT-SoVITS-windows-package (bundle, 10.83 GB)
+REM  Local detection: scans the script's own directory; no absolute path is hard-coded
+REM  v3: parallel downloads + local asset inventory + ASR stage (Faster Whisper large-v3)
+REM  v4: weight stage reachable again (ASR then weights); switch injection uses if not defined; failure paths return exit codes
+REM      v4 follow-up: all three bare find calls are path-qualified (a shadowing GNU find treats /c /I as paths)
 REM ================================================================
 
-rem ---------- 配置区 ----------
+rem ---------- configuration ----------
 set "GPT_SOVITS_REPO_URL=https://github.com/RVC-Boss/GPT-SoVITS.git"
 set "GPT_SOVITS_DIR=TTS model\GPT-SoVITS"
 set "GGUF_REPO=cstr/cosyvoice3-0.5b-2512-GGUF"
 set "GGUF_DIR=TTS model\CosyVoice3"
 set "PM_DIR=TTS model\GPT-SoVITS\GPT_SoVITS\pretrained_models"
 set "WLIST=%~dp0gpt_sovits_weights_list.txt"
-rem HF 端点：国内网络可改为 https://hf-mirror.com（免加速直连）
+rem HF endpoint: switch to https://hf-mirror.com on restricted networks (direct, no accelerator)
 set "HF_ENDPOINT=https://hf-mirror.com"
 set "HF_RAW=%HF_ENDPOINT%/lj1995/GPT-SoVITS/resolve/main"
-rem 并发下载数（1-6，越大越快但可能被服务端限速）
+rem concurrent downloads (1-6; higher is faster but the server may throttle)
 set "PARALLEL=3"
-rem 开关: 1=执行 0=跳过；调用方（start.bat）已注入时保留其意图，不覆盖
+rem switches: 1=run 0=skip; when the caller (start.bat) already injected one, keep its intent
 if not defined GPT_SOVITS_CODE set "GPT_SOVITS_CODE=1"
 if not defined WEIGHTS set "WEIGHTS=1"
-rem GGUF_SET: q4(约0.9GB) full(约2.3GB) all(约3.7GB) none(跳过)
+rem GGUF_SET: q4(~0.9GB) full(~2.3GB) all(~3.7GB) none(skip)
 if not defined GGUF_SET set "GGUF_SET=q4"
 set "MAX_RETRY=3"
-rem 失败汇总标记：任一阶段有未完成项时置 1，:done 据此返回退出码 1
+rem failure flag: set to 1 when any stage is incomplete; :done returns exit code 1 accordingly
 set "DL_FAIL="
-rem ASR 识别模型（Faster Whisper large-v3；语音识别 0c 用）
+rem ASR model (Faster Whisper large-v3; used by voice recognition 0c)
 if not defined ASR_SET set "ASR_SET=1"
 if not defined GSV_RUNTIME set "GSV_RUNTIME=1"
 set "FW_DIR=TTS model\GPT-SoVITS\tools\asr\models\faster-whisper-large-v3"
@@ -43,7 +43,7 @@ set "FW_REPO=Systran/faster-whisper-large-v3"
 set "FW_HF_FALLBACK=https://huggingface.co"
 rem ------------------------------
 
-rem ---- 下载进度显示（只读监视器；下载本身仍由 curl 负责）----
+rem ---- download progress display (read-only monitor; curl does the downloading) ----
 set "PY_EXE="
 if exist "%~dp0.venv\Scripts\python.exe" set "PY_EXE=%~dp0.venv\Scripts\python.exe"
 if not defined PY_EXE (
@@ -77,7 +77,7 @@ if not exist "%WLIST%" (
 )
 echo   git / curl / 权重清单就绪。
 
-rem ---- 本地资产盘点（动态，无硬编码绝对路径）----
+rem ---- local asset inventory (dynamic, no hard-coded absolute paths) ----
 set /a LOCAL_CODE=0
 set /a LOCAL_GGUF=0
 if exist "%GPT_SOVITS_DIR%\.git" (
@@ -86,7 +86,7 @@ if exist "%GPT_SOVITS_DIR%\.git" (
 )
 if exist "%GGUF_DIR%" for %%F in ("%GGUF_DIR%\*.gguf") do set /a LOCAL_GGUF+=1
 if %LOCAL_GGUF% GTR 0 echo   [检测] 发现已有 GGUF 文件 %LOCAL_GGUF% 个（已完成的部分将自动跳过）
-rem 裸 find 会被 PATH 里 Git 的 GNU find 遮蔽（/c /v 当路径扫盘：2026-10-03 与 10-07 两次实锤）
+rem a bare find is shadowed by Git's GNU find on PATH (/c /v are read as paths; confirmed on and 10-07)
 if exist "%PM_DIR%" for /f %%C in ('dir /s /b /a-d "%PM_DIR%" 2^>nul ^| %SystemRoot%\System32\find.exe /c /v ""') do echo   [检测] 发现已有权重文件 %%C 个（不足的将自动断点续传）
 
 if "%GPT_SOVITS_CODE%"=="1" goto :stage_github
@@ -199,8 +199,8 @@ echo   GGUF 排队完成: %OKCNT%/%GGUF_TOTAL_N%
 goto :verify_gguf
 
 :verify_gguf
-rem 弱校验：每个文件须存在且 >=100KB（完整校验依赖重跑续传补齐）
-rem 注意：for 体内 %VAR% 在整行解析时展开，累加必须走 call（否则只留最后一项）
+rem weak check: every file must exist and be >=100KB (full verification relies on a resumed re-run)
+rem note: %VAR% inside a for body expands at parse time, so accumulation must use call (otherwise only the last item survives)
 set "FAILED_G="
 for %%F in (%GGUF_LIST%) do if not exist "%GGUF_DIR%\%%F" call :note_gguf_bad %%F
 for %%F in (%GGUF_LIST%) do if exist "%GGUF_DIR%\%%F" for %%Z in ("%GGUF_DIR%\%%F") do if %%~zZ LSS 100000 call :note_gguf_bad %%F
@@ -304,13 +304,13 @@ if "%GSV5_OK%"=="0" (
 goto :done
 
 :note_gguf_bad
-rem arg1=文件名；记入 GGUF 失败清单并置阶段失败标记
+rem arg1=file name; records it in the GGUF failure list and sets the stage failure flag
 set "FAILED_G=%FAILED_G% %~1"
 set "DL_FAIL=1"
 exit /b 0
 
 :check_weight
-rem 跳过清单里的非数据行（说明注释的"大小"字段不是数字）
+rem skip non-data lines in the manifest (the "size" field of a note line is not a number)
 for /f "delims=0123456789" %%A in ("%~1") do exit /b 0
 set "W_SIZE=%~1"
 set "W_REL=%~2"
@@ -324,7 +324,7 @@ if %W_ACT% GEQ %W_SIZE% (
 exit /b 0
 
 :queue_weight
-rem 跳过清单里的非数据行（说明注释的"大小"字段不是数字）
+rem skip non-data lines in the manifest (the "size" field of a note line is not a number)
 for /f "delims=0123456789" %%A in ("%~1") do exit /b 0
 set "W_SIZE=%~1"
 set "W_REL=%~2"
@@ -340,7 +340,7 @@ if %W_INFLIGHT% GEQ %PARALLEL% (
 exit /b 0
 
 :wait_one
-rem 计数式并发闸门：仅统计 curl 进程数，降至并发上限以下才继续排队
+rem counting gate: tracks only curl processes and queues until below the concurrency limit
 :wait_one_loop
 set /a RUNNING=0
 for /f %%N in ('tasklist /FI "IMAGENAME eq curl.exe" 2^>nul ^| %SystemRoot%\System32\find.exe /c /i "curl.exe"') do set /a RUNNING=%%N
@@ -356,7 +356,7 @@ timeout /t 2 /nobreak >nul
 goto :wait_jobs_loop
 
 :verify_weight
-rem 跳过清单里的非数据行（说明注释的"大小"字段不是数字）
+rem skip non-data lines in the manifest (the "size" field of a note line is not a number)
 for /f "delims=0123456789" %%A in ("%~1") do exit /b 0
 set "W_SIZE=%~1"
 set "W_REL=%~2"
@@ -376,7 +376,7 @@ set /a W_OK+=1
 exit /b 0
 
 :show_progress_gguf
-rem GGUF 由后台静默 curl 并行下载，这里用只读监视器统计已落盘字节
+rem GGUF downloads run as silent background curls; this read-only monitor counts bytes on disk
 if not defined PROG_TOOL exit /b 0
 if not defined PY_EXE exit /b 0
 set "PROG_MANIFEST=%TEMP%\gguf_progress.txt"
@@ -386,7 +386,7 @@ del "%PROG_MANIFEST%" >nul 2>&1
 exit /b 0
 
 :show_progress_weights
-rem 权重由后台静默 curl 并行下载；预期大小取自权重清单，故无需 HEAD 探测
+rem weights download as silent background curls; expected sizes come from the manifest, so no HEAD probes
 if not defined PROG_TOOL exit /b 0
 if not defined PY_EXE exit /b 0
 set "PROG_MANIFEST=%TEMP%\weights_progress.txt"
@@ -400,7 +400,7 @@ if not "%ASR_SET%"=="1" goto :stage_weights
 echo.
 echo [5/7] ASR 识别模型（Faster Whisper large-v3，6 文件 / 约 3 GB）
 if not exist "%FW_DIR%" mkdir "%FW_DIR%"
-rem 注意：large-v3 仓库没有 vocabulary.txt（上游 fasterwhisper_asr.py 对 large-v3 亦主动移除）
+rem note: the large-v3 repo has no vocabulary.txt (upstream fasterwhisper_asr.py removes it for large-v3 too)
 set "FW_LIST=config.json model.bin tokenizer.json preprocessor_config.json vocabulary.json"
 rem per-file: size match = complete; otherwise resume with -C - (repairs partial files)
 set "FAILED_A2="

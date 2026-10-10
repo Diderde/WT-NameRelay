@@ -1,6 +1,6 @@
 {
   "_scope": "范围 = 随包该 FFmpeg 构建（自建 MSYS2 + mingw-w64，commit fe953596e9）实际链接的第三方组件。本构建刻意最小化：--disable-autodetect 且只显式启用 3 个外部库（libmp3lame / libopus / zlib），另有 mingw 运行时（libgcc / winpthreads / CRT）动态或静态随附。**不含 chromaprint，因而也不含 GPL 的 FFTW。**",
-  "_caution": "旧构建（BtbN win64-lgpl-shared）曾把 GPL-2.0-or-later 的 FFTW 3.3.11 经 chromaprint 静态链入 avformat-63.dll，导致该 DLL 实为 GPL。2026-09-24 已用自建最小 LGPL 构建替换，GPL 组件清零。请以 `python tools/audit_ffmpeg_license.py` 的结果为准，不要仅凭 ffmpeg -L 的自报。",
+  "_caution": "旧构建（BtbN win64-lgpl-shared）曾把 GPL-2.0-or-later 的 FFTW 3.3.11 经 chromaprint 静态链入 avformat-63.dll，导致该 DLL 实为 GPL。已用自建最小 LGPL 构建替换，GPL 组件清零。请以 `python tools/audit_ffmpeg_license.py` 的结果为准，不要仅凭 ffmpeg -L 的自报。",
   "_hash_note": "sha256 按 LF 归一后的内容计算（content_digest），与工作区 CRLF 无关。",
   "files": [
     {

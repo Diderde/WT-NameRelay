@@ -443,7 +443,7 @@ def page_qss() -> str:
     VideoClipPage QLabel {{ font-size: 12px; color: {c('text')}; }}
     /* 页级样式表离 widget 更近，上面的泛规则在实测中会盖掉应用级的
        #sectionEyebrow/#pageTitle（eyebrow 变黑、标题缩到 12px——
-       2026-10-05 用户截图对比其它工具页发现）。这里按全局规格显式
+       用户截图对比其它工具页发现）。这里按全局规格显式
        补回，保证与 BaseToolPage 其它页同一版式。 */
     VideoClipPage QLabel#sectionEyebrow {{
         color: {c('accent')}; font-size: 12px; font-weight: 600; }}
@@ -947,7 +947,7 @@ class VideoClipPage(BaseToolPage):
             lambda _row: self._on_target_scope_changed())
         layout.addWidget(self._folder_list)
 
-        # 说话人管理（2026-10-03：自定义命名 + 增删，目录即身份，素材随目录走）
+        # 说话人管理（：自定义命名 + 增删，目录即身份，素材随目录走）
         manage = QFrame()
         manage.setObjectName('clipSegment')
         manage_row = QHBoxLayout(manage)

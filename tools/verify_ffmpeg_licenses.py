@@ -44,7 +44,7 @@ def classify(spdx: str) -> str:
 def content_digest(path: Path) -> str:
     """内容哈希：先归一为 LF 再算 sha256。
 
-    工作区行尾按仓库约定（AGENTS.md 第 1 节）为 CRLF，而上游行尾并不统一；
+    工作区行尾按仓库约定为 CRLF，而上游行尾并不统一；
     用「内容哈希」才能既满足行尾约定，又保持与上游逐字可比 —— 清单里的 sha256 即此口径。
     """
     return hashlib.sha256(path.read_bytes().replace(b"\r\n", b"\n")).hexdigest()
@@ -111,7 +111,7 @@ def main() -> int:
             "- **强著佐权**：`licenses/ffmpeg/` 里唯一的强著佐权文本是 `GCC-GPL-3.0.txt`，",
             "  它配 `GCC-Runtime-Library-Exception-3.1.txt` 使用（运行时例外允许随非 GPL 程序分发）。",
             "  当前构建**不含** FFTW —— 旧 BtbN `win64-lgpl-shared` 构建曾把 GPL-2.0-or-later 的",
-            "  FFTW 3.3.11 经 chromaprint 静态链入 `avformat-63.dll`，2026-09-24 换自建最小构建后清零；",
+            "  FFTW 3.3.11 经 chromaprint 静态链入 `avformat-63.dll`，换自建最小构建后清零；",
             "  取证与闸门见 `FFMPEG_BUILD_INFO.md` §2 与 `tools/audit_ffmpeg_license.py`。",
             "- **弱著佐权**：`libmp3lame`（LGPL-2.0-or-later）随包为独立 DLL `libmp3lame-0.dll`，",
             "  FFmpeg 各库本身也是共享 DLL —— 用户可替换/可重链。除声明外还需**对应源码可得**，",

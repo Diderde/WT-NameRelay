@@ -149,7 +149,7 @@ def build(
     # 注意：onefile 产物**不含** `licenses/` 与 `THIRD_PARTY_LICENSES.md` ——
     # 那两样只由 stage_release() 拷进 onedir release 目录。因此 onefile 只是
     # 本机便携试跑件，**不得单独对外分发**：FFmpeg/LGPL、Rust crate、Bootstrap Icons
-    # 等许可正文都不在里面。要分发就用 release/ 下的 onedir 包。 say no to perv.
+    # 等许可正文都不在里面。要分发就用 release/ 下的 onedir 包。 
     subprocess.run(command, cwd=ROOT, check=True)
 
 

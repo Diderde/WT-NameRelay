@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: GPL-3.0-only
 """三级页：TTS 批量生成工作台（W3）。
 
-- 行身份与状态语义见 docs/voice-batch-spec.md（row_id 永久；JobState × ArtifactState 双轴）；
+- 行身份与状态语义（row_id 永久；JobState × ArtifactState 双轴）；
 - 生成走 ``SerialTtsRunner``（串行、子进程/HTTP 后端），在工作线程执行，
   结果经线程安全队列回主线程刷新（避免跨线程直接改 UI）；
 - 试听复用 QMediaPlayer（同音频处理页用法）。
@@ -632,7 +632,7 @@ class VoiceBatchPage(BaseToolPage):
         self.params_scroll.setVisible(False)
         layout.addWidget(self.params_scroll)
 
-        # 五类分节（2026-10-07 v2）：类别按钮行在「推理参数」之下、表格之上；
+        # 五类分节（v2）：类别按钮行在「推理参数」之下、表格之上；
         # 互斥选项键（QPushButton checkable + QButtonGroup），点选即换表
         self.category_bar = QWidget()
         category_row = FlowLayout(self.category_bar, spacing=8)
@@ -649,7 +649,7 @@ class VoiceBatchPage(BaseToolPage):
         self._category_group.idClicked.connect(self._on_category_clicked)
         layout.addWidget(self.category_bar)
 
-        # 国家/语音组、情绪/成员级联行（2026-10-08 v3）：类别之下最多三行动态
+        # 国家/语音组、情绪/成员级联行（v3）：类别之下最多三行动态
         # 按钮（深度随官方结构自适应：vws/wopl 一行、radio 两行、tank/ship 三行），
         # 选项来自已加载 txt 的路径段（未加载时国家行用内置常量预览，更深各行
         # 隐藏并提示先加载）；情绪所在行的尾部挂「多情绪共用一份音频」勾选框。
@@ -755,7 +755,7 @@ class VoiceBatchPage(BaseToolPage):
         这里收窄 Highlight 是补编辑器格的底：格内有打开的编辑器时视图跳过
         委托绘制，行原语（PE_PanelItemViewRow）用 Highlight 铺的整行底会
         从编辑器四周露出。全局 Highlight 是品牌亮蓝，不适用本表（自绘按钮
-        按深底取色，亮蓝铺底对比度掉到 ~1.1:1，2026-10-04 用户反馈）。
+        按深底取色，亮蓝铺底对比度掉到 ~1.1:1，用户反馈）。
         应用时机：构造末期 + showEvent + 主题切换监听——应用级 QSS 存在时
         构造期 polish 会吞掉视图调色板覆盖（实测），多时机幂等补打。
         """
@@ -996,7 +996,7 @@ class VoiceBatchPage(BaseToolPage):
         emotion_row = next(
             # 情绪行号 = 情绪在 schema 里的下标（row r 展示
             # path[r+1] 段的选项）——曾误写 index+1：tank 勾选框挂到成员行、
-            # ship 勾选框随导航顺序时有时无（2026-10-09 复核实验实测）。
+            # ship 勾选框随导航顺序时有时无（复核实验实测）。
             (index for index, kind in enumerate(schema) if kind == "emotions"), -1
         )
         for row_index in range(3):
@@ -1396,7 +1396,7 @@ class VoiceBatchPage(BaseToolPage):
 
     def _update_params_toggle_text(self) -> None:
         # 禁用时摘掉 ▾/▸ 箭头：无箭头 + 灰字，一眼看出"现在展不开"，
-        # 而不是"看着能点却没反应"（2026-10-08 用户反馈同源问题的顺带收口）
+        # 而不是"看着能点却没反应"（用户反馈同源问题的顺带收口）
         arrow = ""
         if self.params_toggle.isEnabled():
             arrow = "▾ " if self.params_toggle.isChecked() else "▸ "
@@ -1600,7 +1600,7 @@ class VoiceBatchPage(BaseToolPage):
             self._set_summary(tr("voice.backend.demo"))
             return
         # 面板往返曾无条件回落 MODEL_GPT：CPUFast 入口装配真实
-        # GSV 后端后按钮会被翻回官方包入口（2026-10-09 第三入口轮修复）
+        # GSV 后端后按钮会被翻回官方包入口（第三入口轮修复）
         gsv_kind = (
             self._model_kind
             if self._model_kind in (self.MODEL_GPT, self.MODEL_GPT_CPUFAST)

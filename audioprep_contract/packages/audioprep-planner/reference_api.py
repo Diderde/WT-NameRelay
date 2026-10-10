@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+# Copyright (C) 2026 Diderde
+# SPDX-License-Identifier: MIT
 """Reference PlanSealValidator API contract for the planning bundle.
 
 This is an executable reference surface, not a claim that a production binary is

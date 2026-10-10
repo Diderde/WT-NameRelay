@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: GPL-3.0-only
 //! vtcore：语音批量规范字节的权威实现（PyO3 绑定）。
 //!
-//! 规范见 `docs/voice-batch-spec.md` §4（M1，逐字节基准）与 `docs/voice-batch-m2-spec.md`（M2）。
+//! 规范：逐字节基准（不得改动）与容器 / 签名约定。
 //! 本模块只做「薄胶水」：把 Python 传入的行/表结构翻译成 [`canonical`] 的纯 Rust 类型。
 
 use std::collections::HashMap;
@@ -152,7 +152,7 @@ fn version() -> String {
     env!("CARGO_PKG_VERSION").to_string()
 }
 
-/// 签名失败 → `ValueError("错误码: 说明")`（错误码见 m2-spec §5.5）。
+/// 签名失败 → `ValueError("错误码: 说明")`。
 fn sig_value_error(error: sign::SigError) -> PyErr {
     PyValueError::new_err(format!("{}: {}", error.code(), error.message()))
 }
@@ -211,7 +211,7 @@ fn signing_message_hex(alg: u16, key_id_hex: &str, object: &str, object_hash_hex
     )))
 }
 
-/// 对被签对象的规范字节签名 → 签名块字典（`m2-spec` §5.2 的字段，hex 文本层）。
+/// 对被签对象的规范字节签名 → 签名块字典（hex 文本层）。
 #[pyfunction]
 #[pyo3(signature = (seed_hex, object, object_bytes, signed_at = 0))]
 fn sign_object(
@@ -428,7 +428,7 @@ fn key_value_error(error: keystore::KeyError) -> PyErr {
     PyValueError::new_err(format!("{}: {}", error.code(), error.message()))
 }
 
-/// 用主包装钥封装 32 字节种子 → 密钥文件字节（`m2-spec` §7）。
+/// 用主包装钥封装 32 字节种子 → 密钥文件字节。
 #[pyfunction]
 fn wrap_project_key<'py>(
     py: Python<'py>,

@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+# Copyright (C) 2026 Diderde
+# SPDX-License-Identifier: MIT
 """R2.1.5.07 deterministic release verifier.
 
 Checks syntax, JSON, SQLite inventory/revision, bilingual revision parity, re-runs both
@@ -34,6 +36,8 @@ def run_evidence(relative_script: str, relative_log: str) -> str | None:
         text=True,
         capture_output=True,
         check=False,
+        encoding="utf-8",
+        errors="replace",
     )
     if proc.returncode != 0:
         return f"{relative_script}: rerun failed rc={proc.returncode}: {proc.stderr.strip()}"

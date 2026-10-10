@@ -550,7 +550,7 @@ def list_speaker_folders(root: Path | None = None) -> list[Path]:
 def ensure_speaker_folders(root: Path | None = None) -> list[Path]:
     """首次使用落默认三件套，之后只扫描补齐（幂等）。
 
-    2026-10-03 语义修正：说话人支持自定义命名与增删后，固定重建
+    语义修正：说话人支持自定义命名与增删后，固定重建
     说话人A/B/C 会与用户的改名/删除对着干——仅当根下无任何说话人
     目录时才创建默认三件套；随后交 `list_speaker_folders` 扫描。
     """

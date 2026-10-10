@@ -39,7 +39,7 @@ CANCEL_WATCH_INTERVAL_S = 0.05
 
 #: GSV 分支特有高级字段（GSV 多分支兼容 P1）：仅当能力探测确认服务端
 #: TTS_Request 拥有该字段时才并入 payload——基线超集原则，不依赖服务端
-#: pydantic 对未知字段的宽容（docs/gsv-fork-compat-plan.md §5.3）
+#: pydantic 对未知字段的宽容
 GSV_ADVANCED_FIELDS = frozenset({"use_cuda_graph", "cfg_rate", "vits_parallel_infer"})
 #: 永不发送的字段：CPUFast 两分支已删除（发过去也无害但语义含混），
 #: 上游默认值即够用（方案 N4）

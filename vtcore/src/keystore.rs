@@ -1,6 +1,6 @@
 // Copyright (C) 2026 Diderde
 // SPDX-License-Identifier: GPL-3.0-only
-//! 项目私钥的 AEAD 封装（`docs/voice-batch-m2-spec.md` §7）。
+//! 项目私钥的 AEAD 封装。
 //!
 //! ```text
 //! +0  magic "VTKY" | +4 version u16=1 | +6 aead u16=1(XChaCha20-Poly1305)

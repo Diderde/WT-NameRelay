@@ -1,6 +1,6 @@
 // Copyright (C) 2026 Diderde
 // SPDX-License-Identifier: GPL-3.0-only
-//! M1 规范字节的权威实现（`docs/voice-batch-spec.md` §4）。
+//! 规范字节的权威实现。
 //!
 //! 本模块**不依赖 pyo3**，因此可被独立单元/集成测试直接覆盖；
 //! Python 侧只经 `lib.rs` 的薄胶水调用它。
@@ -100,7 +100,7 @@ pub fn encode_records(pairs: &[(String, String)]) -> Vec<u8> {
     out
 }
 
-/// 单行规范字节（§4.2）。`key_id` 恒写入（M2 语义见 m2-spec §4.4）。
+/// 单行规范字节。`key_id` 恒写入。
 pub fn canonical_row_bytes(row: &RowFields, key_id: &str) -> Vec<u8> {
     let mut pairs = row.content_pairs();
     pairs.push(("key_id".to_string(), key_id.to_string()));

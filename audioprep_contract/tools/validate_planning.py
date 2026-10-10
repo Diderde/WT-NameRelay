@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+# Copyright (C) 2026 Diderde
+# SPDX-License-Identifier: MIT
 """Executable planning validation for AudioPrep R2.1.5.07.
 
 The first section contains reusable validator functions. The test suite is deliberately
@@ -765,7 +767,7 @@ def run_validation() -> int:
     s.expect_ok("schema has exactly 131 invariant triggers", lambda: (_ for _ in ()).throw(AssertionError("too few triggers"))
                 if con.execute("SELECT COUNT(*) FROM sqlite_master WHERE type='trigger'").fetchone()[0] != 131 else True)
     s.expect_ok("design revision marker", lambda: (_ for _ in ()).throw(AssertionError("revision mismatch"))
-                if (ROOT / "DESIGN_REVISION.txt").read_text().strip() != "R2.1.5.07" else True)
+                if (ROOT / "DESIGN_REVISION.txt").read_text(encoding="utf-8").strip() != "R2.1.5.07" else True)
 
     s.expect_ok("N1 normative artifact vocabulary exactly matches SQL and MediaPortSpec", validate_artifact_vocabulary_sync)
 

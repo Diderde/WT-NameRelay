@@ -116,7 +116,7 @@ commit —— 于是 DLL 主版本号不变（`avcodec-63` 等），不会牵动
 原 BtbN 构建把这些静态链进了自己的 DLL，所以只有 10 个文件；本构建是 13 个。
 `build_release.py` 会复制 `bin/` 下所有 `*.dll`，故一并随包分发。
 
-## 事实核验（AGENTS.md §4.7）
+## 事实核验
 
 构建完成后，用仓库里这两个脚本**自证**，不要只凭本文的说法：
 
@@ -128,7 +128,7 @@ python tools/verify_ffmpeg_licenses.py        # 许可文本集合与清单逐�
 它们检查的是：内嵌 configure 行无 GPL/nonfree 开关；**屏蔽 configure 行后**逐二进制
 扫描 GPL-only 组件的代码级特征（FFTW / x264 / x265 / Xvid / libpostproc / fdk-aac /
 vidstab / rubberband / frei0r / AviSynth / libsmbclient / libcdio）；再与界面声明的
-许可标签对拍。`tests/test_ffmpeg_license.py` 是换件绊线 —— 组件集合一变就失败。
+许可标签对拍。随附许可审计是换件绊线 —— 组件集合一变就失败。
 
 本目录的四个脚本另有不依赖真机构建的语法自检（几秒出结果）：
 
@@ -143,5 +143,5 @@ for f in tools/ffmpeg-build/0*.sh; do bash -n "$f" && echo "OK  $f"; done
 - `licenses/ffmpeg/`（组件集合变了就重建清单与 `MANIFEST.md`）
 - `FFMPEG_BUILD_INFO.md`、`THIRD_PARTY_LICENSES.md`
 - `app/i18n.py`（`_ABOUT_ORIGINAL` 块）与 `app/widgets/license_dialog.py` 里的版本串
-- `tests/test_ffmpeg_license.py` 的 `KNOWN_GPL_FINDINGS` 与 `tests/test_release_features.py` 的版本串断言
+- 随附许可审计的 `KNOWN_GPL_FINDINGS` 与版本串断言
 - 改了含中文的代码文件后跑 `python -m compileall -q main.py app tests tools`

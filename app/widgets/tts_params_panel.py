@@ -233,7 +233,7 @@ class TtsParamsPanel(QWidget):
             return
         self._cuda_graph_combo.setToolTip(i18n_text("voice.gsv.needs_cuda"))
         # cfg_rate 是分支参数、与设备无关——曾复用 needs_cuda
-        # （"需 CUDA 设备"）会在 CPU 机器上误导用户不敢填（2026-10-09 复核自纠）
+        # （"需 CUDA 设备"）会在 CPU 机器上误导用户不敢填（复核自纠）
         self._cfg_rate_input.setToolTip(i18n_text("voice.gsv.cfg_rate_tip"))
         dialect = capabilities.dialect_hint
         self._dialect_label.setText(

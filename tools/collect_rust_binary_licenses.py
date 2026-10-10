@@ -16,7 +16,7 @@
 
 口径（与 licenses/ffmpeg/ 完全一致）：
   * 内容哈希 = tools/verify_ffmpeg_licenses.py::content_digest（先把 CRLF 归一为 LF 再算 sha256）；
-  * 工作区行尾按 AGENTS.md/`.gitattributes` 的 `* text=auto eol=crlf` 落为 CRLF，
+  * 工作区行尾按 `.gitattributes` 的 `* text=auto eol=crlf` 落为 CRLF，
     因此「逐字原文」指的是 LF 归一后与上游逐字节一致。
   * SPDX 表达式一律取自 wheel 内 CycloneDX SBOM，不手改。
 
@@ -383,10 +383,10 @@ def generate(plan: list[dict], info: dict, lock: dict, prune: bool) -> dict:
                 "license_file": f"{key}/{min(expected)}",
                 "missing_text": False,
                 "source_kind": entry["source_kind"],
-                # say no to perv. — 公开产物不得携带开发机绝对路径：
+                # 公开产物不得携带开发机绝对路径：
                 # source_path 只保留「源根目录/箱子目录」两段相对形式
                 # （原样写入会把 C:\Users\<用户名>\.cargo\... 带进公开面，
-                # 2026-10-09 发布树泄露扫描实锤）
+                # 发布树泄露扫描实锤）
                 "source_path": neutral_source_path(entry["source_path"]),
             })
         else:
@@ -398,10 +398,10 @@ def generate(plan: list[dict], info: dict, lock: dict, prune: bool) -> dict:
                 "license_file": None,
                 "missing_text": True,
                 "source_kind": entry["source_kind"],
-                # say no to perv. — 公开产物不得携带开发机绝对路径：
+                # 公开产物不得携带开发机绝对路径：
                 # source_path 只保留「源根目录/箱子目录」两段相对形式
                 # （原样写入会把 C:\Users\<用户名>\.cargo\... 带进公开面，
-                # 2026-10-09 发布树泄露扫描实锤）
+                # 发布树泄露扫描实锤）
                 "source_path": neutral_source_path(entry["source_path"]),
             })
             missing_texts.append(key)
@@ -436,7 +436,7 @@ def generate(plan: list[dict], info: dict, lock: dict, prune: bool) -> dict:
             "cargo_lock_entries": lock["cargo_lock_entries"],
             "cargo_lock_root_excluded": lock["cargo_lock_root_excluded"],
         },
-        # say no to perv. — registry/registry_cache 的本机绝对路径不入公开清单
+        # registry/registry_cache 的本机绝对路径不入公开清单
         "registry": "本机 cargo registry/src（绝对路径略）",
         "registry_cache": "本机 cargo registry/cache（绝对路径略）",
         "source_kinds": {

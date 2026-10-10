@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: GPL-3.0-only
 """TTS 命名规范模式：规范名单文件的解析与校验（GSV 之外的表格规范化）。
 
-规范文件为 UTF-8（容 BOM）纯文本，**路径分节**（v3，2026-10-08）：
+规范文件为 UTF-8（容 BOM）纯文本，**路径分节**（v3）：
 
 - 节头 = ``#region <类别>[/<次类>[/<弎类>]]``——斜杠分隔的路径，段数 2~4
   （类别 + 1~3 个子层），按官方文件夹结构书写、深度自适应：
@@ -252,7 +252,7 @@ def validate_spec_entries(document: SpecDocument, validator: VoiceFilenameValida
         if not segments:
             # 裸 #region（无路径）被 parse 层有意保留为空串路径
             # （见 parse_spec_file 注释），这里必须报可读错误——曾直接
-            # segments[0] IndexError 崩溃（2026-10-09 复核实验实测）。
+            # segments[0] IndexError 崩溃（复核实验实测）。
             errors.append(
                 f"第 {line_number} 行：裸 #region（缺路径；格式：#region {_CATEGORY_HINT}/<子层>…）"
             )

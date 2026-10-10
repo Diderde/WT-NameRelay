@@ -2,9 +2,9 @@
 # SPDX-License-Identifier: GPL-3.0-only
 """Voice batch table model (M1)。
 
-行身份 / 双轴状态 / spec_hash 规范字节均见 ``docs/voice-batch-spec.md``。
+行身份 / 双轴状态 / spec_hash 均按规范字节定义。
 
-**M2 起规范字节以 Rust ``vtcore`` 为准**（`docs/voice-batch-m2-spec.md` §4）：
+**规范字节以 Rust ``vtcore`` 为准**：
 本模块的纯 Python 编解码保留为**参考实现**（测试交叉验证用），生产路径经
 :func:`row_canonical_bytes` / :meth:`VoiceTable.canonical_bytes` 调用 vtcore；
 扩展未构建时自动回退到参考实现（`HASH_BACKEND` 标注当前生效的后端）。

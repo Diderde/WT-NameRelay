@@ -1,3 +1,5 @@
+# Copyright (C) 2026 Diderde
+# SPDX-License-Identifier: MIT
 """Semantic validators that JSON Schema and SQLite row constraints cannot express.
 
 These functions are intentionally dependency-light so the same logic can be reused by

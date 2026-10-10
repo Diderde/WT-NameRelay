@@ -1,6 +1,6 @@
 // Copyright (C) 2026 Diderde
 // SPDX-License-Identifier: GPL-3.0-only
-//! 十六进制编解码（文本层统一小写，`m2-spec` §1）。
+//! 十六进制编解码（文本层统一小写）。
 
 /// 字节 → 小写十六进制。
 pub fn hex_lower(bytes: &[u8]) -> String {

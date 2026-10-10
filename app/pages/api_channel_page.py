@@ -132,7 +132,7 @@ class ApiChannelPage(BaseToolPage):
         cls = HubSchemeHandler
         handler = getattr(cls, "_installed", None)
         if handler is None:
-            # 
+
             # 处理器不能挂在页面父子树上：首建页面销毁会把子对象一并带走，之后再建的
             # 实例便拿不到可用处理器；改为无父对象、由类属性强引用全程持有，且每个
             # 实例都要拿到引用（旧逻辑只给首建实例赋值，第二个实例 AttributeError）

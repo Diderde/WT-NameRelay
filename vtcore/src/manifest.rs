@@ -1,6 +1,6 @@
 // Copyright (C) 2026 Diderde
 // SPDX-License-Identifier: GPL-3.0-only
-//! `.vtmanifest` 的规范字节（`docs/voice-batch-m2-spec.md` §9）。
+//! `.vtmanifest` 的规范字节。
 //!
 //! 记录式（复用 §4.1），域分隔首行固定 `manifest`；`file` 记录按路径升序：
 //!

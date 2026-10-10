@@ -59,7 +59,7 @@
 - `app/i18n.py` —— Lightweight Chinese/English translation for usage-layer UI strings.
 - `app/models/voice_table.py` —— Voice batch table model (M1)。
 - `app/pages/file_copy_page.py` —— Second-level selector that groups the three name-copy tool pages.
-- `app/pages/api_channel_page.py` —— 三级页：API 渠道（内嵌 TTS-Hub 管理台一比一集成，进程内零端口）。2026-09-29 补登。
+- `app/pages/api_channel_page.py` —— 三级页：API 渠道（内嵌 TTS-Hub 管理台一比一集成，进程内零端口）。补登。
 - `app/pages/tts_model_page.py` —— 二级页：TTS 模型选择（GPT-SoVITS / CosyVoice 3 GGUF）。
 - `app/pages/voice_batch_page.py` —— 三级页：TTS 批量生成工作台（W3）。
 - `app/paths.py` —— Project-local storage locations anchored at the repository root.
@@ -68,19 +68,19 @@
 - `app/resources/ffmpeg/bin/libmp3lame-0.dll`
 - `app/resources/ffmpeg/bin/libopus-0.dll`
 - `app/resources/ffmpeg/bin/libwinpthread-1.dll`
-- `app/services/api_channels.py` —— API 渠道注册表（config/api_channels.json；TTS-Hub 连接信息，不含密钥）。2026-09-29 补登。
-- `app/services/hub_scheme.py` —— `hub://` 自定义协议：内嵌管理台请求进程内 ASGI 分发（零监听端口）。2026-09-29 补登。
-- `app/services/tts_hub_inproc.py` —— TTS-Hub 进程内集成（项目根定位、单例、预热；目录名相对形状推导）。2026-09-29 补登。
-- `app/services/tts_hub_inproc_backend.py` —— TTS-Hub 进程内合成后端（speak / fallback / 四类归一错误转 TtsError）。2026-09-29 补登。
+- `app/services/api_channels.py` —— API 渠道注册表（config/api_channels.json；TTS-Hub 连接信息，不含密钥）。补登。
+- `app/services/hub_scheme.py` —— `hub://` 自定义协议：内嵌管理台请求进程内 ASGI 分发（零监听端口）。补登。
+- `app/services/tts_hub_inproc.py` —— TTS-Hub 进程内集成（项目根定位、单例、预热；目录名相对形状推导）。补登。
+- `app/services/tts_hub_inproc_backend.py` —— TTS-Hub 进程内合成后端（speak / fallback / 四类归一错误转 TtsError）。补登。
 - `app/services/save_coordinator.py` —— 工程持久化与自动保存（M2 起）。
 - `app/services/tts_runner.py` —— TTS 运行时（M1）：串行队列 + 后端抽象 + 产物校验。
 - `app/services/tts_training.py` —— GPT-SoVITS 微调链路：数据准备（prep 三阶段）与 s1/s2 两段训练。
 - `app/services/voice_filename_validator.py` —— 语音产物文件名校验（ValidatorProfile 架构；产品只发布 WT_DEFAULT）。
 - `app/services/voice_service_launcher.py` —— CosyVoice3 推理服务装配（B 方案：独立子进程 + HTTP 契约）。
-- `app/services/vt_key_store.py` —— 项目密钥存储（M2-W4，规范见  §7）。
-- `app/services/vt_manifest.py` —— `.vtmanifest` 整包验证（M2-W5，规范见  §9）。
+- `app/services/vt_key_store.py` —— 项目密钥存储。
+- `app/services/vt_manifest.py` —— `.vtmanifest` 整包验证。
 - `app/services/vt_project.py` —— `.vt` 工程文件的读写、只读锁（M2，规范 §8）。
-- `app/services/vt_trust_store.py` —— TOFU 信任库（M2-W4，规范见  §6）。
+- `app/services/vt_trust_store.py` —— TOFU 信任库。
 - `app/widgets/cosyvoice_info_panel.py` —— CosyVoice 3（GGUF）信息面板：模型位置、就绪状态与用途说明。
 - `app/widgets/hover_card.py` —— 悬停信息卡：目标控件悬停延时弹出的圆角卡片浮层（标题 + 多行正文，配色随昼夜主题）。
 - `app/widgets/flow_layout.py` —— 自动换行的水平流式布局（Qt 官方 FlowLayout 示例的 PySide6 实现）。
@@ -112,13 +112,13 @@
 - `tools/verify_tts_assets.py` —— TTS 资源完整性校验：存在性 + 大小 + 官方哈希比对。
 - `tools/view_gbk_bat.py` —— 把 GBK 的 bat 转写为 UTF-8 便于阅读（只读，不改原文件）。
 - `tts_assets_manifest.txt` —— TTS 资源官方哈希清单（41 文件；sha256 / git blob sha1 + 大小 + 路径）
-- `vtcore/Cargo.lock` —— Rust 依赖锁定（行尾 LF 例外，见 `.gitattributes`）
+- `vtcore/Cargo.lock` —— Rust 依赖锁定（行尾 LF 例外，见 ）
 - `vtcore/Cargo.toml` —— vtcore crate 清单与依赖声明
 - `vtcore/README.md` —— vtcore 构建方式、接口清单与测试方式
 - `vtcore/pyproject.toml` —— maturin 构建配置（abi3 wheel）
 - `vtcore/src/canonical.rs` —— M1 规范字节的权威实现（ §4）。
 - `vtcore/src/container.rs` —— `.vt` 二进制容器（ §2–§3）。
-- `vtcore/src/hex.rs` —— 十六进制编解码（文本层统一小写，`m2-spec` §1）。
+- `vtcore/src/hex.rs` —— 十六进制编解码（文本层统一小写）。
 - `vtcore/src/keystore.rs` —— 项目私钥的 AEAD 封装（ §7）。
 - `vtcore/src/lib.rs` —— vtcore：语音批量规范字节的权威实现（PyO3 绑定）。
 - `vtcore/src/manifest.rs` —— `.vtmanifest` 的规范字节（ §9）。
@@ -130,7 +130,7 @@
 > 机器比对结果：上游基线中有 **93 个文件**在本修改版被修改。
 > 仅**修改部分**按 GPL-3.0-only 授权，未改动的部分仍遵循原 Source-Available 许可。
 
-- `.gitattributes` —— 新增 `vtcore/Cargo.lock text eol=lf`；确立整体 CRLF 行尾策略
+-  —— 新增 `vtcore/Cargo.lock text eol=lf`；确立整体 CRLF 行尾策略
 -  —— 补模型/音频通配符（含 `*.gguf`）与仓库根临时目录规则
 - `FFMPEG_BUILD_INFO.md` —— 随包 FFmpeg 的来源、许可实测结论、可复现构建与验收闸门
 - `README.md` —— fork 名称、可选组件 vtcore 一节、来源与许可声明

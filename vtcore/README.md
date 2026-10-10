@@ -2,9 +2,9 @@
 
 WT-NameRelay 语音批量**规范字节的权威实现**（M2）。
 
-- 规范：`docs/voice-batch-spec.md` §4（M1 逐字节基准，不得改动）、`docs/voice-batch-m2-spec.md`（M2 容器 / 签名）
+- 规范：逐字节基准（不得改动）与容器 / 签名约定
 - 分工：Python 侧 `app/models/voice_table.py` 保留为**参考实现**（仅交叉验证用）；
-  生产路径以本 crate 为准（M2-W5 接入）。
+  生产路径以本 crate 为准。
 - 纯 Rust 核心在 `src/canonical.rs`（不依赖 pyo3），`src/lib.rs` 只是薄胶水。
 
 ## 构建（开发）
@@ -30,12 +30,12 @@ cd vtcore
 
 ## 验证
 
-规范字节以 `docs/voice-batch-spec.md` §4 的固定向量为基准：Python 侧参考实现与本 crate
+规范字节以固定向量为基准：Python 侧参考实现与本 crate
 对同一批向量逐字节对拍，构建后自动生效。
 
 ## 暴露的接口
 
-### 规范字节（M2-W1）
+### 规范字节
 
 | 函数 | 说明 |
 | --- | --- |
@@ -46,7 +46,7 @@ cd vtcore
 | `spec_hash_bytes(data: bytes) -> str` | 任意字节 SHA-256 |
 | `version() -> str` | 绑定版本探针 |
 
-### 签名（M2-W2，`m2-spec` §5）
+### 签名
 
 | 函数 / 常量 | 说明 |
 | --- | --- |
@@ -60,9 +60,9 @@ cd vtcore
 | `ALG_NONE` / `ALG_ED25519` / `SIG_VERSION` | 常量：`0` / `1` / `1`（`none` 保留且禁止） |
 
 被签对象是**逻辑规范字节**（表级规范字节或 manifest 规范字节），不是容器字节：
-重新打包容器不会破坏签名。失败码见 `docs/voice-batch-m2-spec.md` §5.5。
+重新打包容器不会破坏签名。
 
-### `.vt` 容器（M2-W3，`m2-spec` §2–§3）
+### `.vt` 容器
 
 | 函数 / 常量 | 说明 |
 | --- | --- |
@@ -85,9 +85,9 @@ cd vtcore
 ```
 
 完整性是双层的：每个 chunk 带 `SHA-256(payload)`，尾部再带整文件哈希（覆盖 header 与全部 chunk）；
-另外 `TABH.spec_hash` 必须与由行数据重算的表级哈希一致。错误码（`vt_*`）见 `m2-spec` §2.4。
+另外 `TABH.spec_hash` 必须与由行数据重算的表级哈希一致。错误码（`vt_*`）见容器实现的错误码表。
 
-### 密钥封装（M2-W4，`m2-spec` §7）
+### 密钥封装
 
 | 函数 / 常量 | 说明 |
 | --- | --- |
@@ -99,7 +99,7 @@ cd vtcore
 **AAD = `key_id` 的 ASCII hex**（换名即解密失败）。主包装钥的获取（DPAPI / 凭据库）与
 信任库（TOFU）在 Python 侧：`app/services/vt_key_store.py`、`app/services/vt_trust_store.py`。
 
-### manifest 与工程文件（M2-W5，`m2-spec` §8–§10）
+### manifest 与工程文件
 
 | 函数 / 常量 | 说明 |
 | --- | --- |

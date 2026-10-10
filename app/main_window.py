@@ -126,7 +126,7 @@ class MainWindow(QMainWindow):
         )
         for page in self.pages:
             self.stack.addWidget(page)
-        # 启动落地页 = 视频裁剪（2026-10-05 用户指定）；TTS 工作台改为
+        # 启动落地页 = 视频裁剪（用户指定）；TTS 工作台改为
         # 首次进入时装配后端（与工作台内切换模型同一链路，懒装配）
         self.stack.setCurrentIndex(self.VIDEO_INDEX)
 
@@ -151,7 +151,7 @@ class MainWindow(QMainWindow):
         self.separate_page.back_button.setVisible(False)
         self.api_page.back_button.setVisible(False)
         # 视频裁剪页漏在隐藏清单外：返回钮可见但 back_requested
-        # 从未接线，点了毫无反应的死按钮（2026-10-05 用户反馈，图2 风格对齐）
+        # 从未接线，点了毫无反应的死按钮（用户反馈，图2 风格对齐）
         self.video_clip_page.back_button.setVisible(False)
         self.fmod_page.back_button.setVisible(False)  # FMOD 控制台同为导航页
         self.stack.transition_started.connect(lambda _index: self._set_navigation_enabled(False))
@@ -274,7 +274,7 @@ class MainWindow(QMainWindow):
                     gsv_services.split_command(command_text),
                     cwd=Path(profile.cwd) if profile.cwd.strip() else None,
                     probe=lambda url=base_url: GptSovitsBackend(url).is_available(),
-                    # GSV CPU 真机 E2E（2026-10-09）：v5 整合包冷启动
+                    # GSV CPU 真机 E2E：v5 整合包冷启动
                     # 实测 167.7s，180s 余量只剩 ~7%，机器稍有负载即超时回落演示模式；
                     # 上调到 300s（CosyVoice 3 的 180s 不动）。
                     startup_timeout_s=300.0,  # GSV 冷启动加载模型较慢（CPU 实测 ~168s）

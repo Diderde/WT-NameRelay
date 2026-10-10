@@ -1,6 +1,6 @@
 # Copyright (C) 2026 Diderde
 # SPDX-License-Identifier: GPL-3.0-only
-"""GSV 推理服务注册表（GSV 多分支兼容 P2，见 docs/gsv-fork-compat-plan.md §5.1）。
+"""GSV 推理服务注册表（GSV 多分支兼容 P2）。
 
 多份 GPT-SoVITS 服务（上游 / cuda_graph 加速版 / CPUFast）可并行配置，
 运行时按 ``active`` 档接入。语义照 ``api_channels.py`` 先例：文件缺失

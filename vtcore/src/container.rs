@@ -1,6 +1,6 @@
 // Copyright (C) 2026 Diderde
 // SPDX-License-Identifier: GPL-3.0-only
-//! `.vt` 二进制容器（`docs/voice-batch-m2-spec.md` §2–§3）。
+//! `.vt` 二进制容器。
 //!
 //! ```text
 //! 文件头 16B：magic "VTBL" | format_version u16 | flags u16 | chunk_count u32 | reserved u32
@@ -43,7 +43,7 @@ pub const FLAG_HAS_MANIFEST: u16 = 0b0010;
 /// 文件 flags：建议只读。
 pub const FLAG_READONLY_HINT: u16 = 0b0100;
 
-/// 容器错误（稳定错误码见 `m2-spec` §2/§3）。
+/// 容器错误（稳定错误码）。
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum VtError {
     BadHeaderMagic,
@@ -135,7 +135,7 @@ pub struct VtDocument {
     pub flags: u16,
     pub table_id: String,
     pub spec_version: i64,
-    /// M1 语义下恒为空串（`m2-spec` §4.4）。
+    /// 规范语义下恒为空串。
     pub key_id: String,
     pub created_at: String,
     pub generator: String,

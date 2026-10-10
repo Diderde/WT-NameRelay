@@ -92,7 +92,7 @@ class NavRail(QWidget):
     navigate_requested = Signal(str)
 
     #: 路由键 → (图标文件名, 悬停卡标题键, 悬停卡正文键)。
-    # 可见顺序（2026-10-05 用户指定）：视频裁剪 → 人声分离 → 语音批量生成
+    # 可见顺序（用户指定）：视频裁剪 → 人声分离 → 语音批量生成
     # → API 渠道 → 文件复制；audio 隐藏、fmod/experimental/settings 依次垫后
     ROUTES: tuple[tuple[str, str, str, str], ...] = (
         ("video", "nav-video.svg", "nav.rail.video", "nav.rail.video.tip"),
@@ -107,7 +107,7 @@ class NavRail(QWidget):
     )
 
     #: 图标栏暂不展示的路由（页面保留在栈内，程序内跳转仍可达）：
-    # "audio" 的处理入口改由语音工作台"进入处理"按钮承担（2026-10-02 验收决定）
+    # "audio" 的处理入口改由语音工作台"进入处理"按钮承担（验收决定）
     HIDDEN_ROUTES = frozenset({"audio"})
 
     def __init__(self, icons_dir: Path | None, parent: QWidget | None = None) -> None:

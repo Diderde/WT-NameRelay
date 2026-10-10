@@ -11,7 +11,7 @@ built with gcc 16.2.0 (Rev4, Built by MSYS2 project)
 ```
 
 **本构建由本仓库自建**，不是现成分发包。源码锁定上游
-commit `fe953596e9f53e3d61c465bce7a29834cae3375b`（2026-07-28），
+commit `fe953596e9f53e3d61c465bce7a29834cae3375b`，
 与原随包二进制同一个 commit —— 因此 DLL 主版本号不变
 （`avcodec-63` / `avdevice-63` / `avfilter-12` / `avformat-63` / `avutil-61` /
 `swresample-7` / `swscale-10`）。
@@ -109,7 +109,7 @@ MSYS2 在 Windows 上的 fork/exec 开销是主因。
 **换件后必须同步**：`licenses/ffmpeg/`（组件集合变了就重建清单）、
 本文件、`THIRD_PARTY_LICENSES.md`、界面版本串
 （`app/i18n.py` 与 `app/widgets/license_dialog.py`）、
-以及 `tests/test_ffmpeg_license.py` 的 `KNOWN_GPL_FINDINGS`。
+以及随附许可审计的 `KNOWN_GPL_FINDINGS`。
 
 ## 4. 源码与链接
 
@@ -137,7 +137,7 @@ FFmpeg 源码包与构建信息，并在 Release 说明里链接该源码。仅�
 那正是**看不见**间接引入的 GPL 的弱检查。现在两道都跑，审计不通过即 `RuntimeError`，
 **打包被拒**。`-L` 那道只作"与清单对拍"，**判定一律以二进制审计为准**。
 
-**门禁**：`tests/test_ffmpeg_license.py` 已登记进 `tools/run_gate.ps1`。其中：
+**门禁**：随附的 FFmpeg 许可审计已登记进门禁检查。其中：
 
 - `test_configure_switches_are_lgpl_only` —— 开关层面必须无 GPL/nonfree；
 - `test_gpl_findings_match_documented_state` —— **换件绊线**：GPL 组件集合一旦变化即失败，

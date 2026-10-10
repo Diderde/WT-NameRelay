@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: GPL-3.0-only
 """语音产物文件名校验（ValidatorProfile 架构；产品只发布 WT_DEFAULT）。
 
-规则见 ``docs/voice-batch-spec.md`` §6；名称素材与既有规则复用
+名称素材与既有规则复用
 ``app/services/bank_name_repository.py`` / ``bank_filename_parser.py`` 的语义
 （后者按"先长后缀、后短后缀"严格解析，本模块同样**先规范化再判定**，不做宽松猜测）。
 

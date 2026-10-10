@@ -28,7 +28,7 @@ Microsoft Visual C++ 运行时（MSVC / VC++ Redistributable）文件的**来源
 
 **证据**：`.venv\Lib\site-packages\PySide6_Essentials-6.7.3.dist-info\RECORD`
 第 171、316–319、1439–1443 行逐条登记了上述 10 个文件（含 sha256 与字节数），
-与上表完全一致。核对日期 2026-10-08。
+与上表完全一致。核对日期。
 
 ## 2. 适用的再发行条款入口（官方 URL）
 
@@ -47,7 +47,7 @@ Microsoft Visual C++ 运行时（MSVC / VC++ Redistributable）文件的**来源
   本文件第 1 节列出的 10 个文件属于 VC++ Redistributable 运行时文件集（官方 `[VisualStudioFolder]\VC\redist`
   目录树及其子目录内；本机未安装 Visual Studio，未逐目录实测其位置），由 PySide6 wheel 携带。
 
-以上三个 URL 均于 2026-10-08 实际抓取核对（HTTP 200；其中 `visualstudio.microsoft.com/license-terms/`
+以上三个 URL 均于实际抓取核对（HTTP 200；其中 `visualstudio.microsoft.com/license-terms/`
 是动态入口页，条款正文不在 HTML 中直接呈现，需在页内按产品版本展开）。
 本文件仅登记入口，不复制、不改写、不解释微软条款文本。
 
@@ -55,7 +55,7 @@ Microsoft Visual C++ 运行时（MSVC / VC++ Redistributable）文件的**来源
 
 本发布物的上述 10 个文件中**不含** UCRT 本体（`ucrtbase.dll` / `api-ms-win-crt-*.dll`）。
 微软官方说明：UCRT 是 Windows 操作系统组件，Windows 10 / Windows Server 2016 及以上随操作系统提供。
-出处：<https://learn.microsoft.com/cpp/windows/universal-crt-deployment>（2026-10-08 抓取，HTTP 200）。
+出处：<https://learn.microsoft.com/cpp/windows/universal-crt-deployment>（抓取，HTTP 200）。
 
 本机核对：`.venv\Lib\site-packages\PySide6` 目录下未发现 `ucrtbase.dll` 或 `api-ms-win-crt*.dll`。
 

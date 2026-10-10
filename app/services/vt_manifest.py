@@ -1,6 +1,6 @@
 # Copyright (C) 2026 Diderde
 # SPDX-License-Identifier: GPL-3.0-only
-"""`.vtmanifest` 整包验证（M2-W5，规范见 `docs/voice-batch-m2-spec.md` §9）。
+"""`.vtmanifest` 整包验证。
 
 包形态 = **目录**：`project.vt` + 产物（`*.wav` 等）+ `project.vtmanifest`。
 

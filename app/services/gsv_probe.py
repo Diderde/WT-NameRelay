@@ -1,6 +1,6 @@
 # Copyright (C) 2026 Diderde
 # SPDX-License-Identifier: GPL-3.0-only
-"""GPT-SoVITS 服务端能力探测（GSV 多分支兼容 P1，见 docs/gsv-fmod-compat-plan.md）。
+"""GPT-SoVITS 服务端能力探测（GSV 多分支兼容 P1）。
 
 对 ``{base}/openapi.json`` 做一次 GET，解析 ``TTS_Request`` 的字段集合，
 据此推断服务端方言（上游 / cuda_graph 加速版 / CPUFast）。**降级铁律**：

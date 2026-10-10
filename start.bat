@@ -1,21 +1,21 @@
 @echo off
-rem ±¾½Å±¾ÊôÓÚ WT-NameRelay ĞŞ¸Ä°æ£¨Î¬»¤Õß£ºDiderde£©£¬ĞÂÔö´úÂë°´ GPL-3.0-only ÊÚÈ¨£¬ÉùÃ÷¼û MODIFICATION_NOTICE.md
+rem This script is part of the WT-NameRelay fork (maintainer: Diderde); new code is GPL-3.0-only, see MODIFICATION_NOTICE.md
 setlocal EnableExtensions
-rem 936£º±¾ÎÄ¼şÊÇ GBK£¬65001 ÖÕ¶ËÏÂÖĞÎÄ»áÂÒÂë
+rem chcp 936: this file is GBK; Chinese text garbles under codepage 65001
 chcp 936 >nul 2>&1
 
 REM ================================================================
-REM  WT-NameRelay Ò»¼üÆô¶¯½Å±¾ v5£¨GBK ±àÂë / CRLF ĞĞÎ²£©
-REM  Á÷³Ì: [1/3] »·¾³ÓëÎÄ¼ş¼ì²é -> [2/3] °´Ğè²¹Æë(Y/N) -> [3/3] Æô¶¯
-REM  ¸½¼Ó: start.bat /only-runner ½öÏÂÔØ CosyVoice3 ÍÆÀíÆ÷£¨CrispASR ¹Ù·½·¢²¼¼ş£©
-REM  ¸½¼Ó: start.bat /verify Ğ£ÑéÈ«²¿ TTS ×ÊÔ´Óë¹Ù·½¹şÏ£ÊÇ·ñÒ»ÖÂ£¨½ÏÂı£¬Ğè¶ÁÈ«Á¿×Ö½Ú£©
-REM  ¸½¼Ó: start.bat /gate ¶ÀÕ¼ÔËĞĞÈ«Á¿ÃÅ½û£¨35 Ä£¿é£¬Ğ´ tools\gate-results.txt£©
-REM  ¸½¼Ó: start.bat /test ¿ìËÙ×Ô¼ì£¨ruff + compileall + È«Á¿ unittest£©
+REM  WT-NameRelay one-click launcher v5 (GBK encoding / CRLF line endings)
+REM  Flow: [1/3] environment and file checks -> [2/3] on-demand fetch (Y/N) -> [3/3] launch
+REM  Extra: start.bat /only-runner downloads only the CosyVoice3 runner (official CrispASR release)
+REM  Extra: start.bat /verify checks all TTS assets against official hashes (slow: reads every byte)
+REM  Extra: start.bat /gate runs the full gate exclusively (35 modules, writes tools\gate-results.txt)
+REM  Extra: start.bat /test quick self-check (ruff + compileall + full unittest)
 REM  v3: added MSST voice-separation checks (code / inference env; models download in-app)
 REM  v4: added FMOD Studio probe + /gate (full gate) + /test (quick suite) dev switches
-REM  v5: chcp 936£»Python 3.12 / Ëæ°ü ffmpeg / requirements Æ¯ÒÆ¼ì²é£»Î´Öª²ÎÊı usage£¨exit 2£©£»TTS ²¹ÆëÊ§°Ü¸æ¾¯
-REM  ±¾ÎÄ¼ş±ØĞë·ÅÔÚ²Ö¿â¸ùÄ¿Â¼£¬Óë main.py Í¬¼¶¡£È«²¿Ê¹ÓÃÏà¶ÔÂ·¾¶¡£
-REM  TTS Ä£ĞÍÏÂÔØÂß¼­¼ûÍ¬Ä¿Â¼ download_tts_verify.bat
+REM  v5: chcp 936; Python 3.12 / bundled ffmpeg / requirements drift checks; usage on unknown args (exit 2); warns when TTS fetch fails
+REM  Keep this file in the repository root next to main.py. All paths are relative.
+REM  TTS model downloads live in download_tts_verify.bat (same directory)
 REM ================================================================
 cd /d "%~dp0"
 
@@ -24,7 +24,7 @@ if /i "%~1"=="/verify" goto :verify_assets
 if /i "%~1"=="/gate" goto :gate_suite
 if /i "%~1"=="/test" goto :test_suite
 
-rem Î´Öª²ÎÊı²»µÃ¾²Ä¬½øÈëÕı³£Æô¶¯£¨Æ´´í /gat Ê±±ØĞë¿É¼û£©
+rem Unknown arguments must not silently fall through to a normal launch (a typo like /gat must be visible)
 if not "%~1"=="" (
     echo [´íÎó] Î´Öª²ÎÊı£º½öÖ§³Ö /only-runner /verify /gate /test£»ÎŞ²ÎÊıÎªÕı³£Æô¶¯¡£
     echo   ÓÃ·¨: start.bat [¿ª¹Ø]
@@ -35,11 +35,11 @@ if not "%~1"=="" (
     exit /b 2
 )
 
-rem ================= [1/3] »·¾³ÓëÎÄ¼ş¼ì²é =================
+rem ================= [1/3] environment and file checks =================
 echo [1/3] ÕıÔÚ¼ì²é¹¤×÷ÇøÎÄ¼şÓë»·¾³...
 echo.
 
-rem -- ¹¤¾ß --
+rem -- tools --
 set "MISSING_TOOLS="
 where git >nul 2>&1 || set "MISSING_TOOLS=%MISSING_TOOLS% git"
 where curl >nul 2>&1 || set "MISSING_TOOLS=%MISSING_TOOLS% curl"
@@ -50,7 +50,7 @@ if defined MISSING_TOOLS (
 )
 echo   [OK] git / curl
 
-rem -- Python °æ±¾£º±ØĞë 3.12.x£¨numpy 1.26.4 / PySide6 6.7.3 ÎŞ cp313 wheel£¬3.13 »áÔÚ×°ÒÀÀµÊ±²ÅÕ¨£©--
+rem -- Python version: must be 3.12.x (numpy 1.26.4 / PySide6 6.7.3 ship no cp313 wheels; 3.13 fails only at install time) --
 set "PY_VENV=%~dp0.venv\Scripts\python.exe"
 set "PY_VER_OK=0"
 if exist "%PY_VENV%" (
@@ -74,7 +74,7 @@ if "%PY_VER_OK%"=="1" (
     echo   [´ı½¨] Python 3.12£¨ÏµÍ³ PATH£»[2/3] ½«´´½¨ .venv£©
 )
 
-rem -- Ëæ°ü FFmpeg£¨ÒôÆµ¹ÜÏßºËĞÄ£»git-lfs ¼ş£¬Î´À­È¡Ê±ÊÇ ~130 ×Ö½ÚÖ¸ÕëÎÄ¼ş£©--
+rem -- bundled FFmpeg (audio pipeline core; git-lfs asset, a ~130-byte pointer until pulled) --
 set "FF_BIN=%~dp0app\resources\ffmpeg\bin"
 set "FF_BAD="
 for %%F in (ffmpeg.exe ffprobe.exe) do call :check_ff_one %%F
@@ -85,12 +85,12 @@ if defined FF_BAD (
 )
 echo   [OK] Ëæ°ü FFmpeg£¨ffmpeg / ffprobe£©
 
-rem -- Python ĞéÄâ»·¾³ --
+rem -- Python virtual environment --
 set "NEED_VENV=0"
 if not exist ".venv\Scripts\python.exe" set "NEED_VENV=1"
 if "%NEED_VENV%"=="1" (echo   [È±Ê§] Python ĞéÄâ»·¾³ .venv) else (echo   [OK] Python ĞéÄâ»·¾³ .venv)
 
-rem -- requirements Æ¯ÒÆ¼ì²â£¨±È¶Ô .venv\requirements.sha256£»²»Ò»ÖÂÔò [2/3] ÖØ×°£©--
+rem -- requirements drift check (compares .venv\requirements.sha256; mismatch triggers reinstall in [2/3]) --
 set "NEED_REQ=0"
 if not exist "%PY_VENV%" goto :req_checked
 "%PY_VENV%" -c "import hashlib,pathlib,sys; h=hashlib.sha256(pathlib.Path('requirements.txt').read_bytes()).hexdigest(); q=pathlib.Path('.venv/requirements.sha256'); sys.exit(0 if q.exists() and q.read_text(encoding='utf-8').strip()==h else 1)" >nul 2>&1
@@ -98,7 +98,7 @@ if errorlevel 1 set "NEED_REQ=1"
 if "%NEED_REQ%"=="1" (echo   [Æ¯ÒÆ] requirements.txt ÒÑ±ä»¯£¬[2/3] ½«ÖØĞÂÍ¬²½ÒÀÀµ) else (echo   [OK] requirements.txt Óë .venv ¼ÇÂ¼Ò»ÖÂ)
 :req_checked
 
-rem -- TTS Ä£ĞÍ×Ê²ú£¨Ïà¶ÔÂ·¾¶£¬È±Ê§¼´±ê¼Ç£©--
+rem -- TTS model assets (relative paths; missing ones are flagged) --
 set "TTS_DIR=TTS model"
 set "NEED_GPT_SOVITS=0"
 set "NEED_GGUF=0"
@@ -111,7 +111,7 @@ if "%NEED_GGUF%"=="1" (echo   [È±Ê§] CosyVoice3 GGUF [%TTS_DIR%\CosyVoice3]) els
 if not exist "gpt_sovits_weights_list.txt" set "NEED_WEIGHTS=1"
 if "%NEED_WEIGHTS%"=="1" (echo   [È±Ê§] GPT-SoVITS Ô¤ÑµÁ·È¨ÖØ£¨È¨ÖØ»òÈ±Çåµ¥ÎÄ¼ş£©) else (echo   [OK] GPT-SoVITS Ô¤ÑµÁ·È¨ÖØ)
 
-rem -- CosyVoice3 ÍÆÀíÆ÷£¨¹Ù·½ runner£ºCrispASR£¬GitHub ¹Ù·½ Release ×Ê²ú£©--
+rem -- CosyVoice3 runner (official runner: CrispASR, GitHub Release asset) --
 set "COSY_RUNNER_DIR=%TTS_DIR%\CosyVoice3\runner"
 set "COSY_RUNNER_VER=v0.8.34"
 set "COSY_RUNNER_ASSET=crispasr-0.8.34+vulkan-py3-none-win_amd64.whl"
@@ -132,7 +132,7 @@ set "SEP_ENV=0"
 if exist "config\settings.ini" findstr /i /c:"python_exec" "config\settings.ini" >nul 2>&1 && set "SEP_ENV=1"
 if "%SEP_ENV%"=="1" (echo   [OK] ·ÖÀëÍÆÀí Python »·¾³£¨separate/python_exec£©) else (echo   [Î´ÅäÖÃ] ·ÖÀëÍÆÀí Python »·¾³ ¡ª¡ª ĞèÒªÊ±ÔÚÓ¦ÓÃµÄ"ÈËÉù·ÖÀë"Ò³ÉèÖÃ)
 set "MSST_MODELS=0"
-rem  say no to perv. weight dirs = dirs containing the weights file
+rem  weight dirs = dirs containing the weights file
 rem  (upstream code dirs under models\ are NOT weights; v3 counted them - false [OK])
 for /d %%D in ("%MSST_DIR%\models\*") do if exist "%%D\model.safetensors" set /a MSST_MODELS+=1
 if "%MSST_MODELS%"=="0" (echo   [Î´ÏÂÔØ] ·ÖÀëÄ£ĞÍÈ¨ÖØ ¡ª¡ª ´ò¿ª"ÈËÉù·ÖÀë"Ò³°´ĞèÏÂÔØ) else (echo   [OK] ·ÖÀëÄ£ĞÍÈ¨ÖØ£¨%MSST_MODELS% ×é£©)
@@ -142,7 +142,7 @@ for /d %%D in ("%ProgramFiles%\FMOD Sound Systems\*") do if not defined FMOD_STU
 for /d %%D in ("%ProgramFiles(x86)%\FMOD Sound Systems\*") do if not defined FMOD_STUDIO if exist "%%D\fmodstudio.exe" set "FMOD_STUDIO=%%D"
 if defined FMOD_STUDIO (echo   [OK] FMOD Studio£º%FMOD_STUDIO%) else (echo   [Î´¼ì³ö] FMOD Studio£¨Ğè 2.02.22£©¡ª¡ª FMOD Á÷Ë®ÏßĞèÒª£»°²×°ºó°ÑÂ·¾¶¸æÖªÎ¬»¤Õß)
 
-rem -- GSV v5 ÍÆÀí·şÎñÔËĞĞÊ±£¨ÕûºÏ°ü×Ô´ø Python runtime£»GSV ÍÆÀí×Ô¶¯À­ÆğÒÀÀµ£©--
+rem -- GSV v5 inference runtime (the bundle ships its own Python; GSV inference depends on it) --
 set "GSV5_DIR=%TTS_DIR%\GPT-SoVITS-v5-20261006"
 set "NEED_GSV_RUNTIME=0"
 if not exist "%GSV5_DIR%\api_v2.py" set "NEED_GSV_RUNTIME=1"
@@ -151,7 +151,7 @@ if "%NEED_GSV_RUNTIME%"=="1" (echo   [È±Ê§] GSV v5 ÍÆÀí·şÎñÔËĞĞÊ± [%GSV5_DIR%] ¡
 
 
 
-rem -- vtcore À©Õ¹£¨Rust/PyO3£º.vt ¹¤³Ì¸ñÊ½µÄÎ¨Ò»½âÊÍÆ÷£»È±Ê§Ôò¹¤³Ì¶ÁĞ´²»¿ÉÓÃ£¬³ÌĞòÈÔ¿ÉÆô¶¯£©--
+rem -- vtcore extension (Rust/PyO3: the only reader/writer of the .vt project format; without it project IO is unavailable, the app still starts) --
 set "NEED_VTCORE=0"
 set "VTCORE_PY=%~dp0.venv\Scripts\python.exe"
 if not exist "%VTCORE_PY%" (set "NEED_VTCORE=1") else (
@@ -160,7 +160,7 @@ if not exist "%VTCORE_PY%" (set "NEED_VTCORE=1") else (
 )
 if "%NEED_VTCORE%"=="1" (echo   [È±Ê§] vtcore À©Õ¹£¨.vt ¹¤³Ì¶ÁĞ´ĞèÒª£¬ÉÔºó³¢ÊÔ»ñÈ¡£©) else (echo   [OK] vtcore À©Õ¹)
 
-rem -- ×Ê²úÍêÕûĞÔ£¨´æÔÚĞÔ + ´óĞ¡±È¶Ô£»»ù×¼Îª¹Ù·½¹şÏ£Çåµ¥£¬ÔËĞĞÆÚ²»ÁªÍø£©--
+rem -- asset integrity (existence + size compared with the official hash manifest; no network at runtime) --
 set "VERIFY_TOOL=%~dp0tools\verify_tts_assets.py"
 set "ASSET_MANIFEST=%~dp0tts_assets_manifest.txt"
 set "PY_CHECK="
@@ -176,7 +176,7 @@ if defined PY_CHECK if exist "%VERIFY_TOOL%" if exist "%ASSET_MANIFEST%" (
     echo   [Ìø¹ı] ×Ê²úÍêÕûĞÔĞ£Ñé£¨ĞéÄâ»·¾³»òĞ£ÑéÎÄ¼şÎ´¾ÍĞ÷£©
 )
 
-rem ================= [2/3] °´Ğè²¹Æë =================
+rem ================= [2/3] on-demand fetch =================
 echo.
 echo [2/3] °´Ğè²¹ÆëÈ±Ê§Ïî...
 
@@ -197,7 +197,7 @@ if "%NEED_VENV%"=="1" (
     echo   Python »·¾³¾ÍĞ÷¡£
 )
 
-rem -- requirements Æ¯ÒÆ£ºÎÄ¼şÒÑ±ä»¯ÔòÖØ×°£¨ÃİµÈ£»Ö»×°Ò»´Î»áÈÃÒÀÀµÉı¼¶¾²Ä¬Ê§Ğ§£©--
+rem -- requirements drift: reinstall when the file changed (idempotent; installing once would silently miss dependency upgrades) --
 if "%NEED_REQ%"=="1" (
     echo   ¼ì²âµ½ requirements.txt ±ä»¯£¬ÕıÔÚÍ¬²½ÒÀÀµ...
     ".venv\Scripts\python.exe" -m pip install -r requirements.txt
@@ -209,7 +209,7 @@ if "%NEED_REQ%"=="1" (
     echo   ÒÀÀµÒÑÍ¬²½¡£
 )
 
-rem -- vtcore À©Õ¹£ºÌå»ıºÜĞ¡£¬¶ÀÁ¢ÓÚ TTS ×ÊÔ´£¬Ö±½Ó²¹Æë£¨Ê§°Ü²»×èÈûÆô¶¯£©--
+rem -- vtcore extension: small and independent of TTS assets, fetched right away (failure does not block launch) --
 if "%NEED_VTCORE%"=="1" (
     call :fetch_vtcore
     if errorlevel 1 echo   [ÌáÊ¾] vtcore À©Õ¹Î´¾ÍĞ÷£º³ÌĞòÈÔ¿ÉÆô¶¯£¬µ« .vt ¹¤³Ì¶ÁĞ´²»¿ÉÓÃ¡£
@@ -254,7 +254,7 @@ if "%NEED_MSST%"=="1" (
 )
 if "%SEP_ENV%"=="0" echo   [ÌáÊ¾] Î´ÅäÖÃ·ÖÀëÍÆÀí Python »·¾³£ºĞèÒªÊ±ÔÚÓ¦ÓÃ"ÈËÉù·ÖÀë"Ò³ÉèÖÃ£¨ÒÀÀµ°´¸ôÀëÏÈÀı²»×°Èë±¾ĞéÄâ»·¾³£©¡£
 
-rem ================= [3/3] Æô¶¯ =================
+rem ================= [3/3] launch =================
 echo.
 echo [3/3] Æô¶¯ WT-NameRelay...
 ".venv\Scripts\python.exe" main.py
@@ -267,13 +267,13 @@ if errorlevel 1 (
 exit /b 0
 
 rem ================================================================
-rem  ×Ó¹ı³Ì£ºCosyVoice3 ÍÆÀíÆ÷£¨¹Ù·½ runner = CrispASR£©
-rem  À´Ô´£ºhttps://github.com/CrispStrobe/CrispASR ¹Ù·½ Release ×Ê²ú£¨MIT£©
-rem  ËµÃ÷£ºWindows ¹Ù·½¼şÎª wheel£¨ÄÚº¬ crispasr °üÓë DLL£©£»±¾¹ı³ÌÏÂÔØ + ½âÑ¹ + Ğ£Ñé¡£
+rem  subroutine: CosyVoice3 runner (official runner = CrispASR)
+rem  source: https://github.com/CrispStrobe/CrispASR official Release asset (MIT)
+rem  note: the Windows artifact is a wheel (ships the crispasr package and DLLs); this routine downloads, extracts and verifies it.
 rem ================================================================
 
 :verify_assets
-rem Éî¶ÈĞ£Ñé£ºÖğÎÄ¼ş¼ÆËã¹Ù·½¹şÏ££¨sha256 / git blob sha1£©²¢±È¶Ô£»Ö»±¨¸æ¡¢²»ÏÂÔØ
+rem deep check: per-file hashes (sha256 / git blob sha1) compared with the manifest; report only, never downloads
 echo [Ğ£Ñé] TTS ×ÊÔ´¹Ù·½¹şÏ£±È¶Ô£¨Ğè¶ÁÈ¡È«²¿×Ö½Ú£¬Ô¼ 12.5 GB£¬¿ÉÄÜ½ÏÂı£©
 set "VERIFY_TOOL=%~dp0tools\verify_tts_assets.py"
 set "ASSET_MANIFEST=%~dp0tts_assets_manifest.txt"
@@ -305,8 +305,8 @@ echo [½á¹û] È«²¿×ÊÔ´Óë¹Ù·½¹şÏ£Ò»ÖÂ¡£
 exit /b 0
 
 :check_integrity
-rem °´¹Ù·½¹şÏ£Çåµ¥Ğ£ÑéÒ»×é×ÊÔ´£¨Ä¬ÈÏÖ»±È´óĞ¡£»start.bat /verify ²Å±È¹şÏ££©
-rem ÓÃ·¨: call :check_integrity <×éÃû> <È±Ê§±ê¼Ç±äÁ¿> [¸½¼Ó²ÎÊı]
+rem verify one asset group against the official hash manifest (size only by default; hashes only with start.bat /verify)
+rem usage: call :check_integrity <group> <missing-flag-var> [extra args]
 "%PY_CHECK%" "%VERIFY_TOOL%" --group %~1 --quiet %~3
 if errorlevel 1 (
     set "%~2=1"
@@ -357,10 +357,10 @@ echo   [OK] ÍÆÀíÆ÷ÒÑ¾ÍĞ÷£º%COSY_RUNNER_DIR%\crispasr
 exit /b 0
 
 rem ================================================================
-rem  ×Ó¹ı³Ì£ºvtcore À©Õ¹£¨Rust / PyO3£».vt ¹¤³Ì¸ñÊ½µÄÎ¨Ò»½âÊÍÆ÷£©
-rem  À´Ô´£º±¾ fork µÄ GitHub Release Ô¤±àÒë wheel£¨abi3£¬¿ç Python Ğ¡°æ±¾Í¨ÓÃ£©
-rem  ËµÃ÷£ºÌå»ıºÜĞ¡£¬Óë TTS ×ÊÔ´ÎŞ¹Ø£»»ñÈ¡Ê§°Ü²»Ó°Ïì³ÌĞòÆô¶¯£¬
-rem        Ö»ÊÇ .vt ¹¤³Ì¶ÁĞ´²»¿ÉÓÃ£¨×´Ì¬À¸Óë¡¸¹ØÓÚÓëĞí¿É¡¹Ò³»áÌáÊ¾£©¡£
+rem  subroutine: vtcore extension (Rust / PyO3; the only reader/writer of the .vt project format)
+rem  source: prebuilt wheel from this fork's GitHub Release (abi3, works across Python minor versions)
+rem  note: small and unrelated to TTS assets; a failed fetch does not block launch,
+rem        it only disables .vt project IO (shown in the status bar and the About & License page).
 rem ================================================================
 
 :fetch_vtcore
@@ -379,7 +379,7 @@ if exist "%VTCORE_LOCAL%" (
     echo   Ê¹ÓÃËæÔ´Âë¸½´øµÄÔ¤±àÒëÀ©Õ¹£º%VTCORE_ASSET%
     goto :vtcore_install
 )
-rem ±¾µØ¼şÈ±Ê§Ê±²Å×ß Release ÏÂÔØ£¨×Ê²úÎ´·¢²¼Ê±¸ÃÂ·¾¶»áÓÅÑÅÊ§°Ü£©
+rem downloads from the Release only when the local artifact is missing (fails gracefully if the asset is not published)
 if not exist "%VTCORE_DIR%" mkdir "%VTCORE_DIR%"
 echo   ÕıÔÚ»ñÈ¡ vtcore À©Õ¹£º%VTCORE_URL%
 curl -L --ssl-no-revoke -C - --retry 3 --max-time 300 -o "%VTCORE_WHEEL%" "%VTCORE_URL%"
@@ -439,11 +439,11 @@ echo [½á¹û] ×Ô¼ìÈ«²¿Í¨¹ı¡£
 exit /b 0
 
 rem ================================================================
-rem  ×Ó¹ı³Ì£ºËæ°ü FFmpeg / requirements Æ¯ÒÆ / ÖÂÃü´íÎó³ö¿Ú
+rem  subroutine: bundled FFmpeg / requirements drift / fatal-error exit
 rem ================================================================
 
 :check_ff_one
-rem arg1=ÎÄ¼şÃû£»È±Ê§»ò²»×ã 50KB£¨LFS Ö¸Õë¼şÔ¼ 130 ×Ö½Ú£©Ê±¼ÇÈë FF_BAD
+rem arg1=file name; missing or under 50KB (an LFS pointer is ~130 bytes) records it in FF_BAD
 set "FF_ONE=%FF_BIN%\%~1"
 if not exist "%FF_ONE%" set "FF_BAD=%FF_BAD% %~1£¨È±Ê§£©"
 if not exist "%FF_ONE%" exit /b 0
@@ -451,12 +451,12 @@ for %%Z in ("%FF_ONE%") do if %%~zZ LSS 50000 set "FF_BAD=%FF_BAD% %~1£¨²»ÍêÕû£©
 exit /b 0
 
 :stamp_requirements
-rem ¼ÇÂ¼ requirements.txt µÄ SHA256£¨ÏÂ´ÎÆô¶¯Æ¯ÒÆ¼ì²âµÄ»ù×¼£©
+rem record the SHA256 of requirements.txt (baseline for the next drift check)
 if not exist "%~dp0.venv\Scripts\python.exe" exit /b 0
 "%~dp0.venv\Scripts\python.exe" -c "import hashlib,pathlib; pathlib.Path('.venv/requirements.sha256').write_text(hashlib.sha256(pathlib.Path('requirements.txt').read_bytes()).hexdigest(), encoding='utf-8')" >nul 2>&1
 exit /b 0
 
 :die_env
-rem »·¾³ÀàÖÂÃü´íÎóµÄÍ³Ò»³ö¿Ú¡£±ØĞë¾­ goto ÌøÈë£ºÇ¶Ì×¿éÄÚÖ±½Ó exit /b »á¶ªÍË³öÂë
-rem £¨cmd Êµ²â£ºÍâ²ã¿éÔÚÄÚ²ã¿éÖ®ºó»¹ÓĞÃüÁîÊ± exit /b N µÄÍË³öÂë±ä³É 0£¬2026-10-07£©
+rem single exit for fatal environment errors. Must be reached via goto: a direct exit /b inside nested blocks loses the exit code
+rem (measured in cmd on : when an outer block has commands after the inner block, exit /b N yields exit code 0)
 exit /b 1

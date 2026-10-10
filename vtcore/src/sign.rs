@@ -1,6 +1,6 @@
 // Copyright (C) 2026 Diderde
 // SPDX-License-Identifier: GPL-3.0-only
-//! 签名层（`docs/voice-batch-m2-spec.md` §5）：算法编号表、签名消息规范字节、Ed25519 sign/verify。
+//! 签名层：算法编号表、签名消息规范字节、Ed25519 sign/verify。
 //!
 //! 与 [`crate::canonical`] 一样不依赖 pyo3，便于独立测试。
 //! 被签对象是**逻辑规范字节**（表级规范字节 / manifest 规范字节），不是容器字节。
@@ -17,7 +17,7 @@ pub const ALG_ED25519: u16 = 0x0001;
 /// 签名消息版本。
 pub const SIG_VERSION: i64 = 1;
 
-/// 验签失败码（`m2-spec` §5.5）。
+/// 验签失败码。
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum SigError {
     /// 算法编号为 `none`（禁止）。
@@ -64,7 +64,7 @@ impl SigError {
     }
 }
 
-/// 签名块（对应 `m2-spec` §5.2 的 `SIGN` chunk payload）。
+/// 签名块（`SIGN` chunk payload）。
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct SignatureBlock {
     pub alg: u16,

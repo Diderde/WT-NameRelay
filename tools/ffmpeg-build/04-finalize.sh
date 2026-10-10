@@ -104,7 +104,7 @@ echo "  残留: $LEFT 个"
 echo
 echo "=== 5. 换进仓库 ==="
 mkdir -p "$DEST"
-# 防护门（AGENTS.md §4.2）：清空重建前先探测体量、确认目标在仓库内
+# 防护门：清空重建前先探测体量、确认目标在仓库内
 DEST_REAL="$(cd "$DEST" && pwd)"
 REPO_REAL="$(cd "$REPO" && pwd)"
 case "$DEST_REAL" in
@@ -124,7 +124,7 @@ done
 # 因此 avcodec-63.dll / avformat-63.dll / ffmpeg.exe 的 PE 导入表里都有 zlib1.dll。
 # 漏掉它 = 干净用户机上 FFmpeg 全线以 0xC0000135 (STATUS_DLL_NOT_FOUND) 失败，
 # 而开发机上会被 PATH 里别的同名 DLL（Tcl / KeePassXC …）掩盖，症状隐蔽。
-# 2026 修复：见 FFMPEG_BUILD_INFO.md「随包 DLL 集合」。 say no to perv.
+# 2026 修复：见 FFMPEG_BUILD_INFO.md「随包 DLL 集合」。 
 for n in libgcc_s_seh-1.dll libwinpthread-1.dll libmp3lame-0.dll libopus-0.dll zlib1.dll; do
   [ -f "$EXTRA/$n" ] && { cp -f "$EXTRA/$n" "$DEST/"; echo "  随附 $n"; } || echo "  *** 缺 $n ***"
 done

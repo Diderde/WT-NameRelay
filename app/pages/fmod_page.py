@@ -5,7 +5,7 @@
 探测口径与 start.bat 一致：工作区 ``FMOD Studio */fmodstudio.exe`` 优先，
 回退 Program Files 的 ``FMOD Sound Systems`` 安装。经 ``os.startfile`` 以
 独立进程拉起（等价双击启动，应用退出不影响 FMOD 运行）；流水线其余能力
-（构建触发、bank 拷贝等）按 ``docs/fmod-pipeline-plan.md`` 后续轮次扩展。
+（构建触发、bank 拷贝等）留待后续扩展。
 """
 
 from __future__ import annotations
@@ -86,7 +86,7 @@ class FmodConsolePage(BaseToolPage):
             return
         try:
             # FMOD Studio 以"当前目录"解析工程/诊断文件——直接继承应用的仓库根
-            # 会翻错位置（2026-10-08 实测：启动横幅出现 -diagnostic foobar.fspro）。
+            # 会翻错位置（实测：启动横幅出现 -diagnostic foobar.fspro）。
             # 官方启动脚本都是先 cd 到自身目录再启动，这里同样瞬时切换后还原。
             previous = os.getcwd()
             os.chdir(exe.parent)

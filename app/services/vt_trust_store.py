@@ -1,6 +1,6 @@
 # Copyright (C) 2026 Diderde
 # SPDX-License-Identifier: GPL-3.0-only
-"""TOFU 信任库（M2-W4，规范见 `docs/voice-batch-m2-spec.md` §6）。
+"""TOFU 信任库。
 
 要点：
 

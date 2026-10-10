@@ -45,7 +45,7 @@ cd vtcore
 ..\.venv\Scripts\python.exe -m maturin develop --release
 ```
 
-产物为 CPython 3.12+ 通用的 abi3 扩展，因此在同一份源码上换 Python 小版本无需重编。接口清单与测试方式见 `vtcore/README.md`，字节级规范见 `docs/voice-batch-m2-spec.md`。
+产物为 CPython 3.12+ 通用的 abi3 扩展，因此在同一份源码上换 Python 小版本无需重编。接口清单与测试方式见 `vtcore/README.md`。
 
 ## 测试
 

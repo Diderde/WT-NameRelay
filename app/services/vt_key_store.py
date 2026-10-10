@@ -1,6 +1,6 @@
 # Copyright (C) 2026 Diderde
 # SPDX-License-Identifier: GPL-3.0-only
-"""项目密钥存储（M2-W4，规范见 `docs/voice-batch-m2-spec.md` §7）。
+"""项目密钥存储。
 
 - **主包装钥**：32 字节随机，经 Windows **DPAPI（用户范围）** 保护后落盘 `vt_master.key`；
 - **项目私钥**：Ed25519 的 32 字节种子，经主包装钥以 **XChaCha20-Poly1305** 封装

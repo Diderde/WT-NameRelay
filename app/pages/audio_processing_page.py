@@ -280,7 +280,7 @@ class AudioProcessingPage(BaseToolPage):
     def _build_module_host(self) -> QWidget:
         """顶层模块切换（对齐 TTS 工作台形态）：现有音频处理 + 契约控制台。
 
-        2026-10-02：原"实验功能"外壳（占位视图 + 完成度警示）按验收决定
+原"实验功能"外壳（占位视图 + 完成度警示）按验收决定
         移除；其中已交付的 R2_1_5_07 契约控制台（Tier 1）升格为独立模块，
         功能与按钮语义不变，仅不再挂着"未完成、不推荐"的告示牌。
         """
@@ -302,6 +302,10 @@ class AudioProcessingPage(BaseToolPage):
         self.contract_module_button.setObjectName('moduleSwitchButton')
         self.contract_module_button.setProperty('audioNavigation', True)
         self.contract_module_button.setCheckable(True)
+        # 契约回归脚本是冻结件自带文件，可能不随包分发（如公开构建
+        # 不含 audioprep_contract/tests）：按能力探测决定入口可见性，而不是让用户
+        # 点进一个必然失败的页面。
+        self.contract_module_button.setVisible(self._contract_suite_available())
         self._top_module_group = QButtonGroup(self)
         self._top_module_group.setExclusive(True)
         self._top_module_group.addButton(self.main_module_button)
@@ -375,6 +379,10 @@ class AudioProcessingPage(BaseToolPage):
 
     def _contract_bundle(self) -> Path:
         return Path(__file__).resolve().parents[2] / 'audioprep_contract'
+
+    def _contract_suite_available(self) -> bool:
+        """契约回归脚本是否存在（能力探测：缺失即隐藏入口，不做乐观假设）。"""
+        return (self._contract_bundle() / 'tests' / 'independent_regression.py').is_file()
 
     def _contract_schema_counts(self) -> tuple[int, int, int]:
         con = sqlite3.connect(':memory:')
@@ -1602,7 +1610,7 @@ class AudioProcessingPage(BaseToolPage):
             return
         # LoudnessScanWorker 吃 5 元组，_audio_scan_items 是
         # 6 元组——直传会在 worker 里 ValueError 且 finished 永不发出，整页
-        # 卡忙（静音检测那边本就有映射，分析这边漏了；存量缺陷，2026-10-02
+        # 卡忙（静音检测那边本就有映射，分析这边漏了；存量缺陷，
         # caveman 复核抓出，核心 widget 同步修复）
         mapped = tuple((c[0], c[2], c[3], c[4], c[5]) for c in items)
         self._analysis_cancel = threading.Event()
